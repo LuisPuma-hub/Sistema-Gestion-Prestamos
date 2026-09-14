@@ -1,0 +1,308 @@
+@startuml erp
+' ============================================================
+' SISTEMA DE GESTIÓN DE PRÉSTAMOS
+' Diagrama Entidad-Relación
+' ============================================================
+
+hide circle
+skinparam linetype ortho
+skinparam entity {
+    BackgroundColor White
+    BorderColor Black
+    FontColor Black
+}
+
+' ============================================================
+' USUARIOS Y ROLES
+' ============================================================
+
+entity "usuarios" as usuarios {
+    * id_usuario : BIGINT <<PK>>
+    --
+    * nombre : VARCHAR(100)
+    * apellido : VARCHAR(100)
+    * email : VARCHAR(150) <<UK>>
+    * password_hash : VARCHAR(255)
+    telefono : VARCHAR(20)
+    * estado : VARCHAR(20)
+    * fecha_creacion : TIMESTAMPTZ
+    * fecha_actualizacion : TIMESTAMPTZ
+}
+
+entity "roles" as roles {
+    * id_rol : BIGINT <<PK>>
+    --
+    * nombre : VARCHAR(50) <<UK>>
+    descripcion : VARCHAR(255)
+}
+
+entity "usuario_roles" as usuario_roles {
+    * id_usuario : BIGINT <<PK, FK>>
+    * id_rol : BIGINT <<PK, FK>>
+}
+
+usuarios ||--o{ usuario_roles : tiene
+roles ||--o{ usuario_roles : asigna
+
+' ============================================================
+' CLIENTES
+' ============================================================
+
+entity "clientes" as clientes {
+    * id_cliente : BIGINT <<PK>>
+    --
+    id_usuario_registra : BIGINT <<FK>> NOT NULL
+    id_usuario_login : BIGINT <<FK>> NULL UNIQUE
+    * tipo_documento : VARCHAR(20)
+    * numero_documento : VARCHAR(20)
+    * nombres : VARCHAR(100)
+    * apellidos : VARCHAR(100)
+    * telefono : VARCHAR(20)
+    email : VARCHAR(150)
+    direccion : VARCHAR(255)
+    referencia_direccion : VARCHAR(255)
+    * estado : VARCHAR(20)
+    * fecha_registro : TIMESTAMPTZ
+    * fecha_actualizacion : TIMESTAMPTZ
+}
+
+' UNIQUE(tipo_documento, numero_documento_normalizado). Normalizar TRIM UPPER sin guiones. DNI ^[0-9]{8}$, CE ^[A-Z0-9]{9,12}$.
+' FK ON DELETE RESTRICT ON UPDATE CASCADE. id_usuario_registra = quien creó, id_usuario_login = login futuro opcional.
+
+usuarios ||--|{ clientes : registra
+usuarios ||--o| clientes : login_opcional
+
+' ============================================================
+' PRESTAMOS
+' ============================================================
+
+entity "prestamos" as prestamos {
+    * id_prestamo : BIGINT <<PK>>
+    --
+    * id_cliente : BIGINT <<FK>> NOT NULL
+    * id_usuario_creador : BIGINT <<FK>> NOT NULL
+    * monto_capital : DECIMAL(12,2)
+    * tasa_interes : DECIMAL(5,2) DEFAULT 5.00
+    * tipo_tasa : VARCHAR(20) DEFAULT SEMANAL_FIJA
+    * plazo : INT
+    * frecuencia_pago : VARCHAR(20) DEFAULT SEMANAL
+    * monto_interes : DECIMAL(12,2)
+    * monto_total : DECIMAL(12,2)
+    * capital_pendiente : DECIMAL(12,2)
+    * fecha_desembolso : DATE
+    * fecha_primer_vencimiento : DATE
+    * fecha_vencimiento : DATE
+    * estado : VARCHAR(20)
+    observaciones : TEXT
+    * fecha_creacion : TIMESTAMPTZ
+    * fecha_actualizacion : TIMESTAMPTZ
+}
+' CHECK(tasa_interes=5.00) en v1 fija. CHECK(tipo_tasa IN SEMANAL_FIJA). CHECK(frecuencia_pago IN SEMANAL).
+' UNIQUE parcial 1 préstamo activo: UX_Prestamo_Activo (cliente_id) WHERE estado IN (ACTIVO,MOROSO).
+' FK ON DELETE RESTRICT ON UPDATE CASCADE.
+
+clientes ||--o{ prestamos : solicita
+usuarios ||--o{ prestamos : registra
+
+' ============================================================
+' CUOTAS
+' ============================================================
+
+entity "cuotas" as cuotas {
+    * id_cuota : BIGINT <<PK>>
+    --
+    * id_prestamo : BIGINT <<FK>> NOT NULL
+    * numero_cuota : INT
+    * fecha_vencimiento : DATE
+    * capital_programado : DECIMAL(12,2)
+    * interes_programado : DECIMAL(12,2)
+    * monto_programado : DECIMAL(12,2)
+    capital_pagado : DECIMAL(12,2) DEFAULT 0.00
+    interes_pagado : DECIMAL(12,2) DEFAULT 0.00
+    monto_pagado : DECIMAL(12,2) DEFAULT 0.00
+    saldo : DECIMAL(12,2)
+    * estado : VARCHAR(20)
+    fecha_pago : TIMESTAMPTZ
+}
+' UNIQUE(id_prestamo, numero_cuota). saldo = monto_programado - monto_pagado (GENERATED). FK ON DELETE RESTRICT.
+
+prestamos ||--o{ cuotas : genera
+
+' ============================================================
+' PAGOS
+' ============================================================
+
+entity "pagos" as pagos {
+    * id_pago : BIGINT <<PK>>
+    --
+    * id_prestamo : BIGINT <<FK>> NOT NULL
+    * id_usuario : BIGINT <<FK>> NOT NULL
+    * monto_pago : DECIMAL(12,2)
+    * fecha_pago : TIMESTAMPTZ
+    * metodo_pago : VARCHAR(30)
+    referencia : VARCHAR(100)
+    observaciones : TEXT
+    * estado : VARCHAR(20)
+    * fecha_registro : TIMESTAMPTZ
+}
+' CHECK(metodo_pago IN EFECTIVO,YAPE,TRANSFERENCIA,PLIN,DEPOSITO,OTRO) canónico v1. Sin DELETE, solo ANULADO. FK ON DELETE RESTRICT.
+
+prestamos ||--o{ pagos : recibe
+usuarios ||--o{ pagos : registra
+
+' ============================================================
+' DETALLE DE PAGO
+' ============================================================
+
+entity "pago_cuotas" as pago_cuotas {
+    * id_pago : BIGINT <<PK, FK>>
+    * id_cuota : BIGINT <<PK, FK>>
+    --
+    monto_capital : DECIMAL(12,2)
+    monto_interes : DECIMAL(12,2)
+    monto_mora : DECIMAL(12,2)
+    monto_total : DECIMAL(12,2)
+}
+
+pagos ||--o{ pago_cuotas : distribuye
+cuotas ||--o{ pago_cuotas : recibe
+
+' ============================================================
+' MOROSIDAD
+' ============================================================
+
+entity "moras" as moras {
+    * id_mora : BIGINT <<PK>>
+    --
+    id_cuota : BIGINT <<FK>>
+    dias_mora : INT
+    tasa_mora : DECIMAL(5,2)
+    monto_mora : DECIMAL(12,2)
+    fecha_inicio : DATE
+    fecha_calculo : TIMESTAMPTZ
+    estado : VARCHAR(20)
+}
+
+cuotas ||--o{ moras : genera
+
+' ============================================================
+' NOTIFICACIONES
+' ============================================================
+
+entity "notificaciones" as notificaciones {
+    * id_notificacion : BIGINT <<PK>>
+    --
+    id_usuario : BIGINT <<FK>>
+    id_prestamo : BIGINT <<FK>>
+    tipo : VARCHAR(30)
+    titulo : VARCHAR(150)
+    mensaje : TEXT
+    canal : VARCHAR(30)
+    estado : VARCHAR(20)
+    fecha_programada : TIMESTAMPTZ
+    fecha_envio : TIMESTAMPTZ
+    fecha_lectura : TIMESTAMPTZ
+}
+
+usuarios ||--o{ notificaciones : recibe
+prestamos ||--o{ notificaciones : genera
+
+' ============================================================
+' WHATSAPP
+' ============================================================
+
+entity "mensajes_whatsapp" as mensajes_whatsapp {
+    * id_mensaje : BIGINT <<PK>>
+    --
+    * id_cliente : BIGINT <<FK>> NOT NULL
+    id_prestamo : BIGINT <<FK>>
+    * tipo_plantilla : VARCHAR(100) <<FK>>
+    * numero_destino : VARCHAR(20)
+    * contenido : TEXT
+    * estado : VARCHAR(30)
+    identificador_externo : VARCHAR(150)
+    fecha_programada : TIMESTAMPTZ
+    fecha_envio : TIMESTAMPTZ
+    * fecha_creacion : TIMESTAMPTZ
+}
+
+clientes ||--o{ mensajes_whatsapp : recibe
+prestamos ||--o{ mensajes_whatsapp : relacionado
+
+' ============================================================
+' TABLAS FALTANTES v1 (exigidas por arquitectura)
+' ============================================================
+
+entity "avales" as avales {
+    * id_aval : BIGINT <<PK>>
+    --
+    * id_prestamo : BIGINT <<FK>> NOT NULL
+    id_cliente_aval : BIGINT <<FK>> NULL
+    * nombres : VARCHAR(80)
+    * apellidos : VARCHAR(80)
+    * celular : VARCHAR(20)
+    * direccion : VARCHAR(150)
+    * tipo : VARCHAR(20)
+}
+' CHECK(tipo IN CLIENTE_EXISTENTE,NUEVO). Prohibido aval_id==cliente_id, aval BLOQUEADO/MOROSO, máx 1 aval por préstamo en v1. FK RESTRICT.
+
+entity "solicitudes" as solicitudes {
+    * id_solicitud : BIGINT <<PK>>
+    --
+    * id_cliente : BIGINT <<FK>> NOT NULL
+    * monto_solicitado : DECIMAL(12,2)
+    * estado : VARCHAR(20)
+    * fecha_solicitud : TIMESTAMPTZ
+}
+
+entity "dispositivos" as dispositivos {
+    * id_dispositivo : BIGINT <<PK>>
+    --
+    * id_usuario : BIGINT <<FK>> NOT NULL
+    * fcm_token : TEXT UNIQUE NOT NULL
+    * plataforma : VARCHAR(20)
+    * device_id : UUID
+    * app_version : VARCHAR(20)
+    * ultimo_uso : TIMESTAMPTZ
+    activo : BOOLEAN DEFAULT TRUE
+}
+' fcm_token = DispositivoToken.token (API), device_id = deviceId, app_version = appVersion. Único un activo por dispositivo: UNIQUE(device_id) WHERE activo=TRUE; inactivos conservan historial (rotación/reinstalación).
+
+entity "documentos" as documentos {
+    * id_documento : BIGINT <<PK>>
+    --
+    * id_cliente : BIGINT <<FK>> NOT NULL
+    * tipo : VARCHAR(20)
+    * url : TEXT
+    * hash_sha256 : VARCHAR(64)
+    * mime : VARCHAR(50)
+}
+' CHECK(tipo IN RECIBO_LUZ,RECIBO_AGUA,DNI). CHECK(tamaño<=5MB app). URL firmada 15min.
+
+entity "plantillas_whatsapp" as plantillas_whatsapp {
+    * nombre : VARCHAR(100) <<PK>>
+    --
+    * idioma : VARCHAR(10)
+    * categoria : VARCHAR(20)
+    * body : VARCHAR(1024)
+}
+' PK nombre ej wh_pago_recordatorio_v1. FK desde mensajes_whatsapp.tipo_plantilla.
+
+entity "auditoria" as auditoria {
+    * id : BIGINT <<PK>>
+    --
+    * tabla : VARCHAR(50)
+    * id_registro : BIGINT
+    * operacion : VARCHAR(10)
+    * diff : JSONB
+    * id_usuario : BIGINT
+    * fecha : TIMESTAMPTZ
+}
+' Append-only, trigger en prestamos/pagos/cuotas. Sin UPDATE/DELETE.
+
+prestamos ||--o{ avales : garantiza
+clientes ||--o{ solicitudes : solicita
+usuarios ||--o{ dispositivos : usa
+clientes ||--o{ documentos : acredita
+
+ @enduml

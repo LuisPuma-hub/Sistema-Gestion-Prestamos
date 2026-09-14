@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SistemaPrestamos.API/SistemaPrestamos.API.csproj" />
+    <Project Path="src/SistemaPrestamos.Application/SistemaPrestamos.Application.csproj" />
+    <Project Path="src/SistemaPrestamos.Domain/SistemaPrestamos.Domain.csproj" />
+    <Project Path="src/SistemaPrestamos.Infrastructure/SistemaPrestamos.Infrastructure.csproj" />
+    <Project Path="src/SistemaPrestamos.Mobile/SistemaPrestamos.Mobile.csproj" />
+  </Folder>
+</Solution>
