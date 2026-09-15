@@ -1,9 +1,9 @@
-﻿namespace SistemaPrestamos.Mobile;
+namespace SistemaPrestamos.Mobile;
 
 public partial class AppShell : Shell
 {
-	public AppShell()
-	{
-		InitializeComponent();
-	}
+    public AppShell()
+    {
+        InitializeComponent();
+    }
 }
