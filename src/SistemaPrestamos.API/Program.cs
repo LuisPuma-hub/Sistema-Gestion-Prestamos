@@ -1,21 +1,83 @@
+using Microsoft.EntityFrameworkCore;
+using SistemaPrestamos.Application.Interfaces;
+using SistemaPrestamos.Application.Services;
+using SistemaPrestamos.Infrastructure.Data;
+using SistemaPrestamos.Infrastructure.Repositories;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Controllers
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+var jwtKey = builder.Configuration["Jwt:Key"];
+
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException(
+        "La configuración Jwt:Key no está definida.");
+}
+
+builder.Services.AddAuthentication(
+    JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// Entity Framework Core + PostgreSQL
+builder.Services.AddDbContext<PrestamosDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Application Services
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IPrestamoService, PrestamoService>();
+builder.Services.AddScoped<IPagoService, PagoService>();
+builder.Services.AddScoped<IPeriodoInteresService, PeriodoInteresService>();
+builder.Services.AddScoped<IMorosidadService, MorosidadService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Repositories
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IPrestamoRepository, PrestamoRepository>();
+builder.Services.AddScoped<IPagoRepository, PagoRepository>();
+builder.Services.AddScoped<IPeriodoInteresRepository, PeriodoInteresRepository>();
+builder.Services.AddScoped<IMorosidadRepository, MorosidadRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+// OpenAPI
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// HTTPS temporalmente desactivado para pruebas locales
+// app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
