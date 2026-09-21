@@ -6,4 +6,7 @@
     <Project Path="src/SistemaPrestamos.Infrastructure/SistemaPrestamos.Infrastructure.csproj" />
     <Project Path="src/SistemaPrestamos.Mobile/SistemaPrestamos.Mobile.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SistemaPrestamos.Tests/SistemaPrestamos.Tests.csproj" />
+  </Folder>
 </Solution>

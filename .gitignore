@@ -56,6 +56,11 @@ appsettings.Local.json
 secrets.json
 *.pfx
 *.p12
+private/
+*-firebase-adminsdk-*.json
+GoogleService-Info.plist
+# Nota: google-services.json dentro de src/ SÍ se versiona
+# (config pública del cliente FCM, necesaria para compilar).
 # Nota: appsettings.json se versiona solo con placeholders.
 # Usa User Secrets (dotnet user-secrets), variables de entorno
 # o appsettings.Development.json local para BD y JWT reales.
