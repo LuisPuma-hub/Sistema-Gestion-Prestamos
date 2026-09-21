@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SistemaPrestamos.Infrastructure.Data;
@@ -11,9 +12,11 @@ using SistemaPrestamos.Infrastructure.Data;
 namespace SistemaPrestamos.Infrastructure.Migrations
 {
     [DbContext(typeof(PrestamosDbContext))]
-    partial class PrestamosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260920210510_MensajesWhatsapp")]
+    partial class MensajesWhatsapp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,40 +24,6 @@ namespace SistemaPrestamos.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("SistemaPrestamos.Domain.Entities.Auditoria", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Diff")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("IdRegistro")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Operacion")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("Tabla")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<Guid?>("UsuarioId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("auditoria", (string)null);
-                });
 
             modelBuilder.Entity("SistemaPrestamos.Domain.Entities.Cliente", b =>
                 {
@@ -393,38 +362,6 @@ namespace SistemaPrestamos.Infrastructure.Migrations
                     b.ToTable("prestamos", (string)null);
                 });
 
-            modelBuilder.Entity("SistemaPrestamos.Domain.Entities.RefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("ExpiraEn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("FechaRevocacion")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Token")
-                        .IsUnique();
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("refresh_tokens", (string)null);
-                });
-
             modelBuilder.Entity("SistemaPrestamos.Domain.Entities.Usuario", b =>
                 {
                     b.Property<Guid>("Id")
@@ -542,17 +479,6 @@ namespace SistemaPrestamos.Infrastructure.Migrations
                     b.Navigation("Cliente");
 
                     b.Navigation("Garante");
-                });
-
-            modelBuilder.Entity("SistemaPrestamos.Domain.Entities.RefreshToken", b =>
-                {
-                    b.HasOne("SistemaPrestamos.Domain.Entities.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("SistemaPrestamos.Domain.Entities.Cliente", b =>

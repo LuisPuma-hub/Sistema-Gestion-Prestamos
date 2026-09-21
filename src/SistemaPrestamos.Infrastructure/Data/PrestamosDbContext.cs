@@ -16,6 +16,10 @@ public class PrestamosDbContext : DbContext
     public DbSet<Prestamo> Prestamos => Set<Prestamo>();
     public DbSet<Pago> Pagos => Set<Pago>();
     public DbSet<Morosidad> Morosidades => Set<Morosidad>();
+    public DbSet<Dispositivo> Dispositivos => Set<Dispositivo>();
+    public DbSet<MensajeWhatsapp> MensajesWhatsapp => Set<MensajeWhatsapp>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Auditoria> Auditorias => Set<Auditoria>();
     public DbSet<PeriodoInteres> PeriodosInteres => Set<PeriodoInteres>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -12,6 +12,10 @@ public class CrearClienteDto
 
     public string Telefono { get; set; } = string.Empty;
 
+    public string? Direccion { get; set; }
+
+    public string? ReferenciaDireccion { get; set; }
+
     public string? FotoReciboServicio { get; set; }
 
     public string? Observaciones { get; set; }

@@ -72,6 +72,7 @@ public class MorosidadesController : ControllerBase
     }
 
     [HttpPatch("prestamo/{prestamoId:guid}/reactivar")]
+    [Authorize(Roles = "Administrador")]
     public async Task<ActionResult<MorosidadDto>> Reactivar(
         Guid prestamoId,
         [FromBody] ReactivarMorosidadDto dto)

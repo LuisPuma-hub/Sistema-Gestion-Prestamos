@@ -76,7 +76,7 @@ public class PrestamoService : IPrestamoService
 
         var fechaInicio = dto.FechaInicio == default
             ? DateTime.UtcNow
-            : dto.FechaInicio;
+            : DateTime.SpecifyKind(dto.FechaInicio, DateTimeKind.Utc);
 
         var prestamo = new Prestamo
         {

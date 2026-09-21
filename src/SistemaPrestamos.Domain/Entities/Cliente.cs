@@ -14,11 +14,17 @@ public class Cliente
 
     public string Telefono { get; set; } = string.Empty;
 
+    public string? Direccion { get; set; }
+
+    public string? ReferenciaDireccion { get; set; }
+
     public string? FotoReciboServicio { get; set; }
 
     public string? Observaciones { get; set; }
 
     public string Estado { get; set; } = "Activo";
+
+    public Guid? UsuarioRegistraId { get; set; }
 
     public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 

@@ -9,15 +9,18 @@ public class MorosidadService : IMorosidadService
     private readonly IPrestamoRepository _prestamoRepository;
     private readonly IPeriodoInteresRepository _periodoInteresRepository;
     private readonly IMorosidadRepository _morosidadRepository;
+    private readonly IPeriodoInteresService _periodoInteresService;
 
     public MorosidadService(
         IPrestamoRepository prestamoRepository,
         IPeriodoInteresRepository periodoInteresRepository,
-        IMorosidadRepository morosidadRepository)
+        IMorosidadRepository morosidadRepository,
+        IPeriodoInteresService periodoInteresService)
     {
         _prestamoRepository = prestamoRepository;
         _periodoInteresRepository = periodoInteresRepository;
         _morosidadRepository = morosidadRepository;
+        _periodoInteresService = periodoInteresService;
     }
 
     public async Task<MorosidadDto?> ObtenerPorPrestamoAsync(
@@ -49,6 +52,21 @@ public class MorosidadService : IMorosidadService
         if (prestamo is null)
             throw new InvalidOperationException(
                 "El préstamo no existe.");
+
+        // Normalizar a UTC (la referencia puede llegar sin zona)
+        fechaReferencia = fechaReferencia == default
+            ? DateTime.UtcNow
+            : DateTime.SpecifyKind(fechaReferencia, DateTimeKind.Utc);
+
+        // Generar los períodos vencidos hasta la referencia para
+        // que la mora refleje las semanas transcurridas aunque
+        // no se hayan registrado pagos.
+        if (prestamo.Estado == "Activo")
+        {
+            await _periodoInteresService.GenerarPeriodosPendientesAsync(
+                prestamoId,
+                fechaReferencia);
+        }
 
         var periodos = await _periodoInteresRepository
             .ObtenerPorPrestamoAsync(prestamoId);

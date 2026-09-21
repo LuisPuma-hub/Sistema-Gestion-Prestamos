@@ -91,8 +91,9 @@ public class PrestamosController : ControllerBase
         }
     }
 
-    // PATCH: api/prestamos/{id}/aprobar
+    // PATCH: api/prestamos/{id}/aprobar (solo ADMIN)
     [HttpPatch("{id:guid}/aprobar")]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Aprobar(Guid id)
     {
         try

@@ -38,6 +38,12 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
             .HasMaxLength(20)
             .IsRequired();
 
+        builder.Property(x => x.Direccion)
+            .HasMaxLength(255);
+
+        builder.Property(x => x.ReferenciaDireccion)
+            .HasMaxLength(255);
+
         builder.Property(x => x.FotoReciboServicio)
             .HasMaxLength(500);
 

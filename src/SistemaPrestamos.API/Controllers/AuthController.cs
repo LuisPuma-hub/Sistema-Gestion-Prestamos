@@ -35,4 +35,36 @@ public class AuthController : ControllerBase
             });
         }
     }
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult<LoginResponseDto>> Refresh(
+        [FromBody] RefreshDto dto)
+    {
+        try
+        {
+            var respuesta = await _authService.RefreshAsync(
+                dto.RefreshToken);
+
+            return Ok(respuesta);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Unauthorized(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(
+        [FromBody] RefreshDto dto)
+    {
+        await _authService.RevocarAsync(dto.RefreshToken);
+
+        return Ok(new
+        {
+            mensaje = "Sesión cerrada."
+        });
+    }
 }

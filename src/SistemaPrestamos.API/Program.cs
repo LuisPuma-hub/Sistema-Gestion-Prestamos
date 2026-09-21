@@ -11,7 +11,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers(opciones =>
+{
+    opciones.Filters.Add<SistemaPrestamos.API.Filtros.AuditoriaFilter>();
+});
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 
@@ -48,11 +51,19 @@ builder.Services.AddDbContext<PrestamosDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Application Services
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IPrestamoService, PrestamoService>();
 builder.Services.AddScoped<IPagoService, PagoService>();
 builder.Services.AddScoped<IPeriodoInteresService, PeriodoInteresService>();
 builder.Services.AddScoped<IMorosidadService, MorosidadService>();
+builder.Services.AddScoped<IGaranteService, GaranteService>();
+builder.Services.AddScoped<IDispositivoService, DispositivoService>();
+builder.Services.AddScoped<INotificacionService, NotificacionService>();
+builder.Services.AddScoped<IMensajeWhatsappRepository, MensajeWhatsappRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<SistemaPrestamos.API.Filtros.AuditoriaFilter>();
+builder.Services.AddHttpClient<IWhatsappService, WhatsappService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -62,6 +73,8 @@ builder.Services.AddScoped<IPrestamoRepository, PrestamoRepository>();
 builder.Services.AddScoped<IPagoRepository, PagoRepository>();
 builder.Services.AddScoped<IPeriodoInteresRepository, PeriodoInteresRepository>();
 builder.Services.AddScoped<IMorosidadRepository, MorosidadRepository>();
+builder.Services.AddScoped<IGaranteRepository, GaranteRepository>();
+builder.Services.AddScoped<IDispositivoRepository, DispositivoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 // OpenAPI

@@ -105,10 +105,18 @@ public class PagoService : IPagoService
                 "Solo se pueden registrar pagos para préstamos activos.");
         }
 
-        // 5. Fecha del pago
+        // 5. Fecha del pago (siempre UTC: el móvil envía
+        //    fecha sin zona y PostgreSQL timestamptz la rechaza)
         var fechaPago = dto.FechaPago == default
             ? DateTime.UtcNow
-            : dto.FechaPago;
+            : DateTime.SpecifyKind(dto.FechaPago, DateTimeKind.Utc);
+
+        // 5b. Nunca futura (RN-PAG-002)
+        if (fechaPago.Date > DateTime.UtcNow.Date)
+        {
+            throw new InvalidOperationException(
+                "La fecha del pago no puede ser futura.");
+        }
 
         // 6. Generar automáticamente los períodos
         //    que correspondan hasta la fecha del pago.
@@ -207,6 +215,20 @@ public class PagoService : IPagoService
         {
             throw new InvalidOperationException(
                 "No se pudo distribuir completamente el monto del pago.");
+        }
+
+        // ============================================================
+        // 13b. CIERRE AUTOMÁTICO (RN-PRE-010)
+        // El préstamo pasa a CANCELADO solo si no queda
+        // capital ni intereses pendientes.
+        // ============================================================
+
+        var interesesRestantes = periodosPendientes.Sum(
+            x => x.InteresPendiente);
+
+        if (prestamo.CapitalPendiente == 0 && interesesRestantes == 0)
+        {
+            prestamo.Estado = "Cancelado";
         }
 
         // ============================================================

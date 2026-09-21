@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using SistemaPrestamos.Application.DTOs;
 using SistemaPrestamos.Application.Interfaces;
 using SistemaPrestamos.Domain.Entities;
@@ -7,10 +9,14 @@ namespace SistemaPrestamos.Application.Services;
 public class ClienteService : IClienteService
 {
     private readonly IClienteRepository _clienteRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ClienteService(IClienteRepository clienteRepository)
+    public ClienteService(
+        IClienteRepository clienteRepository,
+        IHttpContextAccessor httpContextAccessor)
     {
         _clienteRepository = clienteRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<IEnumerable<ClienteDto>> ObtenerTodosAsync()
@@ -54,9 +60,12 @@ public class ClienteService : IClienteService
             Nombres = dto.Nombres,
             Apellidos = dto.Apellidos,
             Telefono = dto.Telefono,
+            Direccion = dto.Direccion,
+            ReferenciaDireccion = dto.ReferenciaDireccion,
             FotoReciboServicio = dto.FotoReciboServicio,
             Observaciones = dto.Observaciones,
             Estado = "Activo",
+            UsuarioRegistraId = ObtenerUsuarioActualId(),
             FechaRegistro = DateTime.UtcNow
         };
 
@@ -82,6 +91,8 @@ public class ClienteService : IClienteService
         cliente.Nombres = dto.Nombres;
         cliente.Apellidos = dto.Apellidos;
         cliente.Telefono = dto.Telefono;
+        cliente.Direccion = dto.Direccion;
+        cliente.ReferenciaDireccion = dto.ReferenciaDireccion;
         cliente.FotoReciboServicio = dto.FotoReciboServicio;
         cliente.Observaciones = dto.Observaciones;
 
@@ -118,10 +129,21 @@ public class ClienteService : IClienteService
             Nombres = cliente.Nombres,
             Apellidos = cliente.Apellidos,
             Telefono = cliente.Telefono,
+            Direccion = cliente.Direccion,
+            ReferenciaDireccion = cliente.ReferenciaDireccion,
             FotoReciboServicio = cliente.FotoReciboServicio,
             Observaciones = cliente.Observaciones,
             Estado = cliente.Estado,
+            UsuarioRegistraId = cliente.UsuarioRegistraId,
             FechaRegistro = cliente.FechaRegistro
         };
+    }
+
+    private Guid? ObtenerUsuarioActualId()
+    {
+        var valor = _httpContextAccessor.HttpContext?.User
+            .FindFirstValue(ClaimTypes.NameIdentifier);
+
+        return Guid.TryParse(valor, out var id) ? id : null;
     }
 }
