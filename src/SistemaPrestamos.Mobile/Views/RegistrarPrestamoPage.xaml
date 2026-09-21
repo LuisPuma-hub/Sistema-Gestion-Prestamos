@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.RegistrarPrestamoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Registrar préstamo">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="14">
+
+            <Label
+                Text="Nuevo préstamo"
+                FontSize="24"
+                FontAttributes="Bold" />
+
+            <Picker
+                x:Name="ClientePicker"
+                Title="Seleccione un cliente"
+                ItemDisplayBinding="{Binding NombreCompleto}"
+                SelectedIndexChanged="OnClienteChanged" />
+
+            <Label
+                x:Name="ClienteInfoLabel"
+                FontSize="13" />
+
+            <Entry
+                x:Name="CapitalEntry"
+                Placeholder="Capital inicial (S/)"
+                Keyboard="Numeric"
+                TextChanged="OnCapitalChanged"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Label
+                Text="Fecha de inicio" />
+            <Grid
+                ColumnDefinitions="Auto,*,Auto,Auto"
+                ColumnSpacing="8">
+                <Button
+                    Grid.Column="0"
+                    Text="-"
+                    WidthRequest="44"
+                    Clicked="OnDiaMenosClicked" />
+                <Entry
+                    Grid.Column="1"
+                    x:Name="FechaEntry"
+                    IsReadOnly="True"
+                    HorizontalTextAlignment="Center" />
+                <Button
+                    Grid.Column="2"
+                    Text="+"
+                    WidthRequest="44"
+                    Clicked="OnDiaMasClicked" />
+                <Button
+                    Grid.Column="3"
+                    Text="Hoy"
+                    Clicked="OnHoyClicked" />
+            </Grid>
+
+            <Picker
+                x:Name="GarantePicker"
+                Title="Aval (opcional)"
+                ItemDisplayBinding="{Binding NombreCompleto}" />
+
+            <Border
+                Padding="16"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="4">
+                    <Label
+                        Text="Resumen"
+                        FontAttributes="Bold" />
+                    <Label
+                        x:Name="ResumenInteresLabel"
+                        Text="Interés semanal (5 %): S/ 0.00"
+                        FontSize="15" />
+                    <Label
+                        Text="El interés es fijo, no compuesto, sobre el capital inicial."
+                        FontSize="12" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button
+                x:Name="GuardarButton"
+                Text="Guardar préstamo"
+                Clicked="OnGuardarClicked" />
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                HorizontalOptions="Center" />
+
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                IsVisible="False"
+                HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.PrestamosPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Préstamos">
+
+    <Grid
+        RowDefinitions="Auto,Auto,Auto,*,Auto"
+        Padding="16"
+        RowSpacing="12">
+
+        <SearchBar
+            Grid.Row="0"
+            x:Name="BuscarBar"
+            Placeholder="Buscar por cliente..."
+            TextChanged="OnBuscarTextChanged" />
+
+        <Picker
+            Grid.Row="1"
+            x:Name="FiltroEstadoPicker"
+            Title="Filtrar por estado"
+            SelectedIndexChanged="OnFiltroEstadoChanged">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Todos</x:String>
+                    <x:String>Pendiente</x:String>
+                    <x:String>Activo</x:String>
+                    <x:String>Cancelado</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+
+        <Label
+            Grid.Row="2"
+            x:Name="ResumenLabel"
+            Text="Préstamos registrados: 0"
+            FontAttributes="Bold" />
+
+        <CollectionView
+            Grid.Row="3"
+            x:Name="PrestamosCollection"
+            SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Padding="14"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Tapped="OnPrestamoTapped"
+                                CommandParameter="{Binding Id}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="{Binding ClienteNombre}"
+                                FontSize="18"
+                                FontAttributes="Bold" />
+                            <Label
+                                Text="{Binding CapitalInicial, StringFormat='Capital: S/ {0:N2}'}"
+                                FontSize="14" />
+                            <Label
+                                Text="{Binding CapitalPendiente, StringFormat='Pendiente: S/ {0:N2}'}"
+                                FontSize="14" />
+                            <Label
+                                Text="{Binding InteresSemanal, StringFormat='Interés semanal: S/ {0:N2}'}"
+                                FontSize="14" />
+                            <Label
+                                Text="{Binding Estado, StringFormat='Estado: {0}'}"
+                                FontSize="14"
+                                FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid
+            Grid.Row="4"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="12">
+            <Button
+                Grid.Column="0"
+                x:Name="ReintentarButton"
+                Text="Reintentar"
+                IsVisible="False"
+                Clicked="OnReintentarClicked" />
+            <Button
+                Grid.Column="1"
+                Text="+"
+                FontSize="24"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Clicked="OnNuevoPrestamoClicked" />
+        </Grid>
+
+        <ActivityIndicator
+            Grid.Row="3"
+            x:Name="CargandoIndicator"
+            IsVisible="False"
+            IsRunning="False"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+
+        <Label
+            Grid.Row="3"
+            x:Name="EstadoLabel"
+            IsVisible="False"
+            HorizontalTextAlignment="Center"
+            VerticalTextAlignment="Center" />
+
+    </Grid>
+
+</ContentPage>

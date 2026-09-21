@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.PagosPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Pagos">
+
+    <Grid
+        RowDefinitions="Auto,Auto,*,Auto"
+        Padding="16"
+        RowSpacing="12">
+
+        <SearchBar
+            Grid.Row="0"
+            x:Name="BuscarBar"
+            Placeholder="Buscar por cliente..."
+            TextChanged="OnBuscarTextChanged" />
+
+        <Label
+            Grid.Row="1"
+            x:Name="ResumenLabel"
+            Text="Pagos registrados: 0"
+            FontAttributes="Bold" />
+
+        <CollectionView
+            Grid.Row="2"
+            x:Name="PagosCollection"
+            SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Padding="14"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Tapped="OnPagoTapped"
+                                CommandParameter="{Binding Id}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="{Binding PrestamoNombre}"
+                                FontSize="18"
+                                FontAttributes="Bold" />
+                            <Label
+                                Text="{Binding Monto, StringFormat='Monto: S/ {0:N2}'}"
+                                FontSize="15" />
+                            <Label
+                                Text="{Binding FechaPago, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
+                                FontSize="13" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid
+            Grid.Row="3"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="12">
+            <Button
+                Grid.Column="0"
+                x:Name="ReintentarButton"
+                Text="Reintentar"
+                IsVisible="False"
+                Clicked="OnReintentarClicked" />
+            <Button
+                Grid.Column="1"
+                Text="+"
+                FontSize="24"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Clicked="OnNuevoPagoClicked" />
+        </Grid>
+
+        <ActivityIndicator
+            Grid.Row="2"
+            x:Name="CargandoIndicator"
+            IsVisible="False"
+            IsRunning="False"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+
+        <Label
+            Grid.Row="2"
+            x:Name="EstadoLabel"
+            IsVisible="False"
+            HorizontalTextAlignment="Center"
+            VerticalTextAlignment="Center" />
+
+    </Grid>
+
+</ContentPage>

@@ -14,12 +14,11 @@ public partial class App : Application
     protected override Window CreateWindow(
         IActivationState? activationState)
     {
-        var authService = Handler!
+        var pagina = Handler!
             .MauiContext!
             .Services
-            .GetRequiredService<AuthService>();
+            .GetRequiredService<ArranquePage>();
 
-        return new Window(
-            new LoginPage(authService));
+        return new Window(pagina);
     }
 }

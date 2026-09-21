@@ -5,11 +5,37 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SistemaPrestamos.Mobile"
-    Title="Sistema de Préstamos">
+    xmlns:views="clr-namespace:SistemaPrestamos.Mobile.Views"
+    Title="Sistema de Prï¿½stamos">
 
     <ShellContent
         Title="Dashboard"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+
+    <ShellContent
+        Title="Clientes"
+        ContentTemplate="{DataTemplate views:ClientesPage}"
+        Route="Clientes" />
+
+    <ShellContent
+        Title="PrÃ©stamos"
+        ContentTemplate="{DataTemplate views:PrestamosPage}"
+        Route="Prestamos" />
+
+    <ShellContent
+        Title="Pagos"
+        ContentTemplate="{DataTemplate views:PagosPage}"
+        Route="Pagos" />
+
+    <ShellContent
+        Title="Morosidad"
+        ContentTemplate="{DataTemplate views:MorosidadPage}"
+        Route="Morosidad" />
+
+    <ShellContent
+        Title="Perfil"
+        ContentTemplate="{DataTemplate views:PerfilPage}"
+        Route="Perfil" />
 
 </Shell>

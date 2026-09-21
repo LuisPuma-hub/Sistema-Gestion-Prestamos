@@ -5,11 +5,15 @@ namespace SistemaPrestamos.Mobile.Views;
 public partial class LoginPage : ContentPage
 {
     private readonly AuthService _authService;
+    private readonly NotificacionPushService _pushService;
 
-    public LoginPage(AuthService authService)
+    public LoginPage(
+        AuthService authService,
+        NotificacionPushService pushService)
     {
         InitializeComponent();
         _authService = authService;
+        _pushService = pushService;
     }
 
     private async void OnLoginClicked(
@@ -24,13 +28,13 @@ public partial class LoginPage : ContentPage
 
         if (string.IsNullOrWhiteSpace(email))
         {
-            MostrarError("Ingrese su correo electrónico.");
+            MostrarError("Ingrese su correo electrï¿½nico.");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(password))
         {
-            MostrarError("Ingrese su contraseña.");
+            MostrarError("Ingrese su contraseï¿½a.");
             return;
         }
 
@@ -46,7 +50,7 @@ public partial class LoginPage : ContentPage
 
             if (resultado is null)
             {
-                MostrarError("Correo o contraseña incorrectos.");
+                MostrarError("Correo o contraseï¿½a incorrectos.");
                 return;
             }
 
@@ -58,6 +62,8 @@ public partial class LoginPage : ContentPage
             {
                 ventana.Page = new AppShell();
             }
+
+            _ = _pushService.InicializarAsync();
         }
         catch (HttpRequestException)
         {
@@ -67,7 +73,7 @@ public partial class LoginPage : ContentPage
         catch (Exception ex)
         {
             MostrarError(
-                $"Ocurrió un error al iniciar sesión: {ex.Message}");
+                $"Ocurriï¿½ un error al iniciar sesiï¿½n: {ex.Message}");
         }
         finally
         {

@@ -9,4 +9,8 @@ public class LoginResponseDto
     public string Email { get; set; } = string.Empty;
     public string Rol { get; set; } = string.Empty;
     public DateTime ExpiraEn { get; set; }
+
+    public string RefreshToken { get; set; } = string.Empty;
+
+    public DateTime RefreshExpiraEn { get; set; }
 }

@@ -6,70 +6,173 @@
     x:Class="SistemaPrestamos.Mobile.MainPage"
     Title="Dashboard">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="24"
-            Spacing="20">
+    <RefreshView
+        x:Name="RefreshView"
+        Refreshing="OnRefreshing">
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="24"
+                Spacing="16">
 
-            <Label
-                Text="Dashboard"
-                FontSize="32"
-                FontAttributes="Bold" />
+                <Label
+                    Text="Dashboard"
+                    FontSize="32"
+                    FontAttributes="Bold" />
 
-            <Label
-                Text="Sistema de Gestión de Préstamos"
-                FontSize="18" />
+                <Label
+                    x:Name="SaludoLabel"
+                    Text="Sistema de GestiÃ³n de PrÃ©stamos"
+                    FontSize="16" />
 
-            <Border
-                Padding="20"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 12">
+                <Grid
+                    ColumnDefinitions="*,*"
+                    RowDefinitions="Auto,Auto,Auto"
+                    ColumnSpacing="12"
+                    RowSpacing="12">
 
-                <VerticalStackLayout
-                    Spacing="8">
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Padding="16"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label
+                                x:Name="ClientesValorLabel"
+                                Text="-"
+                                FontSize="26"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center" />
+                            <Label
+                                Text="Clientes"
+                                FontSize="13"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
 
-                    <Label
-                        Text="Bienvenido"
-                        FontSize="22"
-                        FontAttributes="Bold" />
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Padding="16"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label
+                                x:Name="PrestamosValorLabel"
+                                Text="-"
+                                FontSize="26"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center" />
+                            <Label
+                                Text="PrÃ©stamos activos"
+                                FontSize="13"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
 
-                    <Label
-                        Text="Has iniciado sesión correctamente."
-                        FontSize="16" />
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Padding="16"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label
+                                x:Name="CapitalValorLabel"
+                                Text="-"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center" />
+                            <Label
+                                Text="Capital pendiente"
+                                FontSize="13"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
 
-                </VerticalStackLayout>
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Padding="16"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label
+                                x:Name="MoraValorLabel"
+                                Text="-"
+                                FontSize="26"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center" />
+                            <Label
+                                Text="En mora"
+                                FontSize="13"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
 
-            </Border>
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Padding="16"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label
+                                x:Name="PagosHoyValorLabel"
+                                Text="-"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center" />
+                            <Label
+                                Text="Cobrado hoy"
+                                FontSize="13"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
 
-            <Grid
-                ColumnDefinitions="*,*"
-                RowDefinitions="Auto,Auto"
-                ColumnSpacing="12"
-                RowSpacing="12">
+                </Grid>
 
-                <Button
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Text="Clientes" />
+                <Label
+                    x:Name="ErrorLabel"
+                    TextColor="Red"
+                    IsVisible="False"
+                    HorizontalTextAlignment="Center" />
 
-                <Button
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Text="Préstamos" />
+                <Grid
+                    ColumnDefinitions="*,*"
+                    RowDefinitions="Auto,Auto"
+                    ColumnSpacing="12"
+                    RowSpacing="12">
 
-                <Button
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Text="Pagos" />
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Text="Clientes"
+                        Clicked="OnClientesClicked" />
 
-                <Button
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Text="Morosidad" />
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Text="PrÃ©stamos"
+                        Clicked="OnPrestamosClicked" />
 
-            </Grid>
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Text="Pagos"
+                        Clicked="OnPagosClicked" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Text="Morosidad"
+                        Clicked="OnMorosidadClicked" />
+
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
 
 </ContentPage>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.BloqueoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Desbloquear">
+
+    <VerticalStackLayout
+        Padding="32"
+        Spacing="20"
+        VerticalOptions="Center">
+
+        <Label
+            Text="Sistema de Préstamos"
+            FontSize="26"
+            FontAttributes="Bold"
+            HorizontalTextAlignment="Center" />
+
+        <Label
+            x:Name="NombreLabel"
+            FontSize="16"
+            HorizontalTextAlignment="Center" />
+
+        <Label
+            Text="Toca el botón y pon tu dedo en el sensor del equipo."
+            FontSize="14"
+            HorizontalTextAlignment="Center" />
+
+        <Button
+            x:Name="HuellaButton"
+            Text="Desbloquear con huella"
+            Clicked="OnHuellaClicked" />
+
+        <Button
+            x:Name="ClaveButton"
+            Text="Usar contraseña"
+            Clicked="OnClaveClicked" />
+
+        <ActivityIndicator
+            x:Name="CargandoIndicator"
+            IsVisible="False"
+            IsRunning="False"
+            HorizontalOptions="Center" />
+
+        <Label
+            x:Name="ErrorLabel"
+            TextColor="Red"
+            IsVisible="False"
+            HorizontalTextAlignment="Center" />
+
+    </VerticalStackLayout>
+
+</ContentPage>

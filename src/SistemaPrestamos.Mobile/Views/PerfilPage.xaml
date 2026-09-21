@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.PerfilPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Perfil">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="14">
+
+            <Label
+                Text="Mi perfil"
+                FontSize="24"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center" />
+
+            <Border
+                Padding="16"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="6">
+                    <Label
+                        x:Name="NombreLabel"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center" />
+                    <Label
+                        x:Name="EmailLabel"
+                        FontSize="14"
+                        HorizontalTextAlignment="Center" />
+                    <Label
+                        x:Name="RolLabel"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                x:Name="VersionLabel"
+                Text="Sistema de Préstamos v1.0"
+                FontSize="12"
+                HorizontalTextAlignment="Center" />
+
+            <Grid
+                x:Name="BiometriaGrid"
+                ColumnDefinitions="*,Auto"
+                IsVisible="False">
+                <Label
+                    Grid.Column="0"
+                    Text="Desbloqueo con huella"
+                    VerticalTextAlignment="Center" />
+                <Switch
+                    Grid.Column="1"
+                    x:Name="BiometriaSwitch"
+                    Toggled="OnBiometriaToggled" />
+            </Grid>
+
+            <Button
+                x:Name="CerrarSesionButton"
+                Text="Cerrar sesión"
+                Clicked="OnCerrarSesionClicked" />
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                HorizontalOptions="Center" />
+
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                IsVisible="False"
+                HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.RegistrarClientePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Registrar cliente">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="14">
+
+            <Label
+                Text="Nuevo cliente"
+                FontSize="24"
+                FontAttributes="Bold" />
+
+            <Picker
+                x:Name="TipoDocumentoPicker"
+                Title="Tipo de documento">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>DNI</x:String>
+                        <x:String>CE</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Entry
+                x:Name="NumeroDocumentoEntry"
+                Placeholder="Número de documento"
+                Keyboard="Numeric"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="NombresEntry"
+                Placeholder="Nombres"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="ApellidosEntry"
+                Placeholder="Apellidos"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="TelefonoEntry"
+                Placeholder="Teléfono"
+                Keyboard="Telephone"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="DireccionEntry"
+                Placeholder="Dirección"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="ReferenciaEntry"
+                Placeholder="Referencia de dirección (opcional)"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Editor
+                x:Name="ObservacionesEditor"
+                Placeholder="Observaciones (opcional)"
+                AutoSize="TextChanges" />
+
+            <Label
+                Text="Aval (opcional)"
+                FontSize="20"
+                FontAttributes="Bold" />
+
+            <Entry
+                x:Name="AvalNombresEntry"
+                Placeholder="Nombres del aval"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="AvalApellidosEntry"
+                Placeholder="Apellidos del aval"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="AvalTelefonoEntry"
+                Placeholder="Teléfono del aval"
+                Keyboard="Telephone"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="AvalDireccionEntry"
+                Placeholder="Dirección del aval (opcional)"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Button
+                x:Name="GuardarButton"
+                Text="Guardar cliente"
+                Clicked="OnGuardarClicked" />
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                HorizontalOptions="Center" />
+
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                IsVisible="False"
+                HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

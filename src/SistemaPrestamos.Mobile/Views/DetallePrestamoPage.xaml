@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.DetallePrestamoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Detalle del préstamo">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="14">
+
+            <Label
+                x:Name="ClienteLabel"
+                FontSize="24"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center" />
+
+            <Label
+                x:Name="EstadoLabel2"
+                FontSize="16"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center" />
+
+            <Border
+                Padding="16"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="6">
+                    <Label
+                        Text="Resumen financiero"
+                        FontAttributes="Bold" />
+                    <Label x:Name="CapitalLabel" FontSize="15" />
+                    <Label x:Name="PendienteLabel" FontSize="15" />
+                    <Label x:Name="InteresLabel" FontSize="15" />
+                    <Label x:Name="TasaLabel" FontSize="13" />
+                    <Label x:Name="FechaInicioLabel" FontSize="13" />
+                    <Label x:Name="FechaAprobacionLabel" FontSize="13" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button
+                x:Name="AprobarButton"
+                Text="Aprobar préstamo"
+                IsVisible="False"
+                Clicked="OnAprobarClicked" />
+
+            <Button
+                x:Name="PagarButton"
+                Text="Registrar pago"
+                Clicked="OnPagarClicked" />
+
+            <Button
+                x:Name="MorosidadButton"
+                Text="Ver morosidad"
+                Clicked="OnMorosidadClicked" />
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                HorizontalOptions="Center" />
+
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                IsVisible="False"
+                HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154388850086",
+    "project_id": "sistema-prestamos-b7be7",
+    "storage_bucket": "sistema-prestamos-b7be7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154388850086:android:426c70d35e681c7500db67",
+        "android_client_info": {
+          "package_name": "com.companyname.sistemaprestamos.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsBnYLN2h1QAlp3tp5EG85-gf0PONw1lc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

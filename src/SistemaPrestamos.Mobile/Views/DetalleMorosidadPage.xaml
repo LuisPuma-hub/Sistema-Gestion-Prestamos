@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.DetalleMorosidadPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Detalle de morosidad">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="14">
+
+            <Label
+                x:Name="ClienteLabel"
+                FontSize="24"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center" />
+
+            <Label
+                x:Name="EstadoLabel2"
+                FontSize="16"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center" />
+
+            <Border
+                Padding="16"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="6">
+                    <Label
+                        Text="Morosidad"
+                        FontAttributes="Bold" />
+                    <Label x:Name="SemanasLabel" FontSize="15" />
+                    <Label x:Name="InicioLabel" FontSize="14" />
+                    <Label x:Name="ReactivacionLabel" FontSize="14" />
+                    <Label x:Name="ObservacionesLabel" FontSize="14" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Editor
+                x:Name="ObservacionesEditor"
+                Placeholder="Motivo de reactivación (opcional)"
+                AutoSize="TextChanges" />
+
+            <Button
+                x:Name="ReactivarButton"
+                Text="Reactivar préstamo"
+                Clicked="OnReactivarClicked" />
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                HorizontalOptions="Center" />
+
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                IsVisible="False"
+                HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

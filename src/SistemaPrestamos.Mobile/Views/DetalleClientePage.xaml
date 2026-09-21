@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.DetalleClientePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Detalle del cliente">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="14">
+
+            <Label
+                x:Name="NombreLabel"
+                FontSize="24"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center" />
+
+            <Label
+                x:Name="EstadoLabel"
+                FontSize="16"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center" />
+
+            <Border
+                Padding="16"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        Text="Datos personales"
+                        FontAttributes="Bold" />
+
+                    <Picker
+                        x:Name="TipoDocumentoPicker"
+                        Title="Tipo de documento"
+                        IsEnabled="False">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>DNI</x:String>
+                                <x:String>CE</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+
+                    <Entry
+                        x:Name="NumeroDocumentoEntry"
+                        Placeholder="Número de documento"
+                        Keyboard="Numeric"
+                        IsEnabled="False" />
+
+                    <Entry
+                        x:Name="NombresEntry"
+                        Placeholder="Nombres"
+                        IsEnabled="False" />
+
+                    <Entry
+                        x:Name="ApellidosEntry"
+                        Placeholder="Apellidos"
+                        IsEnabled="False" />
+
+                    <Entry
+                        x:Name="TelefonoEntry"
+                        Placeholder="Teléfono"
+                        Keyboard="Telephone"
+                        IsEnabled="False" />
+
+                    <Entry
+                        x:Name="DireccionEntry"
+                        Placeholder="Dirección"
+                        IsEnabled="False" />
+
+                    <Entry
+                        x:Name="ReferenciaEntry"
+                        Placeholder="Referencia de dirección"
+                        IsEnabled="False" />
+
+                    <Editor
+                        x:Name="ObservacionesEditor"
+                        Placeholder="Observaciones"
+                        AutoSize="TextChanges"
+                        IsEnabled="False" />
+
+                    <Label
+                        x:Name="FechaLabel"
+                        FontSize="12" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border
+                Padding="16"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="6">
+                    <Label
+                        Text="Aval"
+                        FontAttributes="Bold" />
+                    <Label
+                        x:Name="GaranteLabel"
+                        Text="Sin aval registrado."
+                        FontSize="14" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border
+                Padding="16"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        Text="Cambiar estado"
+                        FontAttributes="Bold" />
+
+                    <Picker
+                        x:Name="EstadoPicker"
+                        Title="Estado">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Activo</x:String>
+                                <x:String>En observación</x:String>
+                                <x:String>Moroso</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+
+                    <Button
+                        x:Name="CambiarEstadoButton"
+                        Text="Guardar estado"
+                        Clicked="OnCambiarEstadoClicked" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="12">
+                <Button
+                    Grid.Column="0"
+                    x:Name="EditarButton"
+                    Text="Editar"
+                    Clicked="OnEditarClicked" />
+                <Button
+                    Grid.Column="1"
+                    x:Name="GuardarButton"
+                    Text="Guardar"
+                    IsVisible="False"
+                    Clicked="OnGuardarClicked" />
+            </Grid>
+
+            <Button
+                x:Name="WhatsappButton"
+                Text="WhatsApp"
+                Clicked="OnWhatsappClicked" />
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                HorizontalOptions="Center" />
+
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                IsVisible="False"
+                HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
