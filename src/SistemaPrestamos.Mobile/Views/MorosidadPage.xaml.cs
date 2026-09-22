@@ -23,6 +23,8 @@ public partial class MorosidadPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        _ = Animaciones.EntradaAsync(Content);
         await EvaluarAsync();
     }
 

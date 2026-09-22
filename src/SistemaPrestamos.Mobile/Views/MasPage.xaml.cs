@@ -11,6 +11,8 @@ public partial class MasPage : ContentPage
     {
         base.OnAppearing();
 
+        _ = Animaciones.EntradaAsync(Content);
+
         var rol = await SecureStorage.Default.GetAsync("usuario_rol");
 
         UsuariosCard.IsVisible = string.Equals(

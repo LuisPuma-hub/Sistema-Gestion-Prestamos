@@ -30,6 +30,8 @@ public partial class RegistrarClientePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        _ = Animaciones.EntradaAsync(Content);
         await CargarClientesAsync();
     }
 

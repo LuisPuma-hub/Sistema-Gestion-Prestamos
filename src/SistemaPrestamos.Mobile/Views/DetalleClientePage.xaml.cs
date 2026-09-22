@@ -32,6 +32,8 @@ public partial class DetalleClientePage : ContentPage
     {
         base.OnAppearing();
 
+        _ = Animaciones.EntradaAsync(Content);
+
         if (Guid.TryParse(IdTexto, out var id))
         {
             await CargarAsync(id);

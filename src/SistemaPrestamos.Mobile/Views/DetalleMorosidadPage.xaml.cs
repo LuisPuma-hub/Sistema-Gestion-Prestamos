@@ -25,6 +25,8 @@ public partial class DetalleMorosidadPage : ContentPage
     {
         base.OnAppearing();
 
+        _ = Animaciones.EntradaAsync(Content);
+
         if (Guid.TryParse(PrestamoIdTexto, out var id))
         {
             _prestamoId = id;

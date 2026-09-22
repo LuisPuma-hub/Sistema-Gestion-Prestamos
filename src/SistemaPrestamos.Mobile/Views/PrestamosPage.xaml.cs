@@ -19,6 +19,8 @@ public partial class PrestamosPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        _ = Animaciones.EntradaAsync(Content);
         await CargarAsync();
     }
 

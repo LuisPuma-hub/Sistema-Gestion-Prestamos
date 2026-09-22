@@ -1,4 +1,5 @@
 using SistemaPrestamos.Mobile.Services;
+using SistemaPrestamos.Mobile.Views;
 
 namespace SistemaPrestamos.Mobile;
 
@@ -25,6 +26,9 @@ public partial class MainPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        _ = Animaciones.EntradaAsync(Content);
+
         await CargarAsync();
     }
 

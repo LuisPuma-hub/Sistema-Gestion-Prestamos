@@ -18,6 +18,8 @@ public partial class UsuariosPage : ContentPage
     {
         base.OnAppearing();
 
+        _ = Animaciones.EntradaAsync(Content);
+
         var rol = await SecureStorage.Default.GetAsync("usuario_rol");
 
         if (!string.Equals(rol, "Administrador", StringComparison.OrdinalIgnoreCase))

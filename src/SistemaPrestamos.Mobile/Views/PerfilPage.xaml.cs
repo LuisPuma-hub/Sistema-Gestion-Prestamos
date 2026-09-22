@@ -23,6 +23,8 @@ public partial class PerfilPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        _ = Animaciones.EntradaAsync(Content);
         await CargarAsync();
     }
 

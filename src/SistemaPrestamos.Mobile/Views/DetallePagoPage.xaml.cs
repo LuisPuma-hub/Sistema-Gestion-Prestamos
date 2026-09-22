@@ -24,6 +24,8 @@ public partial class DetallePagoPage : ContentPage
     {
         base.OnAppearing();
 
+        _ = Animaciones.EntradaAsync(Content);
+
         if (Guid.TryParse(IdTexto, out var id))
         {
             await CargarAsync(id);

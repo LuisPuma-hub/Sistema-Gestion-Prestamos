@@ -16,6 +16,8 @@ public partial class BloqueoPage : ContentPage
     {
         base.OnAppearing();
 
+        _ = Animaciones.EntradaAsync(Content);
+
         var nombre = await SecureStorage.Default.GetAsync("usuario_nombre");
 
         if (!string.IsNullOrWhiteSpace(nombre))

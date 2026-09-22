@@ -56,6 +56,8 @@ public partial class RegistrarPrestamoPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        _ = Animaciones.EntradaAsync(Content);
         await CargarClientesAsync();
     }
 

@@ -25,6 +25,11 @@ public partial class BarraTabs : ContentView
 
     private async void OnTabTapped(object? sender, TappedEventArgs e)
     {
+        if (sender is VisualElement vista)
+        {
+            await Animaciones.ReboteAsync(vista);
+        }
+
         if (e.Parameter as string is string ruta)
         {
             await Shell.Current.GoToAsync($"//{ruta}");
