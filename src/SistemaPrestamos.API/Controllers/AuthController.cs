@@ -8,7 +8,6 @@ namespace SistemaPrestamos.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -23,6 +22,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<ActionResult<LoginResponseDto>> Login(
         [FromBody] LoginDto dto)
     {
@@ -42,6 +42,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh")]
+    [AllowAnonymous]
     public async Task<ActionResult<LoginResponseDto>> Refresh(
         [FromBody] RefreshDto dto)
     {
@@ -62,6 +63,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("logout")]
+    [AllowAnonymous]
     public async Task<IActionResult> Logout(
         [FromBody] RefreshDto dto)
     {

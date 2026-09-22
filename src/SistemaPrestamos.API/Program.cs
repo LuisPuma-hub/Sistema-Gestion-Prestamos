@@ -11,10 +11,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
-builder.Services.AddControllers(opciones =>
-{
-    opciones.Filters.Add<SistemaPrestamos.API.Filtros.AuditoriaFilter>();
-});
+builder.Services.AddControllers();
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 
@@ -62,7 +59,6 @@ builder.Services.AddScoped<IDispositivoService, DispositivoService>();
 builder.Services.AddScoped<INotificacionService, NotificacionService>();
 builder.Services.AddScoped<IMensajeWhatsappRepository, MensajeWhatsappRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-builder.Services.AddScoped<SistemaPrestamos.API.Filtros.AuditoriaFilter>();
 builder.Services.AddHttpClient<IWhatsappService, WhatsappService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
