@@ -94,6 +94,23 @@ public partial class PerfilPage : ContentPage
         }
 
         await _authService.CerrarSesionAsync();
+
+        try
+        {
+            var serviciosPush = Handler?.MauiContext?.Services;
+
+            if (serviciosPush is IServiceProvider proveedorPush)
+            {
+                await proveedorPush
+                    .GetRequiredService<NotificacionPushService>()
+                    .DarDeBajaAsync();
+            }
+        }
+        catch
+        {
+            // La limpieza local ya se hizo.
+        }
+
         var ventana = Application.Current?.Windows.FirstOrDefault();
 
         if (ventana is not null)

@@ -57,7 +57,18 @@ public class DispositivoRepository : IDispositivoRepository
 
     public Task EliminarAsync(Dispositivo dispositivo)
     {
-        _context.Dispositivos.Remove(dispositivo);
+        var rastreado = _context.ChangeTracker.Entries<Dispositivo>()
+            .FirstOrDefault(e => e.Entity.Id == dispositivo.Id);
+
+        if (rastreado is not null)
+        {
+            rastreado.State = EntityState.Deleted;
+        }
+        else
+        {
+            _context.Dispositivos.Remove(dispositivo);
+        }
+
         return Task.CompletedTask;
     }
 

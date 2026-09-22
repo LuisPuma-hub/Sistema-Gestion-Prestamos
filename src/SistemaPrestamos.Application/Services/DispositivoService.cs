@@ -51,6 +51,23 @@ public class DispositivoService : IDispositivoService
 
         await _dispositivoRepository.CrearAsync(dispositivo);
         await _dispositivoRepository.GuardarCambiosAsync();
+
+        // Tope: máximo 5 dispositivos por usuario (los más recientes).
+        var todos = (await _dispositivoRepository
+            .ObtenerPorUsuarioAsync(usuarioId))
+            .OrderByDescending(x => x.FechaActualizacion)
+            .Skip(5)
+            .ToList();
+
+        foreach (var viejo in todos)
+        {
+            await _dispositivoRepository.EliminarAsync(viejo);
+        }
+
+        if (todos.Count > 0)
+        {
+            await _dispositivoRepository.GuardarCambiosAsync();
+        }
     }
 
     public async Task<bool> EliminarAsync(Guid id)
@@ -59,6 +76,29 @@ public class DispositivoService : IDispositivoService
             .ObtenerPorIdAsync(id);
 
         if (dispositivo is null)
+        {
+            return false;
+        }
+
+        await _dispositivoRepository.EliminarAsync(dispositivo);
+        await _dispositivoRepository.GuardarCambiosAsync();
+
+        return true;
+    }
+
+    public async Task<bool> EliminarPorTokenAsync(
+        Guid usuarioId,
+        string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return false;
+        }
+
+        var dispositivo = await _dispositivoRepository
+            .ObtenerPorTokenAsync(token.Trim());
+
+        if (dispositivo is null || dispositivo.UsuarioId != usuarioId)
         {
             return false;
         }

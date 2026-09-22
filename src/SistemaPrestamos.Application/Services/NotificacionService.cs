@@ -70,10 +70,18 @@ public class NotificacionService : INotificacionService
 
                 enviados++;
             }
+            catch (FirebaseAdmin.Messaging.FirebaseMessagingException ex)
+                when (ex.MessagingErrorCode
+                    == FirebaseAdmin.Messaging.MessagingErrorCode.Unregistered)
+            {
+                // Token muerto (app desinstalada): se elimina
+                // para no intentarlo nunca más.
+                await _dispositivoRepository.EliminarAsync(dispositivo);
+                await _dispositivoRepository.GuardarCambiosAsync();
+            }
             catch
             {
-                // Token inválido o vencido: se omite
-                // sin tumbar el resto de envíos.
+                // Otro error: se omite sin tumbar el resto.
             }
         }
 

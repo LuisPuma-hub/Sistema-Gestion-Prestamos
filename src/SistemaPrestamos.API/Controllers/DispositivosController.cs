@@ -54,6 +54,26 @@ public class DispositivosController : ControllerBase
         }
     }
 
+    // DELETE: api/dispositivos/por-token (baja propia, ej. logout)
+    [HttpDelete("por-token")]
+    public async Task<IActionResult> EliminarPorToken(
+        [FromQuery] string token)
+    {
+        var idTexto = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!Guid.TryParse(idTexto, out var usuarioId))
+        {
+            return Unauthorized(new
+            {
+                mensaje = "No se pudo identificar al usuario."
+            });
+        }
+
+        await _dispositivoService.EliminarPorTokenAsync(usuarioId, token);
+
+        return NoContent();
+    }
+
     // DELETE: api/dispositivos/{id} (solo ADMIN, limpieza)
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Administrador")]

@@ -8,5 +8,7 @@ public interface IDispositivoService
 
     Task<bool> EliminarAsync(Guid id);
 
+    Task<bool> EliminarPorTokenAsync(Guid usuarioId, string token);
+
     Task<IEnumerable<Dispositivo>> ObtenerTodosAsync();
 }

@@ -116,6 +116,8 @@ public class NotificacionPushService
                 return;
             }
 
+            await SecureStorage.Default.SetAsync("fcm_token", token);
+
             var auth = await SecureStorage.Default.GetAsync("auth_token");
 
             if (string.IsNullOrWhiteSpace(auth))
@@ -141,6 +143,38 @@ public class NotificacionPushService
         catch
         {
             // No bloquea el uso de la app.
+        }
+    }
+
+    public async Task DarDeBajaAsync()
+    {
+        try
+        {
+            var token = await SecureStorage.Default.GetAsync("fcm_token");
+            var auth = await SecureStorage.Default.GetAsync("auth_token");
+
+            if (string.IsNullOrWhiteSpace(token) ||
+                string.IsNullOrWhiteSpace(auth))
+            {
+                return;
+            }
+
+            using var request = new HttpRequestMessage(
+                HttpMethod.Delete,
+                $"api/Dispositivos/por-token?token={Uri.EscapeDataString(token)}");
+
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", auth);
+
+            await _httpClient.SendAsync(request);
+        }
+        catch
+        {
+            // Mejor esfuerzo: el logout local continúa igual.
+        }
+        finally
+        {
+            SecureStorage.Default.Remove("fcm_token");
         }
     }
 }
