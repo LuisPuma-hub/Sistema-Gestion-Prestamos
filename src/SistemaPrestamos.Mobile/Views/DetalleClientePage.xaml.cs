@@ -83,6 +83,8 @@ public partial class DetalleClientePage : ContentPage
 
             QuitarAvalButton.IsVisible = _garanteActual is not null;
 
+            MostrarFoto();
+
             if (_garanteActual is not null)
             {
                 AvalNombresEntry.Text = _garanteActual.Nombres;
@@ -450,6 +452,107 @@ public partial class DetalleClientePage : ContentPage
         {
             await Shell.Current.GoToAsync(
                 $"{nameof(DetallePrestamoPage)}?id={id}");
+        }
+    }
+
+    private void MostrarFoto()
+    {
+        var url = _clienteService.ObtenerUrlFoto(_cliente?.FotoReciboServicio);
+
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            FotoImage.IsVisible = false;
+            FotoImage.Source = null;
+            FotoLabel.Text = "Sin foto registrada.";
+            return;
+        }
+
+        FotoImage.Source = ImageSource.FromUri(new Uri(url));
+        FotoImage.IsVisible = true;
+        FotoLabel.Text = "Recibo registrado.";
+    }
+
+    private async void OnCamaraClicked(object? sender, EventArgs e)
+    {
+        try
+        {
+            if (!MediaPicker.Default.IsCaptureSupported)
+            {
+                MostrarError("Este equipo no tiene cámara disponible.");
+                return;
+            }
+
+            var foto = await MediaPicker.Default.CapturePhotoAsync();
+
+            if (foto is not null)
+            {
+                await SubirFotoAsync(foto);
+            }
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"No se pudo tomar la foto: {ex.Message}");
+        }
+    }
+
+    private async void OnGaleriaClicked(object? sender, EventArgs e)
+    {
+        try
+        {
+            var foto = await MediaPicker.Default.PickPhotoAsync();
+
+            if (foto is not null)
+            {
+                await SubirFotoAsync(foto);
+            }
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"No se pudo elegir la foto: {ex.Message}");
+        }
+    }
+
+    private async Task SubirFotoAsync(FileResult foto)
+    {
+        if (_cliente is null)
+        {
+            return;
+        }
+
+        try
+        {
+            MostrarCargando(true);
+            ErrorLabel.IsVisible = false;
+
+            await using var flujo = await foto.OpenReadAsync();
+
+            var (exito, error) = await _clienteService.SubirFotoAsync(
+                _cliente.Id,
+                flujo,
+                foto.FileName);
+
+            if (!exito)
+            {
+                await DisplayAlertAsync(
+                    "No se pudo guardar",
+                    error ?? "Inténtalo de nuevo.",
+                    "OK");
+                return;
+            }
+
+            await CargarAsync(_cliente.Id);
+        }
+        catch (HttpRequestException)
+        {
+            MostrarError("No se pudo conectar con el servidor.");
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"Ocurrió un error: {ex.Message}");
+        }
+        finally
+        {
+            MostrarCargando(false);
         }
     }
 

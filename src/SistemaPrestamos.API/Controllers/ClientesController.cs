@@ -134,6 +134,73 @@ public class ClientesController : ControllerBase
         }
     }
 
+    // POST: api/clientes/{id}/foto (jpg/png <= 5MB)
+    [HttpPost("{id:guid}/foto")]
+    [RequestSizeLimit(6 * 1024 * 1024)]
+    public async Task<ActionResult<object>> SubirFoto(
+        Guid id,
+        IFormFile archivo)
+    {
+        var cliente = await _clienteService.ObtenerPorIdAsync(id);
+
+        if (cliente is null)
+        {
+            return NotFound(new
+            {
+                mensaje = "Cliente no encontrado."
+            });
+        }
+
+        if (archivo is null || archivo.Length == 0)
+        {
+            return BadRequest(new
+            {
+                mensaje = "Adjunte una imagen."
+            });
+        }
+
+        if (archivo.Length > 5 * 1024 * 1024)
+        {
+            return BadRequest(new
+            {
+                mensaje = "La imagen no debe superar 5 MB."
+            });
+        }
+
+        var extension = Path.GetExtension(archivo.FileName).ToLowerInvariant();
+
+        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+        {
+            return BadRequest(new
+            {
+                mensaje = "Solo se permiten imágenes JPG o PNG."
+            });
+        }
+
+        var carpeta = Path.Combine(
+            Directory.GetCurrentDirectory(), "wwwroot", "recibos");
+
+        Directory.CreateDirectory(carpeta);
+
+        var nombre = $"{id:N}_{Guid.NewGuid():N}{extension}";
+        var rutaFisica = Path.Combine(carpeta, nombre);
+
+        await using (var flujo = System.IO.File.Create(rutaFisica))
+        {
+            await archivo.CopyToAsync(flujo);
+        }
+
+        var relativo = $"recibos/{nombre}";
+
+        await _clienteService.ActualizarFotoAsync(id, relativo);
+
+        return Ok(new
+        {
+            mensaje = "Foto guardada.",
+            ruta = relativo
+        });
+    }
+
     // PATCH: api/clientes/{id}/estado
     [HttpPatch("{id:guid}/estado")]
 public async Task<IActionResult> CambiarEstado(

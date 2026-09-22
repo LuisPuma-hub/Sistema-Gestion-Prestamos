@@ -17,4 +17,6 @@ public interface IClienteService
     Task<bool> CambiarEstadoAsync(Guid id, string estado);
 
     Task<bool> EliminarAsync(Guid id);
+
+    Task<bool> ActualizarFotoAsync(Guid id, string ruta);
 }

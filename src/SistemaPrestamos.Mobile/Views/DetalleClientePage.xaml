@@ -201,6 +201,40 @@
                 Padding="16"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        Text="Recibo de domicilio"
+                        FontAttributes="Bold" />
+                    <Image
+                        x:Name="FotoImage"
+                        HeightRequest="180"
+                        Aspect="AspectFill"
+                        IsVisible="False" />
+                    <Label
+                        x:Name="FotoLabel"
+                        Text="Sin foto registrada."
+                        FontSize="13" />
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="12">
+                        <Button
+                            Grid.Column="0"
+                            x:Name="CamaraButton"
+                            Text="Cámara"
+                            Clicked="OnCamaraClicked" />
+                        <Button
+                            Grid.Column="1"
+                            x:Name="GaleriaButton"
+                            Text="Galería"
+                            Clicked="OnGaleriaClicked" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border
+                Padding="16"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
                 <VerticalStackLayout Spacing="10">
                     <Label
                         Text="Cambiar estado"

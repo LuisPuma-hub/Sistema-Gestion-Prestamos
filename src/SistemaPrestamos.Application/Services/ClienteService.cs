@@ -105,6 +105,23 @@ public class ClienteService : IClienteService
         return true;
     }
 
+    public async Task<bool> ActualizarFotoAsync(Guid id, string ruta)
+    {
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(id);
+
+        if (cliente is null)
+        {
+            return false;
+        }
+
+        cliente.FotoReciboServicio = ruta;
+
+        await _clienteRepository.ActualizarAsync(cliente);
+        await _clienteRepository.GuardarCambiosAsync();
+
+        return true;
+    }
+
     public async Task<bool> EliminarAsync(Guid id)
     {
         var cliente = await _clienteRepository.ObtenerPorIdAsync(id);

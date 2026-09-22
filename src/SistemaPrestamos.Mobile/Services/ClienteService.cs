@@ -172,6 +172,52 @@ public class ClienteService
             : error);
     }
 
+    public string? ObtenerUrlFoto(string? ruta)
+    {
+        if (string.IsNullOrWhiteSpace(ruta) ||
+            _httpClient.BaseAddress is null)
+        {
+            return null;
+        }
+
+        return new Uri(_httpClient.BaseAddress, ruta).ToString();
+    }
+
+    public async Task<(bool Exito, string? Error)> SubirFotoAsync(
+        Guid id,
+        Stream imagen,
+        string nombreArchivo)
+    {
+        await AplicarTokenAsync();
+
+        try
+        {
+            using var contenido = new MultipartFormDataContent();
+            using var flujo = new StreamContent(imagen);
+
+            contenido.Add(flujo, "archivo", nombreArchivo);
+
+            var response = await _httpClient.PostAsync(
+                $"api/Clientes/{id}/foto",
+                contenido);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return (true, null);
+            }
+
+            var error = await response.Content.ReadAsStringAsync();
+
+            return (false, string.IsNullOrWhiteSpace(error)
+                ? $"Error del servidor: {(int)response.StatusCode}"
+                : error);
+        }
+        catch (HttpRequestException)
+        {
+            return (false, "No se pudo conectar con el servidor.");
+        }
+    }
+
     public async Task<(bool Exito, string? Error)> EliminarAsync(Guid id)
     {
         await AplicarTokenAsync();
