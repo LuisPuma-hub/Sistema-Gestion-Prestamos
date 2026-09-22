@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using SistemaPrestamos.Application.DTOs;
 using SistemaPrestamos.Application.Interfaces;
@@ -78,6 +79,43 @@ public class UsuariosController : ControllerBase
             {
                 mensaje = "Contraseña actualizada."
             });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
+    // DELETE: api/usuarios/{id} (solo ADMIN, no a sí mismo)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Eliminar(Guid id)
+    {
+        try
+        {
+            var idTexto = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(idTexto, out var actorId))
+            {
+                return Unauthorized(new
+                {
+                    mensaje = "No se pudo identificar al usuario."
+                });
+            }
+
+            var eliminado = await _usuarioService.EliminarAsync(id, actorId);
+
+            if (!eliminado)
+            {
+                return NotFound(new
+                {
+                    mensaje = "Usuario no encontrado."
+                });
+            }
+
+            return NoContent();
         }
         catch (InvalidOperationException ex)
         {

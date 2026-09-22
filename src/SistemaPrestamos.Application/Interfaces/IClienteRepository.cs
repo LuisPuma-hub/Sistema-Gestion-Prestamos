@@ -14,5 +14,7 @@ public interface IClienteRepository
 
     Task ActualizarAsync(Cliente cliente);
 
+    Task EliminarAsync(Cliente cliente);
+
     Task GuardarCambiosAsync();
 }

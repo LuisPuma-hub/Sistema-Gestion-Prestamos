@@ -7,14 +7,18 @@ namespace SistemaPrestamos.Mobile.Views;
 public partial class DetallePrestamoPage : ContentPage
 {
     private readonly PrestamoService _prestamoService;
+    private readonly PagoService _pagoService;
     private PrestamoDto? _prestamo;
 
     public string IdTexto { get; set; } = string.Empty;
 
-    public DetallePrestamoPage(PrestamoService prestamoService)
+    public DetallePrestamoPage(
+        PrestamoService prestamoService,
+        PagoService pagoService)
     {
         InitializeComponent();
         _prestamoService = prestamoService;
+        _pagoService = pagoService;
     }
 
     protected override async void OnAppearing()
@@ -74,6 +78,19 @@ public partial class DetallePrestamoPage : ContentPage
 
             PagarButton.IsVisible = estaActivo;
             MorosidadButton.IsVisible = estaActivo;
+
+            var pagos = await _pagoService
+                .ObtenerPorPrestamoAsync(_prestamo.Id);
+
+            var listaPagos = pagos
+                .OrderByDescending(p => p.FechaPago)
+                .ToList();
+
+            PagosCollection.ItemsSource = listaPagos;
+
+            PagosResumenLabel.Text = listaPagos.Count == 0
+                ? "Sin pagos registrados."
+                : $"Pagos: {listaPagos.Count} - Total: S/ {listaPagos.Sum(p => p.Monto):N2}";
         }
         catch (HttpRequestException)
         {
@@ -86,6 +103,15 @@ public partial class DetallePrestamoPage : ContentPage
         finally
         {
             MostrarCargando(false);
+        }
+    }
+
+    private async void OnPagoTapped(object? sender, TappedEventArgs e)
+    {
+        if (e.Parameter is Guid id)
+        {
+            await Shell.Current.GoToAsync(
+                $"{nameof(DetallePagoPage)}?id={id}");
         }
     }
 
@@ -182,7 +208,10 @@ public partial class DetallePrestamoPage : ContentPage
 
             if (!exito)
             {
-                MostrarError(error ?? "No se pudo anular el préstamo.");
+                await DisplayAlertAsync(
+                    "No se puede anular",
+                    error ?? "No se pudo anular el préstamo.",
+                    "OK");
                 return;
             }
 

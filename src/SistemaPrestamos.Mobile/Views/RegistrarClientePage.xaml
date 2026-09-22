@@ -68,26 +68,50 @@
                 FontSize="20"
                 FontAttributes="Bold" />
 
-            <Entry
-                x:Name="AvalNombresEntry"
-                Placeholder="Nombres del aval"
-                ClearButtonVisibility="WhileEditing" />
+            <Picker
+                x:Name="AvalOpcionPicker"
+                Title="Opción de aval"
+                SelectedIndexChanged="OnAvalOpcionChanged">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Sin aval</x:String>
+                        <x:String>Cliente existente</x:String>
+                        <x:String>Nuevo aval</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
 
-            <Entry
-                x:Name="AvalApellidosEntry"
-                Placeholder="Apellidos del aval"
-                ClearButtonVisibility="WhileEditing" />
+            <Picker
+                x:Name="AvalClientePicker"
+                Title="Seleccione cliente como aval"
+                ItemDisplayBinding="{Binding NombreCompleto}"
+                IsVisible="False" />
 
-            <Entry
-                x:Name="AvalTelefonoEntry"
-                Placeholder="Teléfono del aval"
-                Keyboard="Telephone"
-                ClearButtonVisibility="WhileEditing" />
+            <VerticalStackLayout
+                x:Name="AvalNuevoLayout"
+                Spacing="14"
+                IsVisible="False">
+                <Entry
+                    x:Name="AvalNombresEntry"
+                    Placeholder="Nombres del aval"
+                    ClearButtonVisibility="WhileEditing" />
 
-            <Entry
-                x:Name="AvalDireccionEntry"
-                Placeholder="Dirección del aval (opcional)"
-                ClearButtonVisibility="WhileEditing" />
+                <Entry
+                    x:Name="AvalApellidosEntry"
+                    Placeholder="Apellidos del aval"
+                    ClearButtonVisibility="WhileEditing" />
+
+                <Entry
+                    x:Name="AvalTelefonoEntry"
+                    Placeholder="Teléfono del aval"
+                    Keyboard="Telephone"
+                    ClearButtonVisibility="WhileEditing" />
+
+                <Entry
+                    x:Name="AvalDireccionEntry"
+                    Placeholder="Dirección del aval (opcional)"
+                    ClearButtonVisibility="WhileEditing" />
+            </VerticalStackLayout>
 
             <Button
                 x:Name="GuardarButton"

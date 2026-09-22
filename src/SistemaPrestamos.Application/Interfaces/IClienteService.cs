@@ -15,4 +15,6 @@ public interface IClienteService
     Task<bool> ActualizarAsync(Guid id, CrearClienteDto dto);
 
     Task<bool> CambiarEstadoAsync(Guid id, string estado);
+
+    Task<bool> EliminarAsync(Guid id);
 }

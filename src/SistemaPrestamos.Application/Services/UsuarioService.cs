@@ -131,6 +131,23 @@ public class UsuarioService : IUsuarioService
         await GuardarNuevaClaveAsync(usuario, nueva);
     }
 
+    public async Task<bool> EliminarAsync(Guid id, Guid actorId)
+    {
+        if (id == actorId)
+            throw new InvalidOperationException(
+                "No puedes eliminar tu propio usuario.");
+
+        var usuario = await _usuarioRepository.ObtenerPorIdAsync(id);
+
+        if (usuario is null)
+            return false;
+
+        await _usuarioRepository.EliminarAsync(usuario);
+        await _usuarioRepository.GuardarCambiosAsync();
+
+        return true;
+    }
+
     private async Task GuardarNuevaClaveAsync(
         Usuario usuario,
         string nueva)

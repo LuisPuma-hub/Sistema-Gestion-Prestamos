@@ -1,3 +1,4 @@
+using SistemaPrestamos.Mobile.Models;
 using SistemaPrestamos.Mobile.Services;
 
 namespace SistemaPrestamos.Mobile.Views;
@@ -15,6 +16,38 @@ public partial class RegistrarClientePage : ContentPage
         _clienteService = clienteService;
         _garanteService = garanteService;
         TipoDocumentoPicker.SelectedIndex = 0;
+        AvalOpcionPicker.SelectedIndex = 0;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await CargarClientesAsync();
+    }
+
+    private async Task CargarClientesAsync()
+    {
+        try
+        {
+            var clientes = await _clienteService.ObtenerTodosAsync();
+
+            AvalClientePicker.ItemsSource = clientes
+                .OrderBy(c => c.Apellidos)
+                .ThenBy(c => c.Nombres)
+                .ToList();
+        }
+        catch
+        {
+            // Sin lista de clientes igual se puede registrar.
+        }
+    }
+
+    private void OnAvalOpcionChanged(object? sender, EventArgs e)
+    {
+        var opcion = AvalOpcionPicker.SelectedItem as string;
+
+        AvalClientePicker.IsVisible = opcion == "Cliente existente";
+        AvalNuevoLayout.IsVisible = opcion == "Nuevo aval";
     }
 
     private async void OnGuardarClicked(
@@ -33,10 +66,13 @@ public partial class RegistrarClientePage : ContentPage
         var referencia = ReferenciaEntry.Text?.Trim();
         var observaciones = ObservacionesEditor.Text?.Trim();
 
-        var avalNombres = AvalNombresEntry.Text?.Trim() ?? string.Empty;
-        var avalApellidos = AvalApellidosEntry.Text?.Trim() ?? string.Empty;
-        var avalTelefono = AvalTelefonoEntry.Text?.Trim() ?? string.Empty;
-        var avalDireccion = AvalDireccionEntry.Text?.Trim();
+        var opcionAval = AvalOpcionPicker.SelectedItem as string;
+
+        string avalNombres = string.Empty;
+        string avalApellidos = string.Empty;
+        string avalTelefono = string.Empty;
+        string? avalDireccion = null;
+        var conAval = false;
 
         if (string.IsNullOrWhiteSpace(numeroDocumento))
         {
@@ -68,16 +104,41 @@ public partial class RegistrarClientePage : ContentPage
             return;
         }
 
-        var conAval = !string.IsNullOrWhiteSpace(avalNombres) ||
-            !string.IsNullOrWhiteSpace(avalApellidos) ||
-            !string.IsNullOrWhiteSpace(avalTelefono);
-
-        if (conAval && (string.IsNullOrWhiteSpace(avalNombres) ||
-            string.IsNullOrWhiteSpace(avalApellidos) ||
-            string.IsNullOrWhiteSpace(avalTelefono)))
+        if (opcionAval == "Cliente existente")
         {
-            MostrarError("Complete nombres, apellidos y teléfono del aval.");
-            return;
+            if (AvalClientePicker.SelectedItem is not ClienteDto elegido)
+            {
+                MostrarError("Seleccione un cliente como aval.");
+                return;
+            }
+
+            conAval = true;
+            avalNombres = elegido.Nombres;
+            avalApellidos = elegido.Apellidos;
+            avalTelefono = elegido.Telefono;
+            avalDireccion = string.IsNullOrWhiteSpace(elegido.Direccion)
+                ? null
+                : elegido.Direccion;
+        }
+        else if (opcionAval == "Nuevo aval")
+        {
+            avalNombres = AvalNombresEntry.Text?.Trim() ?? string.Empty;
+            avalApellidos = AvalApellidosEntry.Text?.Trim() ?? string.Empty;
+            avalTelefono = AvalTelefonoEntry.Text?.Trim() ?? string.Empty;
+            var dir = AvalDireccionEntry.Text?.Trim();
+            avalDireccion = string.IsNullOrWhiteSpace(dir) ? null : dir;
+
+            conAval = !string.IsNullOrWhiteSpace(avalNombres) ||
+                !string.IsNullOrWhiteSpace(avalApellidos) ||
+                !string.IsNullOrWhiteSpace(avalTelefono);
+
+            if (conAval && (string.IsNullOrWhiteSpace(avalNombres) ||
+                string.IsNullOrWhiteSpace(avalApellidos) ||
+                string.IsNullOrWhiteSpace(avalTelefono)))
+            {
+                MostrarError("Complete nombres, apellidos y teléfono del aval.");
+                return;
+            }
         }
 
         try

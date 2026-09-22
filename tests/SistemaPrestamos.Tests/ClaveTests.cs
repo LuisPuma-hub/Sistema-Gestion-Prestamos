@@ -81,4 +81,38 @@ public class ClaveTests : IDisposable
 
         await _usuarios.CambiarClaveAsync(id, "Reseteada123!", "Final12345!");
     }
+
+    [Fact]
+    public async Task Eliminar_OtroUsuario_Funciona()
+    {
+        var admin = await CrearCobradorAsync("adminx@test.local");
+        var otro = await CrearCobradorAsync("victima@test.local");
+
+        var ok = await _usuarios.EliminarAsync(otro, admin);
+
+        Assert.True(ok);
+
+        var eliminado = await _usuarios.ObtenerPorIdAsync(otro);
+
+        Assert.Null(eliminado);
+    }
+
+    [Fact]
+    public async Task Eliminar_PropioUsuario_SeRechaza()
+    {
+        var id = await CrearCobradorAsync("yo@test.local");
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _usuarios.EliminarAsync(id, id));
+    }
+
+    [Fact]
+    public async Task Eliminar_Inexistente_RetornaFalso()
+    {
+        var id = await CrearCobradorAsync("otro@test.local");
+
+        var ok = await _usuarios.EliminarAsync(Guid.NewGuid(), id);
+
+        Assert.False(ok);
+    }
 }

@@ -38,4 +38,9 @@
         ContentTemplate="{DataTemplate views:PerfilPage}"
         Route="Perfil" />
 
+    <ShellContent
+        Title="Usuarios"
+        ContentTemplate="{DataTemplate views:UsuariosPage}"
+        Route="Usuarios" />
+
 </Shell>

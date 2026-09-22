@@ -9,13 +9,16 @@ namespace SistemaPrestamos.Application.Services;
 public class ClienteService : IClienteService
 {
     private readonly IClienteRepository _clienteRepository;
+    private readonly IPrestamoRepository _prestamoRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public ClienteService(
         IClienteRepository clienteRepository,
+        IPrestamoRepository prestamoRepository,
         IHttpContextAccessor httpContextAccessor)
     {
         _clienteRepository = clienteRepository;
+        _prestamoRepository = prestamoRepository;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -97,6 +100,30 @@ public class ClienteService : IClienteService
         cliente.Observaciones = dto.Observaciones;
 
         await _clienteRepository.ActualizarAsync(cliente);
+        await _clienteRepository.GuardarCambiosAsync();
+
+        return true;
+    }
+
+    public async Task<bool> EliminarAsync(Guid id)
+    {
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(id);
+
+        if (cliente is null)
+        {
+            return false;
+        }
+
+        var prestamos = await _prestamoRepository
+            .ObtenerPorClienteAsync(id);
+
+        if (prestamos.Any())
+        {
+            throw new InvalidOperationException(
+                "No se puede eliminar un cliente con préstamos registrados.");
+        }
+
+        await _clienteRepository.EliminarAsync(cliente);
         await _clienteRepository.GuardarCambiosAsync();
 
         return true;

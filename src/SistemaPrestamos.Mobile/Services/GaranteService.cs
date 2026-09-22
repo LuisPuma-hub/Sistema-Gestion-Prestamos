@@ -81,4 +81,57 @@ public class GaranteService
             ? $"Error del servidor: {(int)response.StatusCode}"
             : error);
     }
+
+    public async Task<(bool Exito, string? Error)> ActualizarAsync(
+        Guid id,
+        string nombres,
+        string apellidos,
+        string telefono,
+        string? direccion,
+        Guid? clienteId)
+    {
+        await AplicarTokenAsync();
+
+        var dto = new
+        {
+            nombres,
+            apellidos,
+            telefono,
+            direccion,
+            clienteId
+        };
+
+        var response = await _httpClient.PutAsJsonAsync(
+            $"api/Garantes/{id}",
+            dto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
+
+    public async Task<(bool Exito, string? Error)> EliminarAsync(Guid id)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.DeleteAsync($"api/Garantes/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
 }

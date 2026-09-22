@@ -34,7 +34,7 @@ public class ReglasFinancierasTests : IDisposable
             HttpContext = new DefaultHttpContext()
         };
 
-        _clientes = new ClienteService(repoCliente, httpContext);
+        _clientes = new ClienteService(repoCliente, repoPrestamo, httpContext);
 
         _prestamos = new PrestamoService(
             repoPrestamo,
@@ -278,6 +278,31 @@ public class ReglasFinancierasTests : IDisposable
 
         Assert.NotNull(mora);
         Assert.False(mora.Activa);
+    }
+
+    [Fact]
+    public async Task Eliminar_SinPrestamos_Funciona()
+    {
+        var cliente = await CrearClienteActivoAsync("70000101");
+
+        var ok = await _clientes.EliminarAsync(cliente);
+
+        Assert.True(ok);
+
+        var eliminado = await _clientes.ObtenerPorIdAsync(cliente);
+
+        Assert.Null(eliminado);
+    }
+
+    [Fact]
+    public async Task Eliminar_ConPrestamos_SeRechaza()
+    {
+        var cliente = await CrearClienteActivoAsync("70000102");
+
+        await CrearPrestamoActivoAsync(cliente, 200m);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _clientes.EliminarAsync(cliente));
     }
 
     [Fact]

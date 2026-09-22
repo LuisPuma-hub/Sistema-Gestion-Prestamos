@@ -20,12 +20,26 @@ public class DispositivoRepository : IDispositivoRepository
             .FirstOrDefaultAsync(x => x.Token == token);
     }
 
+    public async Task<Dispositivo?> ObtenerPorIdAsync(Guid id)
+    {
+        return await _context.Dispositivos
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<IEnumerable<Dispositivo>> ObtenerPorUsuarioAsync(
         Guid usuarioId)
     {
         return await _context.Dispositivos
             .AsNoTracking()
             .Where(x => x.UsuarioId == usuarioId)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Dispositivo>> ObtenerTodosAsync()
+    {
+        return await _context.Dispositivos
+            .AsNoTracking()
+            .OrderByDescending(x => x.FechaActualizacion)
             .ToListAsync();
     }
 
@@ -38,6 +52,12 @@ public class DispositivoRepository : IDispositivoRepository
     public Task ActualizarAsync(Dispositivo dispositivo)
     {
         _context.Dispositivos.Update(dispositivo);
+        return Task.CompletedTask;
+    }
+
+    public Task EliminarAsync(Dispositivo dispositivo)
+    {
+        _context.Dispositivos.Remove(dispositivo);
         return Task.CompletedTask;
     }
 

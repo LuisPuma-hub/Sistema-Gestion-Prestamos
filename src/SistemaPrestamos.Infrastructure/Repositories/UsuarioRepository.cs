@@ -49,6 +49,13 @@ public class UsuarioRepository : IUsuarioRepository
         return Task.CompletedTask;
     }
 
+    public Task EliminarAsync(Usuario usuario)
+    {
+        _context.Usuarios.Remove(usuario);
+
+        return Task.CompletedTask;
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

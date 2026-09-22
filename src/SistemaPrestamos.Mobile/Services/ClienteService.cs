@@ -172,6 +172,24 @@ public class ClienteService
             : error);
     }
 
+    public async Task<(bool Exito, string? Error)> EliminarAsync(Guid id)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.DeleteAsync($"api/Clientes/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
+
     public async Task<(bool Exito, string? Error)> CambiarEstadoAsync(
         Guid id,
         string estado)

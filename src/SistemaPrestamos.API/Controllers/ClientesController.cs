@@ -106,6 +106,34 @@ public class ClientesController : ControllerBase
         return NoContent();
     }
 
+    // DELETE: api/clientes/{id} (solo ADMIN, sin préstamos)
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> Eliminar(Guid id)
+    {
+        try
+        {
+            var eliminado = await _clienteService.EliminarAsync(id);
+
+            if (!eliminado)
+            {
+                return NotFound(new
+                {
+                    mensaje = "Cliente no encontrado."
+                });
+            }
+
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
     // PATCH: api/clientes/{id}/estado
     [HttpPatch("{id:guid}/estado")]
 public async Task<IActionResult> CambiarEstado(

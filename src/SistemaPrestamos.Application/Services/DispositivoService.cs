@@ -52,4 +52,25 @@ public class DispositivoService : IDispositivoService
         await _dispositivoRepository.CrearAsync(dispositivo);
         await _dispositivoRepository.GuardarCambiosAsync();
     }
+
+    public async Task<bool> EliminarAsync(Guid id)
+    {
+        var dispositivo = await _dispositivoRepository
+            .ObtenerPorIdAsync(id);
+
+        if (dispositivo is null)
+        {
+            return false;
+        }
+
+        await _dispositivoRepository.EliminarAsync(dispositivo);
+        await _dispositivoRepository.GuardarCambiosAsync();
+
+        return true;
+    }
+
+    public async Task<IEnumerable<Dispositivo>> ObtenerTodosAsync()
+    {
+        return await _dispositivoRepository.ObtenerTodosAsync();
+    }
 }

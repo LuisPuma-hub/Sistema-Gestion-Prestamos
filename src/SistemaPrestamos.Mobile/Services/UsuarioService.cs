@@ -42,6 +42,99 @@ public class UsuarioService
             _jsonOptions);
     }
 
+    public async Task<List<UsuarioDto>> ObtenerTodosAsync()
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.GetAsync("api/Usuarios");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return new List<UsuarioDto>();
+        }
+
+        var contenido = await response.Content.ReadAsStringAsync();
+
+        return JsonSerializer.Deserialize<List<UsuarioDto>>(
+            contenido,
+            _jsonOptions) ?? new List<UsuarioDto>();
+    }
+
+    private async Task AplicarTokenAsync()
+    {
+        var token = await SecureStorage.Default.GetAsync("auth_token");
+
+        _httpClient.DefaultRequestHeaders.Authorization =
+            string.IsNullOrWhiteSpace(token)
+                ? null
+                : new AuthenticationHeaderValue("Bearer", token);
+    }
+
+    public async Task<(bool Exito, string? Error)> CrearAsync(
+        string nombres,
+        string apellidos,
+        string email,
+        string password,
+        string rol)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/Usuarios",
+            new { nombres, apellidos, email, password, rol });
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
+
+    public async Task<(bool Exito, string? Error)> EliminarAsync(Guid id)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.DeleteAsync($"api/Usuarios/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
+
+    public async Task<(bool Exito, string? Error)> ResetearClaveAsync(
+        Guid id,
+        string nueva)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.PatchAsJsonAsync(
+            $"api/Usuarios/{id}/clave",
+            new { nueva });
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
+
     public async Task<(bool Exito, string? Error)> CambiarMiClaveAsync(
         string actual,
         string nueva)

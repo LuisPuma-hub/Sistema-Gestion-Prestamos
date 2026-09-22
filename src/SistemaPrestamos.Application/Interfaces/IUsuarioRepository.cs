@@ -14,5 +14,7 @@ public interface IUsuarioRepository
 
     Task ActualizarAsync(Usuario usuario);
 
+    Task EliminarAsync(Usuario usuario);
+
     Task GuardarCambiosAsync();
 }

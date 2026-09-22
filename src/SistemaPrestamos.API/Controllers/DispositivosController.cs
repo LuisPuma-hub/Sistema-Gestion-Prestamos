@@ -53,4 +53,39 @@ public class DispositivosController : ControllerBase
             });
         }
     }
+
+    // DELETE: api/dispositivos/{id} (solo ADMIN, limpieza)
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> Eliminar(Guid id)
+    {
+        var eliminado = await _dispositivoService.EliminarAsync(id);
+
+        if (!eliminado)
+        {
+            return NotFound(new
+            {
+                mensaje = "Dispositivo no encontrado."
+            });
+        }
+
+        return NoContent();
+    }
+
+    // GET: api/dispositivos (solo ADMIN)
+    [HttpGet]
+    [Authorize(Roles = "Administrador")]
+    public async Task<ActionResult<object>> ObtenerTodos()
+    {
+        var dispositivos = await _dispositivoService.ObtenerTodosAsync();
+
+        return Ok(dispositivos.Select(d => new
+        {
+            d.Id,
+            d.UsuarioId,
+            d.Plataforma,
+            d.FechaRegistro,
+            d.FechaActualizacion
+        }));
+    }
 }

@@ -13,4 +13,6 @@ public interface IUsuarioService
     Task CambiarClaveAsync(Guid id, string actual, string nueva);
 
     Task ResetearClaveAsync(Guid id, string nueva);
+
+    Task<bool> EliminarAsync(Guid id, Guid actorId);
 }

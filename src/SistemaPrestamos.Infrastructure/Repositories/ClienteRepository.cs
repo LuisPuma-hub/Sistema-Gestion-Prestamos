@@ -49,6 +49,12 @@ public class ClienteRepository : IClienteRepository
         return Task.CompletedTask;
     }
 
+    public Task EliminarAsync(Cliente cliente)
+    {
+        _context.Clientes.Remove(cliente);
+        return Task.CompletedTask;
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();
