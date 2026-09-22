@@ -59,6 +59,8 @@ secrets.json
 private/
 *-firebase-adminsdk-*.json
 GoogleService-Info.plist
+# Archivos subidos por usuarios (recibos) - no versionar
+src/SistemaPrestamos.API/wwwroot/
 # Nota: google-services.json dentro de src/ SÍ se versiona
 # (config pública del cliente FCM, necesaria para compilar).
 # Nota: appsettings.json se versiona solo con placeholders.

@@ -11,6 +11,7 @@ public partial class DetalleClientePage : ContentPage
     private readonly PrestamoService _prestamoService;
     private ClienteDto? _cliente;
     private GaranteDto? _garanteActual;
+    private byte[]? _fotoBytes;
     private bool _editando;
 
     public string IdTexto { get; set; } = string.Empty;
@@ -455,21 +456,50 @@ public partial class DetalleClientePage : ContentPage
         }
     }
 
-    private void MostrarFoto()
+    private async void MostrarFoto()
     {
-        var url = _clienteService.ObtenerUrlFoto(_cliente?.FotoReciboServicio);
+        FotoImage.IsVisible = false;
+        FotoImage.Source = null;
 
-        if (string.IsNullOrWhiteSpace(url))
+        if (_cliente is null ||
+            string.IsNullOrWhiteSpace(_cliente.FotoReciboServicio))
         {
-            FotoImage.IsVisible = false;
-            FotoImage.Source = null;
             FotoLabel.Text = "Sin foto registrada.";
             return;
         }
 
-        FotoImage.Source = ImageSource.FromUri(new Uri(url));
+        FotoLabel.Text = "Cargando foto...";
+
+        var bytes = await _clienteService.DescargarFotoAsync(_cliente.Id);
+
+        if (bytes is null || bytes.Length == 0)
+        {
+            FotoLabel.Text = "No se pudo cargar la foto.";
+            return;
+        }
+
+        FotoImage.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
         FotoImage.IsVisible = true;
-        FotoLabel.Text = "Recibo registrado.";
+        FotoLabel.Text = "Recibo registrado. Tócalo para ampliar.";
+        _fotoBytes = bytes;
+    }
+
+    private void OnFotoTapped(object? sender, TappedEventArgs e)
+    {
+        if (_fotoBytes is null || _fotoBytes.Length == 0)
+        {
+            return;
+        }
+
+        FotoCompletaImage.Source = ImageSource.FromStream(
+            () => new MemoryStream(_fotoBytes));
+        FotoOverlay.IsVisible = true;
+    }
+
+    private void OnCerrarFoto(object? sender, EventArgs e)
+    {
+        FotoOverlay.IsVisible = false;
+        FotoCompletaImage.Source = null;
     }
 
     private async void OnCamaraClicked(object? sender, EventArgs e)
@@ -499,7 +529,8 @@ public partial class DetalleClientePage : ContentPage
     {
         try
         {
-            var foto = await MediaPicker.Default.PickPhotoAsync();
+            var fotos = await MediaPicker.Default.PickPhotosAsync();
+            var foto = fotos?.FirstOrDefault();
 
             if (foto is not null)
             {

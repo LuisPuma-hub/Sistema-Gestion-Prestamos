@@ -172,7 +172,7 @@ public class ClienteService
             : error);
     }
 
-    public string? ObtenerUrlFoto(string? ruta)
+    public string? ObtenerUrlFoto(Guid clienteId, string? ruta)
     {
         if (string.IsNullOrWhiteSpace(ruta) ||
             _httpClient.BaseAddress is null)
@@ -180,7 +180,31 @@ public class ClienteService
             return null;
         }
 
-        return new Uri(_httpClient.BaseAddress, ruta).ToString();
+        return new Uri(
+            _httpClient.BaseAddress,
+            $"api/Clientes/{clienteId}/foto").ToString();
+    }
+
+    public async Task<byte[]?> DescargarFotoAsync(Guid clienteId)
+    {
+        await AplicarTokenAsync();
+
+        try
+        {
+            var response = await _httpClient.GetAsync(
+                $"api/Clientes/{clienteId}/foto");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public async Task<(bool Exito, string? Error)> SubirFotoAsync(

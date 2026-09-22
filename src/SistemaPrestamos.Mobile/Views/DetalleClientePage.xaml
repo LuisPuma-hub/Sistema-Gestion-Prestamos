@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Detalle del cliente">
 
+    <Grid>
     <ScrollView>
         <VerticalStackLayout
             Padding="24"
@@ -209,7 +210,11 @@
                         x:Name="FotoImage"
                         HeightRequest="180"
                         Aspect="AspectFill"
-                        IsVisible="False" />
+                        IsVisible="False">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFotoTapped" />
+                        </Image.GestureRecognizers>
+                    </Image>
                     <Label
                         x:Name="FotoLabel"
                         Text="Sin foto registrada."
@@ -300,5 +305,40 @@
 
         </VerticalStackLayout>
     </ScrollView>
+
+        <Grid
+            x:Name="FotoOverlay"
+            BackgroundColor="#CC000000"
+            IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnCerrarFoto" />
+            </Grid.GestureRecognizers>
+
+            <Border
+                Margin="24"
+                Padding="0"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                VerticalOptions="Center">
+                <Grid>
+                    <Image
+                        x:Name="FotoCompletaImage"
+                        Aspect="AspectFit"
+                        HeightRequest="500" />
+                    <Button
+                        Text="X"
+                        FontAttributes="Bold"
+                        WidthRequest="44"
+                        HeightRequest="44"
+                        CornerRadius="22"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"
+                        Margin="8"
+                        Clicked="OnCerrarFoto" />
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
 
 </ContentPage>

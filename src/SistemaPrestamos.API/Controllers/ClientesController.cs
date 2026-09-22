@@ -134,6 +134,34 @@ public class ClientesController : ControllerBase
         }
     }
 
+    // GET: api/clientes/{id}/foto
+    [HttpGet("{id:guid}/foto")]
+    public async Task<IActionResult> ObtenerFoto(Guid id)
+    {
+        var cliente = await _clienteService.ObtenerPorIdAsync(id);
+
+        if (cliente?.FotoReciboServicio is null)
+        {
+            return NotFound();
+        }
+
+        var rutaFisica = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "wwwroot",
+            cliente.FotoReciboServicio.Replace('/', Path.DirectorySeparatorChar));
+
+        if (!System.IO.File.Exists(rutaFisica))
+        {
+            return NotFound();
+        }
+
+        var extension = Path.GetExtension(rutaFisica).ToLowerInvariant();
+
+        var contentType = extension == ".png" ? "image/png" : "image/jpeg";
+
+        return PhysicalFile(rutaFisica, contentType);
+    }
+
     // POST: api/clientes/{id}/foto (jpg/png <= 5MB)
     [HttpPost("{id:guid}/foto")]
     [RequestSizeLimit(6 * 1024 * 1024)]
