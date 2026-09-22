@@ -16,7 +16,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="MainPage" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoInicio" Text="🏠" FontSize="22" HorizontalTextAlignment="Center" />
+            <Label x:Name="IconoInicio" Text="⌂" FontSize="22" HorizontalTextAlignment="Center" />
             <Label x:Name="TextoInicio" Text="Inicio" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -27,7 +27,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Clientes" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoClientes" Text="👥" FontSize="22" HorizontalTextAlignment="Center" />
+            <Label x:Name="IconoClientes" Text="◉" FontSize="22" HorizontalTextAlignment="Center" />
             <Label x:Name="TextoClientes" Text="Clientes" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -38,7 +38,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Prestamos" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoPrestamos" Text="🧾" FontSize="22" HorizontalTextAlignment="Center" />
+            <Label x:Name="IconoPrestamos" Text="▤" FontSize="22" HorizontalTextAlignment="Center" />
             <Label x:Name="TextoPrestamos" Text="Préstamos" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -49,7 +49,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Pagos" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoPagos" Text="💲" FontSize="22" HorizontalTextAlignment="Center" />
+            <Label x:Name="IconoPagos" Text="$" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center" />
             <Label x:Name="TextoPagos" Text="Pagos" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -60,7 +60,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Morosidad" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoMora" Text="⚠️" FontSize="22" HorizontalTextAlignment="Center" />
+            <Label x:Name="IconoMora" Text="!" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center" />
             <Label x:Name="TextoMora" Text="Mora" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 

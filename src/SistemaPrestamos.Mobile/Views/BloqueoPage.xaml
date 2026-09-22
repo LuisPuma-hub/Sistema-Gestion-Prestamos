@@ -46,8 +46,9 @@
                 Margin="0,-70,0,0"
                 Padding="0">
                 <Label
-                    Text="🫆"
+                    Text="◉"
                     FontSize="64"
+                    TextColor="#512BD4"
                     HorizontalOptions="Center"
                     VerticalOptions="Center" />
             </Border>

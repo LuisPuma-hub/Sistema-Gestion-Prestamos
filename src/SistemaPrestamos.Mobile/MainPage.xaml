@@ -79,8 +79,8 @@
                             <VerticalStackLayout Spacing="2">
                                 <HorizontalStackLayout Spacing="6">
                                     <Label Text="Clientes" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="👥" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="◉" FontSize="14" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                     </Border>
                                 </HorizontalStackLayout>
                                 <Label x:Name="ClientesValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#512BD4" />
@@ -96,8 +96,8 @@
                             <VerticalStackLayout Spacing="2">
                                 <HorizontalStackLayout Spacing="6">
                                     <Label Text="Préstamos activos" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#FEF3C7" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="🧾" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="▤" FontSize="14" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                     </Border>
                                 </HorizontalStackLayout>
                                 <Label x:Name="PrestamosValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#512BD4" />
@@ -113,8 +113,8 @@
                             <VerticalStackLayout Spacing="2">
                                 <HorizontalStackLayout Spacing="6">
                                     <Label Text="Capital pendiente" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#FEF3C7" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="💰" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="$" FontSize="14" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                     </Border>
                                 </HorizontalStackLayout>
                                 <Label x:Name="CapitalValorLabel" Text="-" FontSize="24" FontAttributes="Bold" TextColor="#D97706" />
@@ -130,8 +130,8 @@
                             <VerticalStackLayout Spacing="2">
                                 <HorizontalStackLayout Spacing="6">
                                     <Label Text="En mora" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#FEE2E2" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="⚠️" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="!" FontSize="14" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                     </Border>
                                 </HorizontalStackLayout>
                                 <Label x:Name="MoraValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#DC2626" />
@@ -147,8 +147,8 @@
                             <VerticalStackLayout Spacing="2">
                                 <HorizontalStackLayout Spacing="6">
                                     <Label Text="Cobrado hoy" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#DCFCE7" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="✅" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="✓" FontSize="14" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                     </Border>
                                 </HorizontalStackLayout>
                                 <Label x:Name="PagosHoyValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#16A34A" />
@@ -170,8 +170,8 @@
                                 <TapGestureRecognizer Tapped="OnClientesClicked" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
-                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                                    <Label Text="👥" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="◉" FontSize="20" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label Text="Clientes" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
@@ -181,8 +181,8 @@
                                 <TapGestureRecognizer Tapped="OnPrestamosClicked" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
-                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                                    <Label Text="🧾" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="▤" FontSize="20" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label Text="Préstamos" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
@@ -192,8 +192,8 @@
                                 <TapGestureRecognizer Tapped="OnPagosClicked" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
-                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                                    <Label Text="💲" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="$" FontSize="20" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label Text="Pagos" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
@@ -203,8 +203,8 @@
                                 <TapGestureRecognizer Tapped="OnMorosidadClicked" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
-                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                                    <Label Text="⚠️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="!" FontSize="20" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label Text="Morosidad" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>

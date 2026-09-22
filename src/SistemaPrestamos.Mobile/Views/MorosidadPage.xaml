@@ -47,7 +47,7 @@
                     BackgroundColor="#FEE2E2"
                     IsVisible="False">
                     <HorizontalStackLayout Spacing="8">
-                        <Label Text="⚠️" FontSize="18" VerticalOptions="Center" />
+                        <Label Text="!" FontSize="18" FontAttributes="Bold" TextColor="#991B1B" VerticalOptions="Center" />
                         <Label
                             x:Name="ResumenLabel"
                             Text="En mora: 0 clientes"

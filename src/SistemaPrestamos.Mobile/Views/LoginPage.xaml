@@ -102,11 +102,6 @@
                     BackgroundColor="White"
                     Padding="12,2">
                     <HorizontalStackLayout Spacing="8">
-                        <Label
-                            Text="🔒"
-                            FontSize="16"
-                            TextColor="#9CA3AF"
-                            VerticalOptions="Center" />
                         <Entry
                             x:Name="PasswordEntry"
                             Placeholder="••••••••"

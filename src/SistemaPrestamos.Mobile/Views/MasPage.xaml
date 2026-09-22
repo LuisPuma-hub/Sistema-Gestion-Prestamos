@@ -40,8 +40,9 @@
                             StrokeShape="RoundRectangle 22"
                             VerticalOptions="Center">
                             <Label
-                                Text="👤"
+                                Text="◉"
                                 FontSize="20"
+                                TextColor="#4B5563"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center" />
                         </Border>
@@ -70,8 +71,9 @@
                             StrokeShape="RoundRectangle 22"
                             VerticalOptions="Center">
                             <Label
-                                Text="👥"
+                                Text="◉"
                                 FontSize="20"
+                                TextColor="#4B5563"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center" />
                         </Border>

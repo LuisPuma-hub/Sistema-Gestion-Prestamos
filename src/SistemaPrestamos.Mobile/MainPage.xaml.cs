@@ -53,7 +53,7 @@ public partial class MainPage : ContentPage
             if (!string.IsNullOrWhiteSpace(nombre))
             {
                 var primero = nombre.Trim().Split(' ')[0];
-                SaludoLabel.Text = $"Hola, {primero} 👋";
+                SaludoLabel.Text = $"Hola, {primero}";
             }
 
             var clientesTask = _clienteService.ObtenerTodosAsync();
