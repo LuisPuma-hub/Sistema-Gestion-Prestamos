@@ -16,5 +16,7 @@ public interface IClienteRepository
 
     Task EliminarAsync(Cliente cliente);
 
+    void LimpiarSeguimiento();
+
     Task GuardarCambiosAsync();
 }

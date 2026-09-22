@@ -166,6 +166,18 @@ public class ClienteService : IClienteService
 
     public async Task<ResumenCascada> EliminarCascadaAsync(Guid id)
     {
+        var existe = await _clienteRepository.ObtenerPorIdAsync(id);
+
+        if (existe is null)
+        {
+            throw new InvalidOperationException(
+                "Cliente no encontrado.");
+        }
+
+        // Partir de un seguimiento limpio: evita conflictos
+        // "another instance with the same key is already being tracked".
+        _clienteRepository.LimpiarSeguimiento();
+
         var cliente = await _clienteRepository.ObtenerPorIdAsync(id);
 
         if (cliente is null)

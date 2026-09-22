@@ -70,6 +70,13 @@ public class PrestamoRepository : IPrestamoRepository
         }
         else
         {
+            // Desvincular navegaciones: si no, EF adjunta el grafo
+            // (Cliente, Garante) y choca con instancias rastreadas.
+            prestamo.Cliente = null!;
+            prestamo.Garante = null;
+            prestamo.Pagos = new List<Pago>();
+            prestamo.PeriodosInteres = new List<PeriodoInteres>();
+
             _context.Prestamos.Remove(prestamo);
         }
 

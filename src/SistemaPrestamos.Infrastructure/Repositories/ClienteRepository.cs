@@ -66,6 +66,11 @@ public class ClienteRepository : IClienteRepository
         return Task.CompletedTask;
     }
 
+    public void LimpiarSeguimiento()
+    {
+        _context.ChangeTracker.Clear();
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();
