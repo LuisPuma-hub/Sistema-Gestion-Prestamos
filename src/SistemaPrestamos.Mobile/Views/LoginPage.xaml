@@ -78,18 +78,22 @@
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnEmailBoxTapped" />
                     </Border.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="8">
-                        <Label
-                            Text="✉"
-                            FontSize="16"
-                            TextColor="#9CA3AF"
-                            VerticalOptions="Center" />
+                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                         <Entry
                             x:Name="EmailEntry"
                             Placeholder="cobrador@empresa.pe"
                             Keyboard="Email"
-                            ClearButtonVisibility="WhileEditing"
                             HorizontalOptions="Fill" />
+                        <Label
+                            Text="✕"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#9CA3AF"
+                            VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnLimpiarEmail" />
+                            </Label.GestureRecognizers>
+                        </Label>
                     </HorizontalStackLayout>
                 </Border>
 
@@ -109,18 +113,29 @@
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnClaveBoxTapped" />
                     </Border.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="8">
+                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                         <Entry
                             x:Name="PasswordEntry"
                             Placeholder="••••••••"
                             IsPassword="True"
-                            ClearButtonVisibility="WhileEditing"
                             HorizontalOptions="Fill" />
                         <Label
                             x:Name="OjoLabel"
-                            Text="👁"
+                            Text="✕"
                             FontSize="18"
+                            FontAttributes="Bold"
                             TextColor="#9CA3AF"
+                            VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnLimpiarClave" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <Label
+                            x:Name="VerLabel"
+                            Text="Ver"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            TextColor="#512BD4"
                             VerticalOptions="Center">
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnOjoClicked" />

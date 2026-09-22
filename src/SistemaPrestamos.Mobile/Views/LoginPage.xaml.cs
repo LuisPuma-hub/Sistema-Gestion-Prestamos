@@ -96,8 +96,19 @@ public partial class LoginPage : ContentPage
     private void OnOjoClicked(object? sender, TappedEventArgs e)
     {
         PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
-        OjoLabel.Text = PasswordEntry.IsPassword ? "👁" : "🚫";
-        OjoLabel.Opacity = PasswordEntry.IsPassword ? 1 : 0.5;
+        VerLabel.Text = PasswordEntry.IsPassword ? "Ver" : "Ocultar";
+    }
+
+    private void OnLimpiarEmail(object? sender, TappedEventArgs e)
+    {
+        EmailEntry.Text = string.Empty;
+        EmailEntry.Focus();
+    }
+
+    private void OnLimpiarClave(object? sender, TappedEventArgs e)
+    {
+        PasswordEntry.Text = string.Empty;
+        PasswordEntry.Focus();
     }
 
     private void MostrarError(string mensaje)
