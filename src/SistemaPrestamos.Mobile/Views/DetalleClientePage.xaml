@@ -18,7 +18,7 @@
                     <Grid ColumnDefinitions="Auto,*,Auto">
                         <Button
                             Grid.Column="0"
-                            Text="←"
+                            Text="‹"
                             FontSize="22"
                             TextColor="White"
                             BackgroundColor="Transparent"

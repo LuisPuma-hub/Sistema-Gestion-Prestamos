@@ -83,6 +83,23 @@ public partial class LoginPage : ContentPage
         }
     }
 
+    private void OnEmailBoxTapped(object? sender, TappedEventArgs e)
+    {
+        EmailEntry.Focus();
+    }
+
+    private void OnClaveBoxTapped(object? sender, TappedEventArgs e)
+    {
+        PasswordEntry.Focus();
+    }
+
+    private void OnOjoClicked(object? sender, TappedEventArgs e)
+    {
+        PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
+        OjoLabel.Text = PasswordEntry.IsPassword ? "👁" : "🚫";
+        OjoLabel.Opacity = PasswordEntry.IsPassword ? 1 : 0.5;
+    }
+
     private void MostrarError(string mensaje)
     {
         ErrorLabel.Text = mensaje;
