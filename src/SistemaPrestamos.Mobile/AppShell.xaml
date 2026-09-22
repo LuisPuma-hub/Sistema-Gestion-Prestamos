@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <Shell
     x:Class="SistemaPrestamos.Mobile.AppShell"
@@ -7,44 +7,43 @@
     xmlns:local="clr-namespace:SistemaPrestamos.Mobile"
     xmlns:views="clr-namespace:SistemaPrestamos.Mobile.Views"
     Title="Sistema de Préstamos"
+    FlyoutBehavior="Disabled"
+    Shell.TabBarIsVisible="False"
     Shell.TabBarBackgroundColor="White"
     Shell.TabBarTitleColor="#6B7280"
     Shell.TabBarUnselectedColor="#9CA3AF"
     Shell.TabBarForegroundColor="#512BD4">
 
-    <ShellContent
-        Title="Inicio"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar Route="Tabs">
+        <ShellContent
+            Title="Inicio"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
 
-    <ShellContent
-        Title="Clientes"
-        ContentTemplate="{DataTemplate views:ClientesPage}"
-        Route="Clientes" />
+        <ShellContent
+            Title="Clientes"
+            ContentTemplate="{DataTemplate views:ClientesPage}"
+            Route="Clientes" />
 
-    <ShellContent
-        Title="Préstamos"
-        ContentTemplate="{DataTemplate views:PrestamosPage}"
-        Route="Prestamos" />
+        <ShellContent
+            Title="Préstamos"
+            ContentTemplate="{DataTemplate views:PrestamosPage}"
+            Route="Prestamos" />
 
-    <ShellContent
-        Title="Pagos"
-        ContentTemplate="{DataTemplate views:PagosPage}"
-        Route="Pagos" />
+        <ShellContent
+            Title="Pagos"
+            ContentTemplate="{DataTemplate views:PagosPage}"
+            Route="Pagos" />
 
-    <ShellContent
-        Title="Mora"
-        ContentTemplate="{DataTemplate views:MorosidadPage}"
-        Route="Morosidad" />
+        <ShellContent
+            Title="Mora"
+            ContentTemplate="{DataTemplate views:MorosidadPage}"
+            Route="Morosidad" />
 
-    <ShellContent
-        Title="Perfil"
-        ContentTemplate="{DataTemplate views:PerfilPage}"
-        Route="Perfil" />
-
-    <ShellContent
-        Title="Usuarios"
-        ContentTemplate="{DataTemplate views:UsuariosPage}"
-        Route="Usuarios" />
+        <ShellContent
+            Title="Más"
+            ContentTemplate="{DataTemplate views:MasPage}"
+            Route="Mas" />
+    </TabBar>
 
 </Shell>

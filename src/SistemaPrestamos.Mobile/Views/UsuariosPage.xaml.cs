@@ -167,6 +167,11 @@ public partial class UsuariosPage : ContentPage
         await Shell.Current.GoToAsync(nameof(RegistrarUsuarioPage));
     }
 
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
     private void MostrarCargando(bool cargando)
     {
         CargandoIndicator.IsVisible = cargando;

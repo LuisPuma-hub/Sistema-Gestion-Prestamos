@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.MasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:SistemaPrestamos.Mobile.Views"
+    Title=""
+    BackgroundColor="#F8F7FC">
+
+    <Grid RowDefinitions="*,Auto">
+    <ScrollView Grid.Row="0">
+        <VerticalStackLayout Spacing="0">
+            <Border
+                BackgroundColor="#512BD4"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 0,0,28,28"
+                Padding="24,48,24,20">
+                <Label
+                    Text="Más opciones"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+            </Border>
+
+            <VerticalStackLayout Padding="16" Spacing="10">
+
+                <Border
+                    Padding="16,14"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPerfilClicked" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12">
+                        <Border
+                            HeightRequest="44" WidthRequest="44"
+                            BackgroundColor="#EDE9FE"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 22"
+                            VerticalOptions="Center">
+                            <Label
+                                Text="👤"
+                                FontSize="20"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                            <Label Text="Mi perfil" FontSize="16" FontAttributes="Bold" TextColor="#111827" />
+                            <Label Text="Datos, huella y contraseña" FontSize="13" TextColor="#6B7280" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Border
+                    x:Name="UsuariosCard"
+                    Padding="16,14"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    IsVisible="False">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnUsuariosClicked" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12">
+                        <Border
+                            HeightRequest="44" WidthRequest="44"
+                            BackgroundColor="#EDE9FE"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 22"
+                            VerticalOptions="Center">
+                            <Label
+                                Text="👥"
+                                FontSize="20"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                            <Label Text="Usuarios" FontSize="16" FontAttributes="Bold" TextColor="#111827" />
+                            <Label Text="Solo administradores" FontSize="13" TextColor="#6B7280" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+        <views:BarraTabs Grid.Row="1" TabActual="Mas" />
+
+    </Grid>
+
+</ContentPage>

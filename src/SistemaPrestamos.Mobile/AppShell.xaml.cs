@@ -39,6 +39,14 @@ public partial class AppShell : Shell
             typeof(Views.HistorialWhatsappPage));
 
         Routing.RegisterRoute(
+            nameof(Views.PerfilPage),
+            typeof(Views.PerfilPage));
+
+        Routing.RegisterRoute(
+            nameof(Views.UsuariosPage),
+            typeof(Views.UsuariosPage));
+
+        Routing.RegisterRoute(
             nameof(Views.RegistrarUsuarioPage),
             typeof(Views.RegistrarUsuarioPage));
     }

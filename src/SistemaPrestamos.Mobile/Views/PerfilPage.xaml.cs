@@ -243,6 +243,11 @@ public partial class PerfilPage : ContentPage
         }
     }
 
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
     private void MostrarCargando(bool cargando)
     {
         CargandoIndicator.IsVisible = cargando;

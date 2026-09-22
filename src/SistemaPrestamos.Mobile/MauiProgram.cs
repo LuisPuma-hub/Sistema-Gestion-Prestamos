@@ -77,6 +77,7 @@ public static class MauiProgram
         builder.Services.AddTransient<DetalleMorosidadPage>();
         builder.Services.AddTransient<HistorialWhatsappPage>();
         builder.Services.AddTransient<PerfilPage>();
+        builder.Services.AddTransient<MasPage>();
         builder.Services.AddTransient<UsuariosPage>();
         builder.Services.AddTransient<RegistrarUsuarioPage>();
         builder.Services.AddTransient<BloqueoPage>();

@@ -3,10 +3,11 @@
     x:Class="SistemaPrestamos.Mobile.Views.MorosidadPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:SistemaPrestamos.Mobile.Views"
     Title=""
     BackgroundColor="#F8F7FC">
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
 
         <VerticalStackLayout Grid.Row="0" Spacing="0">
             <Border
@@ -157,6 +158,8 @@
                 IsVisible="False"
                 Clicked="OnEvaluarClicked" />
         </Grid>
+
+        <views:BarraTabs Grid.Row="3" TabActual="Morosidad" />
 
     </Grid>
 

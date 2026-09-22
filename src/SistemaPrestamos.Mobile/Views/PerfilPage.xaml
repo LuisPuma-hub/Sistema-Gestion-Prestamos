@@ -13,13 +13,28 @@
                 BackgroundColor="#512BD4"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
-                Padding="24,56,24,32">
-                <Label
-                    Text="Mi perfil"
-                    FontSize="24"
-                    FontAttributes="Bold"
-                    TextColor="White"
-                    HorizontalTextAlignment="Center" />
+                Padding="16,48,16,32">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Button
+                        Grid.Column="0"
+                        Text="←"
+                        FontSize="22"
+                        TextColor="White"
+                        BackgroundColor="Transparent"
+                        WidthRequest="44"
+                        HeightRequest="44"
+                        Padding="0"
+                        VerticalOptions="Center"
+                        Clicked="OnVolverClicked" />
+                    <Label
+                        Grid.Column="1"
+                        Text="Mi perfil"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalTextAlignment="Center"
+                        VerticalOptions="Center" />
+                </Grid>
             </Border>
 
             <VerticalStackLayout Padding="16,-40,16,16" Spacing="14">
