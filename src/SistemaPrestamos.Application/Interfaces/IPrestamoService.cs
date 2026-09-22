@@ -16,6 +16,8 @@ public interface IPrestamoService
 
     Task<bool> AprobarAsync(Guid id);
 
+    Task<bool> AnularAsync(Guid id, string motivo);
+
     Task CrearPeriodosPendientesAsync(
         Guid prestamoId,
         DateTime fechaReferencia);

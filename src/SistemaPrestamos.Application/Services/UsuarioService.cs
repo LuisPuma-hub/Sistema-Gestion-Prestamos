@@ -97,6 +97,56 @@ public class UsuarioService : IUsuarioService
         return MapearDto(usuario);
     }
 
+    public async Task CambiarClaveAsync(
+        Guid id,
+        string actual,
+        string nueva)
+    {
+        var usuario = await _usuarioRepository.ObtenerPorIdAsync(id);
+
+        if (usuario is null)
+            throw new InvalidOperationException(
+                "El usuario no existe.");
+
+        var verificacion = _passwordHasher.VerifyHashedPassword(
+            usuario,
+            usuario.PasswordHash,
+            actual ?? string.Empty);
+
+        if (verificacion == PasswordVerificationResult.Failed)
+            throw new InvalidOperationException(
+                "La contraseña actual es incorrecta.");
+
+        await GuardarNuevaClaveAsync(usuario, nueva);
+    }
+
+    public async Task ResetearClaveAsync(Guid id, string nueva)
+    {
+        var usuario = await _usuarioRepository.ObtenerPorIdAsync(id);
+
+        if (usuario is null)
+            throw new InvalidOperationException(
+                "El usuario no existe.");
+
+        await GuardarNuevaClaveAsync(usuario, nueva);
+    }
+
+    private async Task GuardarNuevaClaveAsync(
+        Usuario usuario,
+        string nueva)
+    {
+        if (string.IsNullOrWhiteSpace(nueva) || nueva.Length < 8)
+            throw new InvalidOperationException(
+                "La contraseña debe tener al menos 8 caracteres.");
+
+        usuario.PasswordHash = _passwordHasher.HashPassword(
+            usuario,
+            nueva);
+
+        await _usuarioRepository.ActualizarAsync(usuario);
+        await _usuarioRepository.GuardarCambiosAsync();
+    }
+
     private static UsuarioDto MapearDto(
         Usuario usuario)
     {

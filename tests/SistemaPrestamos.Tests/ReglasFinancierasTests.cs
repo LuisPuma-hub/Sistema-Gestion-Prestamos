@@ -39,7 +39,8 @@ public class ReglasFinancierasTests : IDisposable
         _prestamos = new PrestamoService(
             repoPrestamo,
             repoCliente,
-            repoPeriodo);
+            repoPeriodo,
+            repoPago);
 
         var periodos = new PeriodoInteresService(
             repoPrestamo,
@@ -277,5 +278,73 @@ public class ReglasFinancierasTests : IDisposable
 
         Assert.NotNull(mora);
         Assert.False(mora.Activa);
+    }
+
+    [Fact]
+    public async Task Anular_Pendiente_QuedaAnulado()
+    {
+        var cliente = await CrearClienteActivoAsync();
+
+        var creado = await _prestamos.CrearAsync(new CrearPrestamoDto
+        {
+            ClienteId = cliente,
+            CapitalInicial = 300m,
+            FechaInicio = DateTime.UtcNow
+        });
+
+        var ok = await _prestamos.AnularAsync(
+            creado.Id,
+            "Cliente desistió del préstamo.");
+
+        Assert.True(ok);
+
+        var prestamo = await _prestamos.ObtenerPorIdAsync(creado.Id);
+
+        Assert.NotNull(prestamo);
+        Assert.Equal("Anulado", prestamo.Estado);
+    }
+
+    [Fact]
+    public async Task Anular_ConPagos_SeRechaza()
+    {
+        var cliente = await CrearClienteActivoAsync();
+        var id = await CrearPrestamoActivoAsync(cliente, 300m);
+
+        await _pagos.RegistrarAsync(new CrearPagoDto
+        {
+            PrestamoId = id,
+            Monto = 15m,
+            FechaPago = DateTime.UtcNow
+        });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _prestamos.AnularAsync(id, "Motivo válido de prueba."));
+    }
+
+    [Fact]
+    public async Task Anular_SinMotivoValido_SeRechaza()
+    {
+        var cliente = await CrearClienteActivoAsync();
+        var id = await CrearPrestamoActivoAsync(cliente, 300m);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _prestamos.AnularAsync(id, "corto"));
+    }
+
+    [Fact]
+    public async Task Anular_Cancelado_SeRechaza()
+    {
+        var cliente = await CrearClienteActivoAsync();
+        var id = await CrearPrestamoActivoAsync(cliente, 100m);
+
+        await _pagos.RegistrarAsync(new CrearPagoDto
+        {
+            PrestamoId = id,
+            Monto = 105m,
+            FechaPago = DateTime.UtcNow
+        });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _prestamos.AnularAsync(id, "Motivo válido de prueba."));
     }
 }

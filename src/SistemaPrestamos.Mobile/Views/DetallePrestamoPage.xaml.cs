@@ -62,6 +62,11 @@ public partial class DetallePrestamoPage : ContentPage
                 string.Equals(_prestamo.Estado, "Pendiente", StringComparison.OrdinalIgnoreCase)
                 && await EsAdminAsync();
 
+            AnularButton.IsVisible =
+                (string.Equals(_prestamo.Estado, "Pendiente", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(_prestamo.Estado, "Activo", StringComparison.OrdinalIgnoreCase))
+                && await EsAdminAsync();
+
             var estaActivo = string.Equals(
                 _prestamo.Estado,
                 "Activo",
@@ -147,8 +152,62 @@ public partial class DetallePrestamoPage : ContentPage
             $"{nameof(RegistrarPagoPage)}?prestamoId={_prestamo.Id}");
     }
 
-    private async void OnMorosidadClicked(object? sender, EventArgs e)
+    private async void OnAnularClicked(object? sender, EventArgs e)
     {
+        if (_prestamo is null)
+        {
+            return;
+        }
+
+        var motivo = await DisplayPromptAsync(
+            "Anular préstamo",
+            "Motivo (10 a 200 caracteres):",
+            "Anular",
+            "Cancelar",
+            maxLength: 200);
+
+        if (string.IsNullOrWhiteSpace(motivo))
+        {
+            return;
+        }
+
+        try
+        {
+            MostrarCargando(true);
+            ErrorLabel.IsVisible = false;
+
+            var (exito, error) = await _prestamoService.AnularAsync(
+                _prestamo.Id,
+                motivo.Trim());
+
+            if (!exito)
+            {
+                MostrarError(error ?? "No se pudo anular el préstamo.");
+                return;
+            }
+
+            await DisplayAlertAsync(
+                "Préstamo anulado",
+                "El préstamo quedó anulado.",
+                "OK");
+
+            await CargarAsync(_prestamo.Id);
+        }
+        catch (HttpRequestException)
+        {
+            MostrarError("No se pudo conectar con el servidor.");
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"Ocurrió un error: {ex.Message}");
+        }
+        finally
+        {
+            MostrarCargando(false);
+        }
+    }
+
+    private async void OnMorosidadClicked(object? sender, EventArgs e)    {
         if (_prestamo is null)
         {
             return;

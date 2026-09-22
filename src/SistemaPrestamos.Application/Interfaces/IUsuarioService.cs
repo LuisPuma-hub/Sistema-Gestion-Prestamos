@@ -9,4 +9,8 @@ public interface IUsuarioService
     Task<UsuarioDto?> ObtenerPorIdAsync(Guid id);
 
     Task<UsuarioDto> CrearAsync(CrearUsuarioDto dto);
+
+    Task CambiarClaveAsync(Guid id, string actual, string nueva);
+
+    Task ResetearClaveAsync(Guid id, string nueva);
 }

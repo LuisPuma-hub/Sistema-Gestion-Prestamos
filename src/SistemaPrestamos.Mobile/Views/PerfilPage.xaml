@@ -63,6 +63,11 @@
                 Text="Cerrar sesión"
                 Clicked="OnCerrarSesionClicked" />
 
+            <Button
+                x:Name="CambiarClaveButton"
+                Text="Cambiar contraseña"
+                Clicked="OnCambiarClaveClicked" />
+
             <ActivityIndicator
                 x:Name="CargandoIndicator"
                 IsVisible="False"

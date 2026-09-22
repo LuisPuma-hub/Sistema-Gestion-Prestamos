@@ -148,6 +148,70 @@ public partial class PerfilPage : ContentPage
         }
     }
 
+    private async void OnCambiarClaveClicked(object? sender, EventArgs e)
+    {
+        var actual = await DisplayPromptAsync(
+            "Cambiar contraseña",
+            "Contraseña actual:",
+            "Siguiente",
+            "Cancelar",
+            maxLength: 100,
+            keyboard: Keyboard.Default);
+
+        if (string.IsNullOrWhiteSpace(actual))
+        {
+            return;
+        }
+
+        var nueva = await DisplayPromptAsync(
+            "Cambiar contraseña",
+            "Nueva contraseña (mínimo 8 caracteres):",
+            "Guardar",
+            "Cancelar",
+            maxLength: 100,
+            keyboard: Keyboard.Default);
+
+        if (string.IsNullOrWhiteSpace(nueva))
+        {
+            return;
+        }
+
+        try
+        {
+            CambiarClaveButton.IsEnabled = false;
+            MostrarCargando(true);
+            ErrorLabel.IsVisible = false;
+
+            var (exito, error) = await _usuarioService.CambiarMiClaveAsync(
+                actual,
+                nueva.Trim());
+
+            if (!exito)
+            {
+                MostrarError(error ?? "No se pudo cambiar la contraseña.");
+                return;
+            }
+
+            await DisplayAlertAsync(
+                "Contraseña actualizada",
+                "Usa la nueva la próxima vez que entres.",
+                "OK");
+        }
+        catch (HttpRequestException)
+        {
+            MostrarError("No se pudo conectar con el servidor.");
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"Ocurrió un error: {ex.Message}");
+        }
+        finally
+        {
+            CambiarClaveButton.IsEnabled = true;
+            MostrarCargando(false);
+        }
+    }
+
     private void MostrarCargando(bool cargando)
     {
         CargandoIndicator.IsVisible = cargando;

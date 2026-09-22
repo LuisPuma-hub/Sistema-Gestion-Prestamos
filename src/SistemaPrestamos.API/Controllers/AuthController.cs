@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaPrestamos.Application.DTOs;
@@ -11,10 +12,14 @@ namespace SistemaPrestamos.API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IUsuarioService _usuarioService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(
+        IAuthService authService,
+        IUsuarioService usuarioService)
     {
         _authService = authService;
+        _usuarioService = usuarioService;
     }
 
     [HttpPost("login")]
@@ -66,5 +71,42 @@ public class AuthController : ControllerBase
         {
             mensaje = "Sesión cerrada."
         });
+    }
+
+    // POST: api/auth/cambiar-clave (usuario autenticado, exige actual)
+    [HttpPost("cambiar-clave")]
+    [Authorize]
+    public async Task<IActionResult> CambiarClave(
+        [FromBody] CambiarClaveDto dto)
+    {
+        try
+        {
+            var idTexto = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(idTexto, out var usuarioId))
+            {
+                return Unauthorized(new
+                {
+                    mensaje = "No se pudo identificar al usuario."
+                });
+            }
+
+            await _usuarioService.CambiarClaveAsync(
+                usuarioId,
+                dto.Actual ?? string.Empty,
+                dto.Nueva);
+
+            return Ok(new
+            {
+                mensaje = "Contraseña actualizada."
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
     }
 }

@@ -63,4 +63,28 @@ public class UsuariosController : ControllerBase
             });
         }
     }
+
+    // PATCH: api/usuarios/{id}/clave (solo ADMIN, reseteo sin clave actual)
+    [HttpPatch("{id:guid}/clave")]
+    public async Task<IActionResult> ResetearClave(
+        Guid id,
+        [FromBody] CambiarClaveDto dto)
+    {
+        try
+        {
+            await _usuarioService.ResetearClaveAsync(id, dto.Nueva);
+
+            return Ok(new
+            {
+                mensaje = "Contraseña actualizada."
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
 }

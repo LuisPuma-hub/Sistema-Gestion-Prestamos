@@ -118,6 +118,38 @@ public class PrestamosController : ControllerBase
             });
         }
     }
+    // PATCH: api/prestamos/{id}/anular (solo ADMIN)
+    [HttpPatch("{id:guid}/anular")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> Anular(
+        Guid id,
+        [FromBody] AnularPrestamoDto dto)
+    {
+        try
+        {
+            var anulado = await _prestamoService.AnularAsync(
+                id,
+                dto.Motivo);
+
+            if (!anulado)
+            {
+                return NotFound(new
+                {
+                    mensaje = "Préstamo no encontrado."
+                });
+            }
+
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
     [HttpPost("{id:guid}/periodos")]
     public async Task<IActionResult> GenerarPeriodos(
         Guid id,

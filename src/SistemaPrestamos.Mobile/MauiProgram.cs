@@ -8,9 +8,9 @@ namespace SistemaPrestamos.Mobile;
 
 public static class MauiProgram
 {
-    // Celular físico por WiFi/USB (red local del PC).
-    // Para volver al emulador: "http://10.0.2.2:5077/".
-    private const string ApiBaseUrl = "http://192.168.18.25:5077/";
+    // Emulador Android. Para celular físico por WiFi:
+    // "http://192.168.18.25:5077/".
+    private const string ApiBaseUrl = "http://10.0.2.2:5077/";
 
     public static MauiApp CreateMauiApp()
     {

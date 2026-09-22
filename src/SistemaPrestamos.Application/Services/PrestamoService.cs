@@ -11,15 +11,18 @@ public class PrestamoService : IPrestamoService
     private readonly IPrestamoRepository _prestamoRepository;
     private readonly IClienteRepository _clienteRepository;
     private readonly IPeriodoInteresRepository _periodoInteresRepository;
+    private readonly IPagoRepository _pagoRepository;
 
     public PrestamoService(
         IPrestamoRepository prestamoRepository,
         IClienteRepository clienteRepository,
-        IPeriodoInteresRepository periodoInteresRepository)
+        IPeriodoInteresRepository periodoInteresRepository,
+        IPagoRepository pagoRepository)
     {
         _prestamoRepository = prestamoRepository;
         _clienteRepository = clienteRepository;
         _periodoInteresRepository = periodoInteresRepository;
+        _pagoRepository = pagoRepository;
     }
 
     public async Task<IEnumerable<PrestamoDto>> ObtenerTodosAsync()
@@ -127,6 +130,51 @@ public class PrestamoService : IPrestamoService
             prestamo.FechaInicio);
 
         await _periodoInteresRepository.GuardarCambiosAsync();
+
+        return true;
+    }
+
+    public async Task<bool> AnularAsync(Guid id, string motivo)
+    {
+        var prestamo =
+            await _prestamoRepository.ObtenerPorIdAsync(id);
+
+        if (prestamo is null)
+            return false;
+
+        if (prestamo.Estado != "Pendiente" &&
+            prestamo.Estado != "Activo")
+            throw new InvalidOperationException(
+                "Solo se pueden anular préstamos pendientes o activos.");
+
+        if (string.IsNullOrWhiteSpace(motivo) ||
+            motivo.Trim().Length < 10 ||
+            motivo.Trim().Length > 200)
+            throw new InvalidOperationException(
+                "El motivo es obligatorio (10 a 200 caracteres).");
+
+        var pagos = await _pagoRepository
+            .ObtenerPorPrestamoAsync(id);
+
+        if (pagos.Any())
+            throw new InvalidOperationException(
+                "No se puede anular un préstamo que ya tiene pagos.");
+
+        // Neutralizar períodos: quedan en "Anulado" sin pendiente
+        // para no contaminar mora ni acumulados.
+        var periodos = await _periodoInteresRepository
+            .ObtenerPorPrestamoAsync(id);
+
+        foreach (var periodo in periodos)
+        {
+            periodo.InteresPendiente = 0;
+            periodo.Estado = "Anulado";
+        }
+
+        prestamo.Estado = "Anulado";
+
+        await _prestamoRepository.ActualizarAsync(prestamo);
+        await _prestamoRepository.GuardarCambiosAsync();
 
         return true;
     }

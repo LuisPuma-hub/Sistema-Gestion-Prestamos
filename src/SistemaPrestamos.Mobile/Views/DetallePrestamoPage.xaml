@@ -46,6 +46,12 @@
                 Clicked="OnAprobarClicked" />
 
             <Button
+                x:Name="AnularButton"
+                Text="Anular préstamo"
+                IsVisible="False"
+                Clicked="OnAnularClicked" />
+
+            <Button
                 x:Name="PagarButton"
                 Text="Registrar pago"
                 Clicked="OnPagarClicked" />
