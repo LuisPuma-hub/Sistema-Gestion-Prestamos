@@ -2,6 +2,8 @@ using Microsoft.Maui.ApplicationModel;
 
 namespace SistemaPrestamos.Mobile.Views;
 
+// Barra de estado morada con iconos claros.
+
 public static class UiHelper
 {
     public static void StatusBarMorada()
