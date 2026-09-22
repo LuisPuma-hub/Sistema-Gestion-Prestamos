@@ -81,7 +81,7 @@ public partial class MainPage : ContentPage
                 .ToList();
 
             PagosHoyValorLabel.Text =
-                $"{cobradosHoy.Count} pagos - S/ {cobradosHoy.Sum(p => p.Monto):N2}";
+                $"S/ {cobradosHoy.Sum(p => p.Monto):N2}";
 
             var morasTask = activos.Select(p =>
                 _morosidadService.EvaluarAsync(p.Id));

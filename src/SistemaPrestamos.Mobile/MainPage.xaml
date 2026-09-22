@@ -67,92 +67,127 @@
                     <Grid
                         ColumnDefinitions="*,*"
                         RowDefinitions="Auto,Auto,Auto"
-                        ColumnSpacing="12"
-                        RowSpacing="12">
+                        ColumnSpacing="10"
+                        RowSpacing="10">
 
                         <Border
                             Grid.Row="0" Grid.Column="0"
-                            Padding="14"
+                            Padding="12,10"
                             BackgroundColor="White"
                             StrokeThickness="0"
-                            StrokeShape="RoundRectangle 16">
-                            <VerticalStackLayout Spacing="2">
-                                <HorizontalStackLayout Spacing="6">
-                                    <Label Text="Clientes" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="◉" FontSize="14" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    </Border>
-                                </HorizontalStackLayout>
-                                <Label x:Name="ClientesValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#512BD4" />
-                            </VerticalStackLayout>
+                            StrokeShape="RoundRectangle 14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="36" WidthRequest="36"
+                                    BackgroundColor="#F3F4F6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center">
+                                    <Label Text="◉" FontSize="16" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                    <Label Text="Clientes" FontSize="12" TextColor="#6B7280" />
+                                    <Label x:Name="ClientesValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#512BD4" />
+                                </VerticalStackLayout>
+                            </Grid>
                         </Border>
 
                         <Border
                             Grid.Row="0" Grid.Column="1"
-                            Padding="14"
+                            Padding="12,10"
                             BackgroundColor="White"
                             StrokeThickness="0"
-                            StrokeShape="RoundRectangle 16">
-                            <VerticalStackLayout Spacing="2">
-                                <HorizontalStackLayout Spacing="6">
-                                    <Label Text="Préstamos activos" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="▤" FontSize="14" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    </Border>
-                                </HorizontalStackLayout>
-                                <Label x:Name="PrestamosValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#512BD4" />
-                            </VerticalStackLayout>
+                            StrokeShape="RoundRectangle 14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="36" WidthRequest="36"
+                                    BackgroundColor="#F3F4F6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center">
+                                    <Label Text="▤" FontSize="16" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                    <Label Text="Préstamos" FontSize="12" TextColor="#6B7280" />
+                                    <Label x:Name="PrestamosValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#512BD4" />
+                                </VerticalStackLayout>
+                            </Grid>
                         </Border>
 
                         <Border
                             Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                            Padding="14"
+                            Padding="12,10"
                             BackgroundColor="White"
                             StrokeThickness="0"
-                            StrokeShape="RoundRectangle 16">
-                            <VerticalStackLayout Spacing="2">
-                                <HorizontalStackLayout Spacing="6">
-                                    <Label Text="Capital pendiente" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="$" FontSize="14" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    </Border>
-                                </HorizontalStackLayout>
-                                <Label x:Name="CapitalValorLabel" Text="-" FontSize="24" FontAttributes="Bold" TextColor="#D97706" />
-                            </VerticalStackLayout>
+                            StrokeShape="RoundRectangle 14">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="36" WidthRequest="36"
+                                    BackgroundColor="#F3F4F6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center">
+                                    <Label Text="$" FontSize="16" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label
+                                    Grid.Column="1"
+                                    Text="Capital pendiente"
+                                    FontSize="13"
+                                    TextColor="#6B7280"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="2"
+                                    x:Name="CapitalValorLabel"
+                                    Text="-"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    TextColor="#D97706"
+                                    VerticalOptions="Center" />
+                            </Grid>
                         </Border>
 
                         <Border
                             Grid.Row="2" Grid.Column="0"
-                            Padding="14"
+                            Padding="12,10"
                             BackgroundColor="White"
                             StrokeThickness="0"
-                            StrokeShape="RoundRectangle 16">
-                            <VerticalStackLayout Spacing="2">
-                                <HorizontalStackLayout Spacing="6">
-                                    <Label Text="En mora" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="!" FontSize="14" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    </Border>
-                                </HorizontalStackLayout>
-                                <Label x:Name="MoraValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#DC2626" />
-                            </VerticalStackLayout>
+                            StrokeShape="RoundRectangle 14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="36" WidthRequest="36"
+                                    BackgroundColor="#F3F4F6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center">
+                                    <Label Text="!" FontSize="16" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                    <Label Text="En mora" FontSize="12" TextColor="#6B7280" />
+                                    <Label x:Name="MoraValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#DC2626" />
+                                </VerticalStackLayout>
+                            </Grid>
                         </Border>
 
                         <Border
                             Grid.Row="2" Grid.Column="1"
-                            Padding="14"
+                            Padding="12,10"
                             BackgroundColor="White"
                             StrokeThickness="0"
-                            StrokeShape="RoundRectangle 16">
-                            <VerticalStackLayout Spacing="2">
-                                <HorizontalStackLayout Spacing="6">
-                                    <Label Text="Cobrado hoy" FontSize="13" TextColor="#6B7280" />
-                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
-                                        <Label Text="✓" FontSize="14" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    </Border>
-                                </HorizontalStackLayout>
-                                <Label x:Name="PagosHoyValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#16A34A" />
-                            </VerticalStackLayout>
+                            StrokeShape="RoundRectangle 14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="36" WidthRequest="36"
+                                    BackgroundColor="#F3F4F6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center">
+                                    <Label Text="✓" FontSize="16" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                    <Label Text="Cobrado hoy" FontSize="12" TextColor="#6B7280" />
+                                    <Label x:Name="PagosHoyValorLabel" Text="-" FontSize="17" FontAttributes="Bold" TextColor="#16A34A" />
+                                </VerticalStackLayout>
+                            </Grid>
                         </Border>
 
                     </Grid>
