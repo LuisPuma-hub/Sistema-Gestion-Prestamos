@@ -260,6 +260,26 @@ public class ClienteService
             : error);
     }
 
+    public async Task<(bool Exito, string? Resumen, string? Error)> EliminarCascadaAsync(
+        Guid id)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.DeleteAsync(
+            $"api/Clientes/{id}/cascada");
+
+        var contenido = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return (false, null, string.IsNullOrWhiteSpace(contenido)
+                ? $"Error del servidor: {(int)response.StatusCode}"
+                : contenido);
+        }
+
+        return (true, contenido, null);
+    }
+
     public async Task<(bool Exito, string? Error)> CambiarEstadoAsync(
         Guid id,
         string estado)

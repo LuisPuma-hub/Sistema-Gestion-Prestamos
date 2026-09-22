@@ -229,6 +229,26 @@ public class ClientesController : ControllerBase
         });
     }
 
+    // DELETE: api/clientes/{id}/cascada (solo ADMIN, borra todo)
+    [HttpDelete("{id:guid}/cascada")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<ActionResult<ResumenCascada>> EliminarCascada(Guid id)
+    {
+        try
+        {
+            var resumen = await _clienteService.EliminarCascadaAsync(id);
+
+            return Ok(resumen);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
     // PATCH: api/clientes/{id}/estado
     [HttpPatch("{id:guid}/estado")]
 public async Task<IActionResult> CambiarEstado(

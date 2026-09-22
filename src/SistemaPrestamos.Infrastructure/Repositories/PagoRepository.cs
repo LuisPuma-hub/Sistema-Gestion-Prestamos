@@ -45,6 +45,30 @@ public class PagoRepository : IPagoRepository
         return pago;
     }
 
+    public Task EliminarAsync(Pago pago)
+    {
+        var rastreado = _context.ChangeTracker.Entries<Pago>()
+            .FirstOrDefault(e => e.Entity.Id == pago.Id);
+
+        if (rastreado is not null)
+        {
+            rastreado.State = EntityState.Deleted;
+        }
+        else
+        {
+            _context.Pagos.Remove(pago);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<int> EliminarPorPrestamoAsync(Guid prestamoId)
+    {
+        return await _context.Pagos
+            .Where(x => x.PrestamoId == prestamoId)
+            .ExecuteDeleteAsync();
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

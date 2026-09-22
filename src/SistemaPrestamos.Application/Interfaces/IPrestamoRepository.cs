@@ -14,5 +14,9 @@ public interface IPrestamoRepository
 
     Task ActualizarAsync(Prestamo prestamo);
 
+    Task EliminarAsync(Prestamo prestamo);
+
+    Task<int> EliminarPorClienteAsync(Guid clienteId);
+
     Task GuardarCambiosAsync();
 }

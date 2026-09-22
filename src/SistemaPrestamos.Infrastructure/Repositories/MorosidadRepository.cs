@@ -42,6 +42,30 @@ public class MorosidadRepository : IMorosidadRepository
         return Task.CompletedTask;
     }
 
+    public Task EliminarAsync(Morosidad morosidad)
+    {
+        var rastreado = _context.ChangeTracker.Entries<Morosidad>()
+            .FirstOrDefault(e => e.Entity.Id == morosidad.Id);
+
+        if (rastreado is not null)
+        {
+            rastreado.State = EntityState.Deleted;
+        }
+        else
+        {
+            _context.Morosidades.Remove(morosidad);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<int> EliminarPorPrestamoAsync(Guid prestamoId)
+    {
+        return await _context.Morosidades
+            .Where(x => x.PrestamoId == prestamoId)
+            .ExecuteDeleteAsync();
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

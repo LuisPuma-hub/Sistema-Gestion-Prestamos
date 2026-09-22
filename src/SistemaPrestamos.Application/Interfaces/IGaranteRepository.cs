@@ -14,5 +14,7 @@ public interface IGaranteRepository
 
     Task EliminarAsync(Garante garante);
 
+    Task<int> EliminarPorClienteAsync(Guid clienteId);
+
     Task GuardarCambiosAsync();
 }

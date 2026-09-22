@@ -8,5 +8,9 @@ public interface IMensajeWhatsappRepository
 
     Task<MensajeWhatsapp> CrearAsync(MensajeWhatsapp mensaje);
 
+    Task EliminarAsync(MensajeWhatsapp mensaje);
+
+    Task<int> EliminarPorClienteAsync(Guid clienteId);
+
     Task GuardarCambiosAsync();
 }

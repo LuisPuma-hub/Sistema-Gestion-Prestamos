@@ -10,7 +10,8 @@ public interface IWhatsappService
         string numeroDestino,
         string nombrePlantilla,
         string contenido,
-        string idioma = "es_PE");
+        string idioma = "es_PE",
+        List<string>? parametros = null);
 
     Task<MensajeWhatsapp> EnviarTextoAsync(
         Guid? clienteId,
@@ -21,6 +22,11 @@ public interface IWhatsappService
     Task<MensajeWhatsapp> EnviarRecordatorioAsync(
         Guid clienteId,
         Guid? prestamoId);
+
+    Task<MensajeWhatsapp> EnviarPlantillaCatalogoAsync(
+        Guid clienteId,
+        Guid? prestamoId,
+        string plantilla);
 
     Task<IEnumerable<MensajeWhatsapp>> ObtenerHistorialAsync(
         Guid clienteId);

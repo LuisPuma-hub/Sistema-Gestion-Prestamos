@@ -12,5 +12,9 @@ public interface IMorosidadRepository
 
     Task ActualizarAsync(Morosidad morosidad);
 
+    Task EliminarAsync(Morosidad morosidad);
+
+    Task<int> EliminarPorPrestamoAsync(Guid prestamoId);
+
     Task GuardarCambiosAsync();
 }

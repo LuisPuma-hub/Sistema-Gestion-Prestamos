@@ -30,6 +30,30 @@ public class MensajeWhatsappRepository : IMensajeWhatsappRepository
         return mensaje;
     }
 
+    public Task EliminarAsync(MensajeWhatsapp mensaje)
+    {
+        var rastreado = _context.ChangeTracker.Entries<MensajeWhatsapp>()
+            .FirstOrDefault(e => e.Entity.Id == mensaje.Id);
+
+        if (rastreado is not null)
+        {
+            rastreado.State = EntityState.Deleted;
+        }
+        else
+        {
+            _context.MensajesWhatsapp.Remove(mensaje);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<int> EliminarPorClienteAsync(Guid clienteId)
+    {
+        return await _context.MensajesWhatsapp
+            .Where(x => x.ClienteId == clienteId)
+            .ExecuteDeleteAsync();
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

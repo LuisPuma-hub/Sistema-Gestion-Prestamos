@@ -45,8 +45,26 @@ public class GaranteRepository : IGaranteRepository
 
     public Task EliminarAsync(Garante garante)
     {
-        _context.Garantes.Remove(garante);
+        var rastreado = _context.ChangeTracker.Entries<Garante>()
+            .FirstOrDefault(e => e.Entity.Id == garante.Id);
+
+        if (rastreado is not null)
+        {
+            rastreado.State = EntityState.Deleted;
+        }
+        else
+        {
+            _context.Garantes.Remove(garante);
+        }
+
         return Task.CompletedTask;
+    }
+
+    public async Task<int> EliminarPorClienteAsync(Guid clienteId)
+    {
+        return await _context.Garantes
+            .Where(x => x.ClienteId == clienteId)
+            .ExecuteDeleteAsync();
     }
 
     public async Task GuardarCambiosAsync()

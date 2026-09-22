@@ -253,6 +253,17 @@ public partial class DetallePrestamoPage : ContentPage
         return string.Equals(rol, "Administrador", StringComparison.OrdinalIgnoreCase);
     }
 
+    private async void OnWhatsappClicked(object? sender, EventArgs e)
+    {
+        if (_prestamo is null)
+        {
+            return;
+        }
+
+        await Shell.Current.GoToAsync(
+            $"{nameof(HistorialWhatsappPage)}?clienteId={_prestamo.ClienteId}&prestamoId={_prestamo.Id}");
+    }
+
     private void MostrarCargando(bool cargando)
     {
         CargandoIndicator.IsVisible = cargando;
@@ -261,7 +272,7 @@ public partial class DetallePrestamoPage : ContentPage
 
     private void MostrarError(string mensaje)
     {
-        ErrorLabel.Text = mensaje;
+        ErrorLabel.Text = TextoError.Limpiar(mensaje);
         ErrorLabel.IsVisible = true;
     }
 }

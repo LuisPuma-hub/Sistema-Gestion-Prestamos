@@ -11,5 +11,9 @@ public interface IPeriodoInteresRepository
 
     Task<PeriodoInteres?> ObtenerPorIdAsync(Guid id);
 
+    Task EliminarAsync(PeriodoInteres periodo);
+
+    Task<int> EliminarPorPrestamoAsync(Guid prestamoId);
+
     Task GuardarCambiosAsync();
 }

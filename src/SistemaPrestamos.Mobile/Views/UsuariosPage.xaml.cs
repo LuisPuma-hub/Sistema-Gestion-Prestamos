@@ -120,7 +120,7 @@ public partial class UsuariosPage : ContentPage
         {
             await DisplayAlertAsync(
                 "No se pudo resetear",
-                error ?? "Inténtalo de nuevo.",
+                TextoError.Limpiar(error, "Inténtalo de nuevo."),
                 "OK");
             return;
         }
@@ -150,7 +150,7 @@ public partial class UsuariosPage : ContentPage
         {
             await DisplayAlertAsync(
                 "No se puede eliminar",
-                error ?? "Inténtalo de nuevo.",
+                TextoError.Limpiar(error, "Inténtalo de nuevo."),
                 "OK");
             return;
         }

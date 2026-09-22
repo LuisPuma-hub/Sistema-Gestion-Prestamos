@@ -220,7 +220,7 @@ public partial class PerfilPage : ContentPage
 
     private void MostrarError(string mensaje)
     {
-        ErrorLabel.Text = mensaje;
+        ErrorLabel.Text = TextoError.Limpiar(mensaje);
         ErrorLabel.IsVisible = true;
     }
 }

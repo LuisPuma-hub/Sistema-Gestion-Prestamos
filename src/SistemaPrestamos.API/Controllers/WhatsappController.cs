@@ -21,12 +21,22 @@ public class WhatsappController : ControllerBase
     {
         public string Numero { get; set; } = string.Empty;
         public string? Texto { get; set; }
+        public string? Plantilla { get; set; }
+        public string Idioma { get; set; } = "es_PE";
+        public List<string> Parametros { get; set; } = new();
     }
 
     public class RecordatorioDto
     {
         public Guid ClienteId { get; set; }
         public Guid? PrestamoId { get; set; }
+    }
+
+    public class EnviarPlantillaDto
+    {
+        public Guid ClienteId { get; set; }
+        public Guid? PrestamoId { get; set; }
+        public string Plantilla { get; set; } = string.Empty;
     }
 
     // POST: api/whatsapp/probar
@@ -36,6 +46,25 @@ public class WhatsappController : ControllerBase
     {
         try
         {
+            if (!string.IsNullOrWhiteSpace(dto.Plantilla))
+            {
+                var tpl = await _whatsappService.EnviarPlantillaAsync(
+                    null,
+                    null,
+                    dto.Numero,
+                    dto.Plantilla,
+                    $"Plantilla {dto.Plantilla}.",
+                    string.IsNullOrWhiteSpace(dto.Idioma) ? "es_PE" : dto.Idioma,
+                    dto.Parametros);
+
+                return Ok(new
+                {
+                    mensaje = "Plantilla enviada.",
+                    id = tpl.Id,
+                    idExterno = tpl.IdentificadorExterno
+                });
+            }
+
             if (!string.IsNullOrWhiteSpace(dto.Texto))
             {
                 var texto = await _whatsappService.EnviarTextoAsync(
@@ -86,6 +115,42 @@ public class WhatsappController : ControllerBase
             var mensaje = await _whatsappService.EnviarRecordatorioAsync(
                 dto.ClienteId,
                 dto.PrestamoId);
+
+            return Ok(mensaje);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
+    // GET: api/whatsapp/plantillas
+    [HttpGet("plantillas")]
+    public ActionResult<object> Plantillas()
+    {
+        return Ok(SistemaPrestamos.Application.Services.WhatsappService
+            .PlantillasDisponibles
+            .Select(p => new
+            {
+                nombre = p.Nombre,
+                descripcion = p.Descripcion
+            }));
+    }
+
+    // POST: api/whatsapp/enviar-plantilla
+    [HttpPost("enviar-plantilla")]
+    public async Task<ActionResult<MensajeWhatsapp>> EnviarPlantilla(
+        [FromBody] EnviarPlantillaDto dto)
+    {
+        try
+        {
+            var mensaje = await _whatsappService.EnviarPlantillaCatalogoAsync(
+                dto.ClienteId,
+                dto.PrestamoId,
+                dto.Plantilla);
 
             return Ok(mensaje);
         }

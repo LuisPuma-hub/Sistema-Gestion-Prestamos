@@ -75,7 +75,15 @@ public partial class HistorialWhatsappPage : ContentPage
         }
     }
 
-    private async void OnRecordatorioClicked(object? sender, EventArgs e)
+    private static readonly Dictionary<string, string> _plantillas = new()
+    {
+        ["Recordatorio de pago"] = "recordatorio_pago_v2",
+        ["Aviso de mora"] = "aviso_mora",
+        ["Confirmación de pago"] = "confirmacion_pago",
+        ["Préstamo aprobado"] = "prestamo_aprobado"
+    };
+
+    private async void OnEnviarMensajeClicked(object? sender, EventArgs e)
     {
         if (!Guid.TryParse(ClienteIdTexto, out var clienteId))
         {
@@ -83,13 +91,35 @@ public partial class HistorialWhatsappPage : ContentPage
             return;
         }
 
+        var opcion = await DisplayActionSheetAsync(
+            "Plantilla a enviar",
+            "Cancelar",
+            null,
+            _plantillas.Keys.ToArray());
+
+        if (string.IsNullOrWhiteSpace(opcion) ||
+            !_plantillas.TryGetValue(opcion, out var plantilla))
+        {
+            return;
+        }
+
         Guid? prestamoId = Guid.TryParse(PrestamoIdTexto, out var p)
             ? p
             : null;
 
+        if ((plantilla is "recordatorio_pago_v2" or "aviso_mora"
+                or "prestamo_aprobado") && prestamoId is null)
+        {
+            await DisplayAlertAsync(
+                "Falta el préstamo",
+                "Esta plantilla necesita un préstamo. Ábrela desde el detalle del préstamo.",
+                "OK");
+            return;
+        }
+
         var confirmar = await DisplayAlertAsync(
-            "Enviar recordatorio",
-            "¿Enviar recordatorio de pago por WhatsApp?",
+            opcion,
+            $"¿Enviar '{opcion}' por WhatsApp?",
             "Sí",
             "No");
 
@@ -105,16 +135,19 @@ public partial class HistorialWhatsappPage : ContentPage
             ErrorLabel.IsVisible = false;
 
             var (exito, error) = await _whatsappService
-                .EnviarRecordatorioAsync(clienteId, prestamoId);
+                .EnviarPlantillaAsync(clienteId, prestamoId, plantilla);
 
             if (!exito)
             {
-                MostrarError(error ?? "No se pudo enviar el recordatorio.");
+                await DisplayAlertAsync(
+                    "No se pudo enviar",
+                    TextoError.Limpiar(error, "Inténtalo de nuevo."),
+                    "OK");
                 return;
             }
 
             await DisplayAlertAsync(
-                "Recordatorio enviado",
+                "Mensaje enviado",
                 "El mensaje fue enviado por WhatsApp.",
                 "OK");
 
@@ -143,7 +176,7 @@ public partial class HistorialWhatsappPage : ContentPage
 
     private void MostrarError(string mensaje)
     {
-        ErrorLabel.Text = mensaje;
+        ErrorLabel.Text = TextoError.Limpiar(mensaje);
         ErrorLabel.IsVisible = true;
     }
 }

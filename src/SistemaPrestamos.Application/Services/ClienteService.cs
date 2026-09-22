@@ -10,15 +10,30 @@ public class ClienteService : IClienteService
 {
     private readonly IClienteRepository _clienteRepository;
     private readonly IPrestamoRepository _prestamoRepository;
+    private readonly IPagoRepository _pagoRepository;
+    private readonly IPeriodoInteresRepository _periodoRepository;
+    private readonly IMorosidadRepository _morosidadRepository;
+    private readonly IMensajeWhatsappRepository _mensajeRepository;
+    private readonly IGaranteRepository _garanteRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public ClienteService(
         IClienteRepository clienteRepository,
         IPrestamoRepository prestamoRepository,
+        IPagoRepository pagoRepository,
+        IPeriodoInteresRepository periodoRepository,
+        IMorosidadRepository morosidadRepository,
+        IMensajeWhatsappRepository mensajeRepository,
+        IGaranteRepository garanteRepository,
         IHttpContextAccessor httpContextAccessor)
     {
         _clienteRepository = clienteRepository;
         _prestamoRepository = prestamoRepository;
+        _pagoRepository = pagoRepository;
+        _periodoRepository = periodoRepository;
+        _morosidadRepository = morosidadRepository;
+        _mensajeRepository = mensajeRepository;
+        _garanteRepository = garanteRepository;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -131,19 +146,117 @@ public class ClienteService : IClienteService
             return false;
         }
 
-        var prestamos = await _prestamoRepository
-            .ObtenerPorClienteAsync(id);
+        var resumen = await ContarRegistrosAsync(id);
 
-        if (prestamos.Any())
+        if (resumen.Prestamos > 0)
         {
             throw new InvalidOperationException(
-                "No se puede eliminar un cliente con préstamos registrados.");
+                $"Tiene {resumen.Prestamos} préstamo(s), " +
+                $"{resumen.Pagos} pago(s), " +
+                $"{resumen.Mensajes} mensaje(s) y " +
+                $"{resumen.Garantes} aval(es). " +
+                $"Use eliminar todo si desea borrarlos.");
         }
 
         await _clienteRepository.EliminarAsync(cliente);
         await _clienteRepository.GuardarCambiosAsync();
 
         return true;
+    }
+
+    public async Task<ResumenCascada> EliminarCascadaAsync(Guid id)
+    {
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(id);
+
+        if (cliente is null)
+        {
+            throw new InvalidOperationException(
+                "Cliente no encontrado.");
+        }
+
+        var resumen = new ResumenCascada();
+        var prestamos = (await _prestamoRepository
+            .ObtenerPorClienteAsync(id)).ToList();
+
+        resumen.Prestamos = prestamos.Count;
+
+        foreach (var prestamo in prestamos)
+        {
+            var pagos = (await _pagoRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id)).ToList();
+
+            foreach (var pago in pagos)
+            {
+                await _pagoRepository.EliminarAsync(pago);
+                resumen.Pagos++;
+            }
+
+            var periodos = (await _periodoRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id)).ToList();
+
+            foreach (var periodo in periodos)
+            {
+                await _periodoRepository.EliminarAsync(periodo);
+                resumen.Periodos++;
+            }
+
+            var morosidad = await _morosidadRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id);
+
+            if (morosidad is not null)
+            {
+                await _morosidadRepository.EliminarAsync(morosidad);
+                resumen.Morosidades++;
+            }
+
+            await _prestamoRepository.EliminarAsync(prestamo);
+        }
+
+        var mensajes = (await _mensajeRepository
+            .ObtenerPorClienteAsync(id)).ToList();
+
+        foreach (var mensaje in mensajes)
+        {
+            await _mensajeRepository.EliminarAsync(mensaje);
+            resumen.Mensajes++;
+        }
+
+        var garantes = (await _garanteRepository
+            .ObtenerPorClienteAsync(id)).ToList();
+
+        foreach (var garante in garantes)
+        {
+            await _garanteRepository.EliminarAsync(garante);
+            resumen.Garantes++;
+        }
+
+        await _clienteRepository.EliminarAsync(cliente);
+        await _clienteRepository.GuardarCambiosAsync();
+
+        return resumen;
+    }
+
+    private async Task<ResumenCascada> ContarRegistrosAsync(Guid clienteId)
+    {
+        var resumen = new ResumenCascada();
+        var prestamos = (await _prestamoRepository
+            .ObtenerPorClienteAsync(clienteId)).ToList();
+
+        resumen.Prestamos = prestamos.Count;
+
+        foreach (var prestamo in prestamos)
+        {
+            resumen.Pagos += (await _pagoRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id)).Count();
+        }
+
+        resumen.Mensajes = (await _mensajeRepository
+            .ObtenerPorClienteAsync(clienteId)).Count();
+
+        resumen.Garantes = (await _garanteRepository
+            .ObtenerPorClienteAsync(clienteId)).Count();
+
+        return resumen;
     }
 
     public async Task<bool> CambiarEstadoAsync(Guid id, string estado)

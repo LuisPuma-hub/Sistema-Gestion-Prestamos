@@ -59,6 +59,30 @@ public class PrestamoRepository : IPrestamoRepository
         return Task.CompletedTask;
     }
 
+    public Task EliminarAsync(Prestamo prestamo)
+    {
+        var rastreado = _context.ChangeTracker.Entries<Prestamo>()
+            .FirstOrDefault(e => e.Entity.Id == prestamo.Id);
+
+        if (rastreado is not null)
+        {
+            rastreado.State = EntityState.Deleted;
+        }
+        else
+        {
+            _context.Prestamos.Remove(prestamo);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<int> EliminarPorClienteAsync(Guid clienteId)
+    {
+        return await _context.Prestamos
+            .Where(x => x.ClienteId == clienteId)
+            .ExecuteDeleteAsync();
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

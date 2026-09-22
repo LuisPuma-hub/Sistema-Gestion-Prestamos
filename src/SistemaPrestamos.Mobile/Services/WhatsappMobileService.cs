@@ -70,4 +70,27 @@ public class WhatsappMobileService
             ? $"Error del servidor: {(int)response.StatusCode}"
             : error);
     }
+
+    public async Task<(bool Exito, string? Error)> EnviarPlantillaAsync(
+        Guid clienteId,
+        Guid? prestamoId,
+        string plantilla)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/Whatsapp/enviar-plantilla",
+            new { clienteId, prestamoId, plantilla });
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
 }

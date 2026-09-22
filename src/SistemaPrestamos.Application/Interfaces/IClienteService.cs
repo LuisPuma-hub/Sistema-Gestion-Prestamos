@@ -18,5 +18,7 @@ public interface IClienteService
 
     Task<bool> EliminarAsync(Guid id);
 
+    Task<ResumenCascada> EliminarCascadaAsync(Guid id);
+
     Task<bool> ActualizarFotoAsync(Guid id, string ruta);
 }

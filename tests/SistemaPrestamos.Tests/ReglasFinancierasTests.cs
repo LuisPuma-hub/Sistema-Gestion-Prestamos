@@ -34,7 +34,15 @@ public class ReglasFinancierasTests : IDisposable
             HttpContext = new DefaultHttpContext()
         };
 
-        _clientes = new ClienteService(repoCliente, repoPrestamo, httpContext);
+        _clientes = new ClienteService(
+            repoCliente,
+            repoPrestamo,
+            repoPago,
+            repoPeriodo,
+            repoMorosidad,
+            new MensajeWhatsappRepository(_contexto),
+            new GaranteRepository(_contexto),
+            httpContext);
 
         _prestamos = new PrestamoService(
             repoPrestamo,
@@ -301,8 +309,34 @@ public class ReglasFinancierasTests : IDisposable
 
         await CrearPrestamoActivoAsync(cliente, 200m);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             _clientes.EliminarAsync(cliente));
+
+        Assert.Contains("préstamo", ex.Message);
+    }
+
+    [Fact]
+    public async Task EliminarCascada_BorraTodo()
+    {
+        var cliente = await CrearClienteActivoAsync("70000103");
+        var prestamo = await CrearPrestamoActivoAsync(cliente, 200m);
+
+        await _pagos.RegistrarAsync(new CrearPagoDto
+        {
+            PrestamoId = prestamo,
+            Monto = 10m,
+            FechaPago = DateTime.UtcNow
+        });
+
+        var resumen = await _clientes.EliminarCascadaAsync(cliente);
+
+        Assert.Equal(1, resumen.Prestamos);
+        Assert.Equal(1, resumen.Pagos);
+        Assert.True(resumen.Periodos >= 1);
+
+        Assert.Null(await _clientes.ObtenerPorIdAsync(cliente));
+        Assert.Empty(_contexto.Prestamos.Where(p => p.ClienteId == cliente));
+        Assert.Empty(_contexto.Pagos.Where(p => p.Prestamo.ClienteId == cliente));
     }
 
     [Fact]

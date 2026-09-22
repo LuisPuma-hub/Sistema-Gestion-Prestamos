@@ -15,6 +15,9 @@ public class WhatsappService : IWhatsappService
     private readonly IMensajeWhatsappRepository _mensajeRepository;
     private readonly IClienteRepository _clienteRepository;
     private readonly IPrestamoRepository _prestamoRepository;
+    private readonly IPeriodoInteresRepository _periodoRepository;
+    private readonly IMorosidadService _morosidadService;
+    private readonly IPagoRepository _pagoRepository;
     private readonly string _phoneNumberId;
     private readonly string _token;
 
@@ -23,12 +26,18 @@ public class WhatsappService : IWhatsappService
         IMensajeWhatsappRepository mensajeRepository,
         IClienteRepository clienteRepository,
         IPrestamoRepository prestamoRepository,
+        IPeriodoInteresRepository periodoRepository,
+        IMorosidadService morosidadService,
+        IPagoRepository pagoRepository,
         IConfiguration configuration)
     {
         _httpClient = httpClient;
         _mensajeRepository = mensajeRepository;
         _clienteRepository = clienteRepository;
         _prestamoRepository = prestamoRepository;
+        _periodoRepository = periodoRepository;
+        _morosidadService = morosidadService;
+        _pagoRepository = pagoRepository;
 
         _phoneNumberId = configuration["WhatsApp:PhoneNumberId"]
             ?? throw new InvalidOperationException(
@@ -45,20 +54,41 @@ public class WhatsappService : IWhatsappService
         string numeroDestino,
         string nombrePlantilla,
         string contenido,
-        string idioma = "es_PE")
+        string idioma = "es_PE",
+        List<string>? parametros = null)
     {
         var numero = NormalizarNumero(numeroDestino);
+
+        object plantilla = parametros is { Count: > 0 }
+            ? new
+            {
+                name = nombrePlantilla,
+                language = new { code = idioma },
+                components = new[]
+                {
+                    new
+                    {
+                        type = "body",
+                        parameters = parametros.Select(p => new
+                        {
+                            type = "text",
+                            text = p
+                        }).ToArray()
+                    }
+                }
+            }
+            : new
+            {
+                name = nombrePlantilla,
+                language = new { code = idioma }
+            };
 
         var cuerpo = new
         {
             messaging_product = "whatsapp",
             to = numero,
             type = "template",
-            template = new
-            {
-                name = nombrePlantilla,
-                language = new { code = idioma }
-            }
+            template = plantilla
         };
 
         var idExterno = await EnviarAsync(cuerpo);
@@ -99,9 +129,218 @@ public class WhatsappService : IWhatsappService
             idExterno);
     }
 
+    public static IReadOnlyList<(string Nombre, string Descripcion)> PlantillasDisponibles { get; } =
+    [
+        ("recordatorio_pago_v2", "Recordatorio de pago semanal"),
+        ("aviso_mora", "Aviso de morosidad"),
+        ("confirmacion_pago", "Confirmación de pago recibido"),
+        ("prestamo_aprobado", "Aviso de préstamo aprobado")
+    ];
+
     public async Task<MensajeWhatsapp> EnviarRecordatorioAsync(
         Guid clienteId,
         Guid? prestamoId)
+    {
+        if (!prestamoId.HasValue)
+        {
+            throw new InvalidOperationException(
+                "El recordatorio con plantilla requiere el préstamo.");
+        }
+
+        var (cliente, prestamo) = await ObtenerClienteYPrestamoAsync(
+            clienteId,
+            prestamoId.Value);
+
+        var periodos = await _periodoRepository
+            .ObtenerPorPrestamoAsync(prestamo.Id);
+
+        var proximo = periodos
+            .Where(p => p.InteresPendiente > 0)
+            .OrderBy(p => p.FechaVencimiento)
+            .FirstOrDefault();
+
+        var semanal = prestamo.CapitalInicial * prestamo.TasaInteresSemanal;
+
+        return await EnviarPlantillaAsync(
+            clienteId,
+            prestamo.Id,
+            cliente.Telefono,
+            "recordatorio_pago_v2",
+            $"Recordatorio a {cliente.Nombres}.",
+            "es_PE",
+            [
+                cliente.Nombres,
+                semanal.ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                (proximo?.FechaVencimiento ?? prestamo.FechaInicio.AddDays(7))
+                    .ToString("dd/MM/yyyy")
+            ]);
+    }
+
+    public async Task<MensajeWhatsapp> EnviarPlantillaCatalogoAsync(
+        Guid clienteId,
+        Guid? prestamoId,
+        string plantilla)
+    {
+        var nombre = PlantillasDisponibles
+            .FirstOrDefault(p => string.Equals(
+                p.Nombre,
+                plantilla,
+                StringComparison.OrdinalIgnoreCase))
+            .Nombre;
+
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+            throw new InvalidOperationException(
+                "Plantilla no disponible.");
+        }
+
+        if (nombre == "recordatorio_pago_v2")
+        {
+            return await EnviarRecordatorioAsync(clienteId, prestamoId);
+        }
+
+        if (nombre == "aviso_mora")
+        {
+            return await EnviarAvisoMoraAsync(clienteId, prestamoId);
+        }
+
+        if (nombre == "prestamo_aprobado")
+        {
+            return await EnviarPrestamoAprobadoAsync(clienteId, prestamoId);
+        }
+
+        return await EnviarConfirmacionPagoAsync(clienteId, prestamoId);
+    }
+
+    private async Task<MensajeWhatsapp> EnviarAvisoMoraAsync(
+        Guid clienteId,
+        Guid? prestamoId)
+    {
+        if (!prestamoId.HasValue)
+        {
+            throw new InvalidOperationException(
+                "El aviso de mora requiere el préstamo.");
+        }
+
+        var (cliente, prestamo) = await ObtenerClienteYPrestamoAsync(
+            clienteId,
+            prestamoId.Value);
+
+        var mora = await _morosidadService.EvaluarAsync(
+            prestamo.Id,
+            DateTime.UtcNow);
+
+        var periodos = await _periodoRepository
+            .ObtenerPorPrestamoAsync(prestamo.Id);
+
+        var pendiente = periodos.Sum(p => p.InteresPendiente);
+
+        return await EnviarPlantillaAsync(
+            clienteId,
+            prestamo.Id,
+            cliente.Telefono,
+            "aviso_mora",
+            $"Aviso de mora a {cliente.Nombres}.",
+            "es_PE",
+            [
+                cliente.Nombres,
+                (mora?.PagosInteresVencidos ?? 0).ToString(),
+                pendiente.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)
+            ]);
+    }
+
+    private async Task<MensajeWhatsapp> EnviarPrestamoAprobadoAsync(
+        Guid clienteId,
+        Guid? prestamoId)
+    {
+        if (!prestamoId.HasValue)
+        {
+            throw new InvalidOperationException(
+                "Se requiere el préstamo.");
+        }
+
+        var (cliente, prestamo) = await ObtenerClienteYPrestamoAsync(
+            clienteId,
+            prestamoId.Value);
+
+        var periodos = await _periodoRepository
+            .ObtenerPorPrestamoAsync(prestamo.Id);
+
+        var primero = periodos
+            .OrderBy(p => p.FechaVencimiento)
+            .FirstOrDefault();
+
+        return await EnviarPlantillaAsync(
+            clienteId,
+            prestamo.Id,
+            cliente.Telefono,
+            "prestamo_aprobado",
+            $"Préstamo aprobado a {cliente.Nombres}.",
+            "es_PE",
+            [
+                cliente.Nombres,
+                prestamo.CapitalInicial.ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                (primero?.FechaVencimiento ?? prestamo.FechaInicio.AddDays(7))
+                    .ToString("dd/MM/yyyy")
+            ]);
+    }
+
+    private async Task<MensajeWhatsapp> EnviarConfirmacionPagoAsync(
+        Guid clienteId,
+        Guid? prestamoId)
+    {
+        var (cliente, prestamo) = prestamoId.HasValue
+            ? await ObtenerClienteYPrestamoAsync(clienteId, prestamoId.Value)
+            : (await ObtenerClienteAsync(clienteId), null as Prestamo);
+
+        decimal ultimoMonto = 0;
+        decimal saldo = prestamo?.CapitalPendiente ?? 0;
+
+        if (prestamo is not null)
+        {
+            var pagos = await _pagoRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id);
+
+            var ultimo = pagos
+                .OrderByDescending(p => p.FechaPago)
+                .FirstOrDefault();
+
+            ultimoMonto = ultimo?.Monto ?? 0;
+        }
+
+        return await EnviarPlantillaAsync(
+            clienteId,
+            prestamo?.Id,
+            cliente.Telefono,
+            "confirmacion_pago",
+            $"Confirmación de pago a {cliente.Nombres}.",
+            "es_PE",
+            [
+                cliente.Nombres,
+                ultimoMonto.ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                saldo.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)
+            ]);
+    }
+
+    private async Task<(Cliente cliente, Prestamo prestamo)> ObtenerClienteYPrestamoAsync(
+        Guid clienteId,
+        Guid prestamoId)
+    {
+        var cliente = await ObtenerClienteAsync(clienteId);
+
+        var prestamo = await _prestamoRepository
+            .ObtenerPorIdAsync(prestamoId);
+
+        if (prestamo is null)
+        {
+            throw new InvalidOperationException(
+                "El préstamo no existe.");
+        }
+
+        return (cliente, prestamo);
+    }
+
+    private async Task<Cliente> ObtenerClienteAsync(Guid clienteId)
     {
         var cliente = await _clienteRepository.ObtenerPorIdAsync(clienteId);
 
@@ -117,34 +356,7 @@ public class WhatsappService : IWhatsappService
                 "El cliente no tiene teléfono registrado.");
         }
 
-        string texto;
-
-        if (prestamoId.HasValue)
-        {
-            var prestamo = await _prestamoRepository
-                .ObtenerPorIdAsync(prestamoId.Value);
-
-            if (prestamo is null)
-            {
-                throw new InvalidOperationException(
-                    "El préstamo no existe.");
-            }
-
-            texto = $"Hola {cliente.Nombres}, le recordamos que su préstamo " +
-                $"tiene un capital pendiente de S/ {prestamo.CapitalPendiente:N2}. " +
-                $"Por favor acérquese a realizar su pago semanal. Gracias.";
-        }
-        else
-        {
-            texto = $"Hola {cliente.Nombres}, le recordamos que tiene pagos " +
-                $"pendientes en el Sistema de Préstamos. Gracias.";
-        }
-
-        return await EnviarTextoAsync(
-            clienteId,
-            prestamoId,
-            cliente.Telefono,
-            texto);
+        return cliente;
     }
 
     public async Task<IEnumerable<MensajeWhatsapp>> ObtenerHistorialAsync(

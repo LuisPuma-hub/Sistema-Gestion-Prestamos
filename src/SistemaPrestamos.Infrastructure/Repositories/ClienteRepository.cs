@@ -51,7 +51,18 @@ public class ClienteRepository : IClienteRepository
 
     public Task EliminarAsync(Cliente cliente)
     {
-        _context.Clientes.Remove(cliente);
+        var rastreado = _context.ChangeTracker.Entries<Cliente>()
+            .FirstOrDefault(e => e.Entity.Id == cliente.Id);
+
+        if (rastreado is not null)
+        {
+            rastreado.State = EntityState.Deleted;
+        }
+        else
+        {
+            _context.Clientes.Remove(cliente);
+        }
+
         return Task.CompletedTask;
     }
 

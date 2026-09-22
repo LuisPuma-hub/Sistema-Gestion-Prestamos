@@ -566,7 +566,7 @@ public partial class DetalleClientePage : ContentPage
             {
                 await DisplayAlertAsync(
                     "No se pudo guardar",
-                    error ?? "Inténtalo de nuevo.",
+                    TextoError.Limpiar(error, "Inténtalo de nuevo."),
                     "OK");
                 return;
             }
@@ -637,16 +637,85 @@ public partial class DetalleClientePage : ContentPage
 
             if (!exito)
             {
-                await DisplayAlertAsync(
-                    "No se puede eliminar",
-                    error ?? "No se pudo eliminar el cliente.",
-                    "OK");
+                await OfrecerCascadaAsync(
+                    error ?? "No se pudo eliminar el cliente.");
                 return;
             }
 
             await DisplayAlertAsync(
                 "Cliente eliminado",
                 "El cliente fue eliminado correctamente.",
+                "OK");
+
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (HttpRequestException)
+        {
+            MostrarError("No se pudo conectar con el servidor.");
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"Ocurrió un error: {ex.Message}");
+        }
+        finally
+        {
+            MostrarCargando(false);
+        }
+    }
+
+    private async Task OfrecerCascadaAsync(string error)
+    {
+        var limpio = TextoError.Limpiar(error);
+
+        var quiereTodo = await DisplayAlertAsync(
+            "No se puede eliminar",
+            $"{limpio}\n\n¿Eliminar TODO incluyendo sus registros?",
+            "Ver qué se borrará",
+            "Cancelar");
+
+        if (!quiereTodo || _cliente is null)
+        {
+            return;
+        }
+
+        var confirmar = await DisplayAlertAsync(
+            "Eliminar todo",
+            "Se borrarán DEFINITIVAMENTE:\n" +
+            "• Sus préstamos\n" +
+            "• Sus pagos\n" +
+            "• Sus períodos de interés\n" +
+            "• Su morosidad\n" +
+            "• Sus mensajes de WhatsApp\n" +
+            "• Sus avales\n" +
+            "• El cliente\n\n" +
+            "Esta acción no se puede deshacer. ¿Continuar?",
+            "Sí, borrar todo",
+            "Volver");
+
+        if (!confirmar)
+        {
+            return;
+        }
+
+        try
+        {
+            MostrarCargando(true);
+
+            var (exito, _, errorCascada) = await _clienteService
+                .EliminarCascadaAsync(_cliente.Id);
+
+            if (!exito)
+            {
+                await DisplayAlertAsync(
+                    "No se pudo eliminar",
+                    TextoError.Limpiar(errorCascada),
+                    "OK");
+                return;
+            }
+
+            await DisplayAlertAsync(
+                "Todo eliminado",
+                "El cliente y todos sus registros fueron eliminados.",
                 "OK");
 
             await Shell.Current.GoToAsync("..");
@@ -680,7 +749,7 @@ public partial class DetalleClientePage : ContentPage
 
     private void MostrarError(string mensaje)
     {
-        ErrorLabel.Text = mensaje;
+        ErrorLabel.Text = TextoError.Limpiar(mensaje);
         ErrorLabel.IsVisible = true;
     }
 }

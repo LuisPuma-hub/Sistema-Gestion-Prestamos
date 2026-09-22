@@ -8,5 +8,7 @@ public interface IPagoRepository
     Task<Pago?> ObtenerPorIdAsync(Guid id);
     Task<IEnumerable<Pago>> ObtenerPorPrestamoAsync(Guid prestamoId);
     Task<Pago> CrearAsync(Pago pago);
+    Task EliminarAsync(Pago pago);
+    Task<int> EliminarPorPrestamoAsync(Guid prestamoId);
     Task GuardarCambiosAsync();
 }

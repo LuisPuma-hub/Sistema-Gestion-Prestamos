@@ -52,8 +52,8 @@
             Spacing="8">
             <Button
                 x:Name="RecordatorioButton"
-                Text="Enviar recordatorio"
-                Clicked="OnRecordatorioClicked" />
+                Text="Enviar mensaje"
+                Clicked="OnEnviarMensajeClicked" />
             <Label
                 x:Name="ErrorLabel"
                 TextColor="Red"
