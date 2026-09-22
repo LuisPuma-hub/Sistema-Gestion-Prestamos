@@ -3,55 +3,179 @@
     x:Class="SistemaPrestamos.Mobile.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Iniciar sesi�n">
+    Title=""
+    BackgroundColor="#F8F7FC">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30"
-            Spacing="20"
-            VerticalOptions="Center">
+    <Grid RowDefinitions="Auto,*">
 
-            <Label
-                Text="Sistema de Pr�stamos"
-                FontSize="28"
-                FontAttributes="Bold"
-                HorizontalOptions="Center" />
+        <Border
+            Grid.Row="0"
+            BackgroundColor="#512BD4"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 0,0,28,28"
+            Padding="24,48,24,32">
+            <VerticalStackLayout Spacing="4">
+                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                    <Border
+                        HeightRequest="44"
+                        WidthRequest="44"
+                        BackgroundColor="#6D4DE0"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12"
+                        VerticalOptions="Center">
+                        <Label
+                            Text="▤"
+                            FontSize="22"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                        <Label
+                            Text="PréstamosPE"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+                        <Label
+                            Text="SISTEMA DE PRÉSTAMOS"
+                            FontSize="10"
+                            TextColor="#C4B5FD"
+                            CharacterSpacing="1" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
 
-            <Label
-                Text="Iniciar sesi�n"
-                FontSize="20"
-                HorizontalOptions="Center" />
+                <Label
+                    Text="Bienvenido"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    Margin="0,16,0,0" />
 
-            <Entry
-                x:Name="EmailEntry"
-                Placeholder="Correo electr�nico"
-                Keyboard="Email"
-                ClearButtonVisibility="WhileEditing" />
+                <Label
+                    Text="Ingresa con tu cuenta de cobrador"
+                    FontSize="14"
+                    TextColor="#DDD6FE" />
+            </VerticalStackLayout>
+        </Border>
 
-            <Entry
-                x:Name="PasswordEntry"
-                Placeholder="Contrase�a"
-                IsPassword="True"
-                ClearButtonVisibility="WhileEditing" />
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout
+                Padding="24"
+                Spacing="6">
 
-            <Button
-                x:Name="LoginButton"
-                Text="Iniciar sesi�n"
-                Clicked="OnLoginClicked" />
+                <Label
+                    Text="Correo electrónico"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    TextColor="#111827" />
 
-            <ActivityIndicator
-                x:Name="LoadingIndicator"
-                IsVisible="False"
-                IsRunning="False"
-                HorizontalOptions="Center" />
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="#E5E7EB"
+                    BackgroundColor="White"
+                    Padding="12,2">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label
+                            Text="✉"
+                            FontSize="16"
+                            TextColor="#9CA3AF"
+                            VerticalOptions="Center" />
+                        <Entry
+                            x:Name="EmailEntry"
+                            Placeholder="cobrador@empresa.pe"
+                            Keyboard="Email"
+                            ClearButtonVisibility="WhileEditing"
+                            HorizontalOptions="Fill" />
+                    </HorizontalStackLayout>
+                </Border>
 
-            <Label
-                x:Name="ErrorLabel"
-                TextColor="Red"
-                IsVisible="False"
-                HorizontalTextAlignment="Center" />
+                <Label
+                    Text="Contraseña"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    TextColor="#111827"
+                    Margin="0,10,0,0" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="#E5E7EB"
+                    BackgroundColor="White"
+                    Padding="12,2">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label
+                            Text="🔒"
+                            FontSize="16"
+                            TextColor="#9CA3AF"
+                            VerticalOptions="Center" />
+                        <Entry
+                            x:Name="PasswordEntry"
+                            Placeholder="••••••••"
+                            IsPassword="True"
+                            ClearButtonVisibility="WhileEditing"
+                            HorizontalOptions="Fill" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Button
+                    x:Name="LoginButton"
+                    Text="Ingresar"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    CornerRadius="12"
+                    HeightRequest="52"
+                    Margin="0,16,0,0"
+                    Clicked="OnLoginClicked" />
+
+                <ActivityIndicator
+                    x:Name="LoadingIndicator"
+                    IsVisible="False"
+                    IsRunning="False"
+                    Color="#512BD4"
+                    HorizontalOptions="Center" />
+
+                <Label
+                    x:Name="ErrorLabel"
+                    TextColor="#DC2626"
+                    IsVisible="False"
+                    HorizontalTextAlignment="Center" />
+
+                <Label
+                    Text="¿Olvidaste tu contraseña?"
+                    FontSize="13"
+                    TextColor="#512BD4"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOlvidoClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    BackgroundColor="#EDE9FE"
+                    Padding="14,12"
+                    Margin="0,8,0,0">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label
+                            Text="ⓘ"
+                            FontSize="16"
+                            TextColor="#512BD4"
+                            VerticalOptions="Start" />
+                        <Label FontSize="13" TextColor="#4C1D95">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Para soporte contacta a tu administrador o llama al " />
+                                    <Span Text="01-234-5678" FontAttributes="Bold" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </HorizontalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
 
 </ContentPage>

@@ -3,134 +3,160 @@
     x:Class="SistemaPrestamos.Mobile.Views.RegistrarClientePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Registrar cliente">
+    Title=""
+    BackgroundColor="#F8F7FC"
+    Shell.NavBarIsVisible="False">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="24"
-            Spacing="14">
+    <Grid RowDefinitions="Auto,*">
+        <Border
+            Grid.Row="0"
+            BackgroundColor="#512BD4"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 0,0,28,28"
+            Padding="16,48,16,20">
+            <Grid ColumnDefinitions="Auto,*">
+                <Button
+                    Grid.Column="0"
+                    Text="←"
+                    FontSize="22"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    Padding="0"
+                    VerticalOptions="Center"
+                    Clicked="OnVolverClicked" />
+                <Label
+                    Grid.Column="1"
+                    Text="Registrar cliente"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+            </Grid>
+        </Border>
 
-            <Label
-                Text="Nuevo cliente"
-                FontSize="24"
-                FontAttributes="Bold" />
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="14">
 
-            <Picker
-                x:Name="TipoDocumentoPicker"
-                Title="Tipo de documento">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>DNI</x:String>
-                        <x:String>CE</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="TIPO DE DOCUMENTO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Picker x:Name="TipoDocumentoPicker" Title="Tipo de documento">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>DNI</x:String>
+                                    <x:String>CE</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                        <Label Text="NÚMERO DE DOCUMENTO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" Margin="0,8,0,0" />
+                        <Entry x:Name="NumeroDocumentoEntry" Placeholder="12345678" Keyboard="Numeric" ClearButtonVisibility="WhileEditing" />
+                        <Label Text="NOMBRES" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" Margin="0,8,0,0" />
+                        <Entry x:Name="NombresEntry" Placeholder="Nombres" ClearButtonVisibility="WhileEditing" />
+                        <Label Text="APELLIDOS" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" Margin="0,8,0,0" />
+                        <Entry x:Name="ApellidosEntry" Placeholder="Apellidos" ClearButtonVisibility="WhileEditing" />
+                        <Label Text="TELÉFONO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" Margin="0,8,0,0" />
+                        <Entry x:Name="TelefonoEntry" Placeholder="999 999 999" Keyboard="Telephone" ClearButtonVisibility="WhileEditing" />
+                    </VerticalStackLayout>
+                </Border>
 
-            <Entry
-                x:Name="NumeroDocumentoEntry"
-                Placeholder="Número de documento"
-                Keyboard="Numeric"
-                ClearButtonVisibility="WhileEditing" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="DIRECCIÓN" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Label Text="Dirección completa" FontSize="14" FontAttributes="Bold" TextColor="#111827" />
+                        <Entry x:Name="DireccionEntry" Placeholder="Jr. Las Flores 234, San Juan de Mir..." ClearButtonVisibility="WhileEditing" />
+                        <Label Text="Referencia" FontSize="14" FontAttributes="Bold" TextColor="#111827" Margin="0,8,0,0" />
+                        <Entry x:Name="ReferenciaEntry" Placeholder="Frente a la farmacia..." ClearButtonVisibility="WhileEditing" />
+                    </VerticalStackLayout>
+                </Border>
 
-            <Entry
-                x:Name="NombresEntry"
-                Placeholder="Nombres"
-                ClearButtonVisibility="WhileEditing" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="OBSERVACIONES" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Editor x:Name="ObservacionesEditor" Placeholder="Observaciones adicionales..." AutoSize="TextChanges" />
+                    </VerticalStackLayout>
+                </Border>
 
-            <Entry
-                x:Name="ApellidosEntry"
-                Placeholder="Apellidos"
-                ClearButtonVisibility="WhileEditing" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="AVAL" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
 
-            <Entry
-                x:Name="TelefonoEntry"
-                Placeholder="Teléfono"
-                Keyboard="Telephone"
-                ClearButtonVisibility="WhileEditing" />
+                        <Border x:Name="OpcionSinAval" Padding="14,12" StrokeShape="RoundRectangle 12" BackgroundColor="White">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnAvalOpcionTapped" CommandParameter="Sin aval" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="10">
+                                <Border x:Name="RadioSinAval" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
+                                    <BoxView x:Name="RadioSinAvalDot" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#512BD4" />
+                                </Border>
+                                <Label Text="Sin aval" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
 
-            <Entry
-                x:Name="DireccionEntry"
-                Placeholder="Dirección"
-                ClearButtonVisibility="WhileEditing" />
+                        <Border x:Name="OpcionExistente" Padding="14,12" StrokeShape="RoundRectangle 12" BackgroundColor="White">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnAvalOpcionTapped" CommandParameter="Cliente existente" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="10">
+                                <Border x:Name="RadioExistente" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
+                                    <BoxView x:Name="RadioExistenteDot" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#512BD4" />
+                                </Border>
+                                <Label Text="Cliente existente" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
 
-            <Entry
-                x:Name="ReferenciaEntry"
-                Placeholder="Referencia de dirección (opcional)"
-                ClearButtonVisibility="WhileEditing" />
+                        <Border x:Name="OpcionNuevo" Padding="14,12" StrokeShape="RoundRectangle 12" BackgroundColor="White">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnAvalOpcionTapped" CommandParameter="Nuevo aval" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="10">
+                                <Border x:Name="RadioNuevo" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
+                                    <BoxView x:Name="RadioNuevoDot" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#512BD4" />
+                                </Border>
+                                <Label Text="Nuevo aval" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
 
-            <Editor
-                x:Name="ObservacionesEditor"
-                Placeholder="Observaciones (opcional)"
-                AutoSize="TextChanges" />
+                        <Picker
+                            x:Name="AvalClientePicker"
+                            Title="Seleccione cliente como aval"
+                            ItemDisplayBinding="{Binding NombreCompleto}"
+                            IsVisible="False" />
 
-            <Label
-                Text="Aval (opcional)"
-                FontSize="20"
-                FontAttributes="Bold" />
+                        <VerticalStackLayout x:Name="AvalNuevoLayout" Spacing="8" IsVisible="False">
+                            <Entry x:Name="AvalNombresEntry" Placeholder="Nombres del aval" ClearButtonVisibility="WhileEditing" />
+                            <Entry x:Name="AvalApellidosEntry" Placeholder="Apellidos del aval" ClearButtonVisibility="WhileEditing" />
+                            <Entry x:Name="AvalTelefonoEntry" Placeholder="Teléfono del aval" Keyboard="Telephone" ClearButtonVisibility="WhileEditing" />
+                            <Entry x:Name="AvalDireccionEntry" Placeholder="Dirección del aval (opcional)" ClearButtonVisibility="WhileEditing" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
 
-            <Picker
-                x:Name="AvalOpcionPicker"
-                Title="Opción de aval"
-                SelectedIndexChanged="OnAvalOpcionChanged">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Sin aval</x:String>
-                        <x:String>Cliente existente</x:String>
-                        <x:String>Nuevo aval</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+                <Button
+                    x:Name="GuardarButton"
+                    Text="✓  Guardar cliente"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    CornerRadius="12"
+                    HeightRequest="54"
+                    Clicked="OnGuardarClicked" />
 
-            <Picker
-                x:Name="AvalClientePicker"
-                Title="Seleccione cliente como aval"
-                ItemDisplayBinding="{Binding NombreCompleto}"
-                IsVisible="False" />
+                <ActivityIndicator
+                    x:Name="CargandoIndicator"
+                    IsVisible="False"
+                    IsRunning="False"
+                    Color="#512BD4"
+                    HorizontalOptions="Center" />
 
-            <VerticalStackLayout
-                x:Name="AvalNuevoLayout"
-                Spacing="14"
-                IsVisible="False">
-                <Entry
-                    x:Name="AvalNombresEntry"
-                    Placeholder="Nombres del aval"
-                    ClearButtonVisibility="WhileEditing" />
+                <Label
+                    x:Name="ErrorLabel"
+                    TextColor="#DC2626"
+                    IsVisible="False"
+                    HorizontalTextAlignment="Center" />
 
-                <Entry
-                    x:Name="AvalApellidosEntry"
-                    Placeholder="Apellidos del aval"
-                    ClearButtonVisibility="WhileEditing" />
-
-                <Entry
-                    x:Name="AvalTelefonoEntry"
-                    Placeholder="Teléfono del aval"
-                    Keyboard="Telephone"
-                    ClearButtonVisibility="WhileEditing" />
-
-                <Entry
-                    x:Name="AvalDireccionEntry"
-                    Placeholder="Dirección del aval (opcional)"
-                    ClearButtonVisibility="WhileEditing" />
             </VerticalStackLayout>
-
-            <Button
-                x:Name="GuardarButton"
-                Text="Guardar cliente"
-                Clicked="OnGuardarClicked" />
-
-            <ActivityIndicator
-                x:Name="CargandoIndicator"
-                IsVisible="False"
-                IsRunning="False"
-                HorizontalOptions="Center" />
-
-            <Label
-                x:Name="ErrorLabel"
-                TextColor="Red"
-                IsVisible="False"
-                HorizontalTextAlignment="Center" />
-
-        </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+    </Grid>
 
 </ContentPage>

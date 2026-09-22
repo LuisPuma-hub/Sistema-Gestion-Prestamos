@@ -3,91 +3,174 @@
     x:Class="SistemaPrestamos.Mobile.Views.PagosPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Pagos">
+    Title=""
+    BackgroundColor="#F8F7FC">
 
-    <Grid
-        RowDefinitions="Auto,Auto,*,Auto"
-        Padding="16"
-        RowSpacing="12">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <SearchBar
-            Grid.Row="0"
-            x:Name="BuscarBar"
-            Placeholder="Buscar por cliente..."
-            TextChanged="OnBuscarTextChanged" />
-
-        <Label
-            Grid.Row="1"
-            x:Name="ResumenLabel"
-            Text="Pagos registrados: 0"
-            FontAttributes="Bold" />
-
-        <CollectionView
-            Grid.Row="2"
-            x:Name="PagosCollection"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
+        <VerticalStackLayout Grid.Row="0" Spacing="0">
+            <Border
+                BackgroundColor="#512BD4"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 0,0,28,28"
+                Padding="24,48,24,20">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label
+                        Grid.Column="0"
+                        Text="Pagos"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        VerticalOptions="Center" />
                     <Border
-                        Padding="14"
+                        Grid.Column="1"
+                        HeightRequest="36"
+                        WidthRequest="36"
+                        BackgroundColor="#6D4DE0"
                         StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Tapped="OnPagoTapped"
-                                CommandParameter="{Binding Id}" />
-                        </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                Text="{Binding PrestamoNombre}"
-                                FontSize="18"
-                                FontAttributes="Bold" />
-                            <Label
-                                Text="{Binding Monto, StringFormat='Monto: S/ {0:N2}'}"
-                                FontSize="15" />
-                            <Label
-                                Text="{Binding FechaPago, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
-                                FontSize="13" />
-                        </VerticalStackLayout>
+                        StrokeShape="RoundRectangle 18"
+                        VerticalOptions="Center">
+                        <Label
+                            x:Name="ResumenLabel"
+                            Text="0"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
                     </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                </Grid>
+            </Border>
 
-        <Grid
-            Grid.Row="3"
-            ColumnDefinitions="*,Auto"
-            ColumnSpacing="12">
+            <VerticalStackLayout Padding="16,12,16,4" Spacing="10">
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="#E5E7EB"
+                    BackgroundColor="White"
+                    Padding="12,2">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label
+                            Text="🔍"
+                            FontSize="16"
+                            TextColor="#9CA3AF"
+                            VerticalOptions="Center" />
+                        <SearchBar
+                            x:Name="BuscarBar"
+                            Placeholder="Buscar por cliente..."
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="Fill"
+                            TextChanged="OnBuscarTextChanged" />
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" Padding="16,4,16,0">
+            <CollectionView
+                x:Name="PagosCollection"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Padding="16,14"
+                            Margin="0,0,0,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnPagoTapped"
+                                    CommandParameter="{Binding Id}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="{Binding PrestamoNombre}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="#111827"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding Monto, StringFormat='S/ {0:N2}'}"
+                                        FontSize="20"
+                                        FontAttributes="Bold"
+                                        TextColor="#16A34A"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                                <Label
+                                    Text="{Binding FechaPago, StringFormat='{0:dd/MM/yyyy}'}"
+                                    FontSize="13"
+                                    TextColor="#6B7280" />
+                                <Grid ColumnDefinitions="*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Padding="10,6"
+                                        BackgroundColor="#FEF3C7"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 10">
+                                        <VerticalStackLayout Spacing="0">
+                                            <Label Text="A interés" FontSize="11" TextColor="#92400E" />
+                                            <Label Text="{Binding MontoInteres, StringFormat='S/ {0:N2}'}" FontSize="15" FontAttributes="Bold" TextColor="#D97706" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="10,6"
+                                        BackgroundColor="#DCFCE7"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 10">
+                                        <VerticalStackLayout Spacing="0">
+                                            <Label Text="A capital" FontSize="11" TextColor="#166534" />
+                                            <Label Text="{Binding MontoCapital, StringFormat='S/ {0:N2}'}" FontSize="15" FontAttributes="Bold" TextColor="#16A34A" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                Color="#512BD4"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <Label
+                x:Name="EstadoLabel"
+                IsVisible="False"
+                TextColor="#6B7280"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="2" Padding="16,8" ColumnDefinitions="*,Auto" ColumnSpacing="12">
             <Button
                 Grid.Column="0"
                 x:Name="ReintentarButton"
                 Text="Reintentar"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="12"
                 IsVisible="False"
                 Clicked="OnReintentarClicked" />
             <Button
                 Grid.Column="1"
                 Text="+"
-                FontSize="24"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="White"
+                BackgroundColor="#512BD4"
                 WidthRequest="60"
                 HeightRequest="60"
                 CornerRadius="30"
                 Clicked="OnNuevoPagoClicked" />
         </Grid>
-
-        <ActivityIndicator
-            Grid.Row="2"
-            x:Name="CargandoIndicator"
-            IsVisible="False"
-            IsRunning="False"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
-
-        <Label
-            Grid.Row="2"
-            x:Name="EstadoLabel"
-            IsVisible="False"
-            HorizontalTextAlignment="Center"
-            VerticalTextAlignment="Center" />
 
     </Grid>
 

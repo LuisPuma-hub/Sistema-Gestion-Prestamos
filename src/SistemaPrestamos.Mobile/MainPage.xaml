@@ -4,173 +4,263 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="SistemaPrestamos.Mobile.MainPage"
-    Title="Dashboard">
+    Title=""
+    BackgroundColor="#F8F7FC">
 
     <RefreshView
         x:Name="RefreshView"
         Refreshing="OnRefreshing">
         <ScrollView>
-            <VerticalStackLayout
-                Padding="24"
-                Spacing="16">
+            <VerticalStackLayout Spacing="0">
 
-                <Label
-                    Text="Dashboard"
-                    FontSize="32"
-                    FontAttributes="Bold" />
-
-                <Label
-                    x:Name="SaludoLabel"
-                    Text="Sistema de Gestión de Préstamos"
-                    FontSize="16" />
-
-                <Grid
-                    ColumnDefinitions="*,*"
-                    RowDefinitions="Auto,Auto,Auto"
-                    ColumnSpacing="12"
-                    RowSpacing="12">
-
-                    <Border
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Padding="16"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <VerticalStackLayout Spacing="2">
+                <Border
+                    BackgroundColor="#512BD4"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 0,0,28,28"
+                    Padding="24,48,24,28">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
                             <Label
-                                x:Name="ClientesValorLabel"
-                                Text="-"
+                                x:Name="FechaLabel"
+                                FontSize="13"
+                                TextColor="#DDD6FE" />
+                            <Label
+                                x:Name="SaludoLabel"
+                                Text="Hola"
                                 FontSize="26"
                                 FontAttributes="Bold"
-                                HorizontalTextAlignment="Center" />
-                            <Label
-                                Text="Clientes"
-                                FontSize="13"
-                                HorizontalTextAlignment="Center" />
+                                TextColor="White" />
                         </VerticalStackLayout>
-                    </Border>
+                        <Border
+                            Grid.Column="1"
+                            HeightRequest="44"
+                            WidthRequest="44"
+                            BackgroundColor="#6D4DE0"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            VerticalOptions="Center">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRefrescarClicked" />
+                            </Border.GestureRecognizers>
+                            <Label
+                                Text="⟳"
+                                FontSize="22"
+                                TextColor="White"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center" />
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <VerticalStackLayout Padding="20,16" Spacing="14">
+
+                    <Label
+                        Text="RESUMEN DEL DÍA"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        TextColor="#6B7280"
+                        CharacterSpacing="1" />
+
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        RowDefinitions="Auto,Auto,Auto"
+                        ColumnSpacing="12"
+                        RowSpacing="12">
+
+                        <Border
+                            Grid.Row="0" Grid.Column="0"
+                            Padding="14"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <VerticalStackLayout Spacing="2">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="Clientes" FontSize="13" TextColor="#6B7280" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="👥" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label x:Name="ClientesValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#512BD4" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border
+                            Grid.Row="0" Grid.Column="1"
+                            Padding="14"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <VerticalStackLayout Spacing="2">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="Préstamos activos" FontSize="13" TextColor="#6B7280" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#FEF3C7" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="🧾" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label x:Name="PrestamosValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#512BD4" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border
+                            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                            Padding="14"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <VerticalStackLayout Spacing="2">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="Capital pendiente" FontSize="13" TextColor="#6B7280" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#FEF3C7" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="💰" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label x:Name="CapitalValorLabel" Text="-" FontSize="24" FontAttributes="Bold" TextColor="#D97706" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border
+                            Grid.Row="2" Grid.Column="0"
+                            Padding="14"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <VerticalStackLayout Spacing="2">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="En mora" FontSize="13" TextColor="#6B7280" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#FEE2E2" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="⚠️" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label x:Name="MoraValorLabel" Text="-" FontSize="26" FontAttributes="Bold" TextColor="#DC2626" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border
+                            Grid.Row="2" Grid.Column="1"
+                            Padding="14"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <VerticalStackLayout Spacing="2">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="Cobrado hoy" FontSize="13" TextColor="#6B7280" />
+                                    <Border HeightRequest="28" WidthRequest="28" BackgroundColor="#DCFCE7" StrokeThickness="0" StrokeShape="RoundRectangle 8" HorizontalOptions="End">
+                                        <Label Text="✅" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label x:Name="PagosHoyValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#16A34A" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                    </Grid>
+
+                    <Label
+                        Text="ACCESOS RÁPIDOS"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        TextColor="#6B7280"
+                        CharacterSpacing="1" />
+
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                        <Border Grid.Column="0" Padding="10,14" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnClientesClicked" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="👥" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="Clientes" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1" Padding="10,14" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnPrestamosClicked" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="🧾" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="Préstamos" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="2" Padding="10,14" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnPagosClicked" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="💲" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="Pagos" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="3" Padding="10,14" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnMorosidadClicked" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="⚠️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="Morosidad" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <Label
+                        Text="ACTIVIDAD RECIENTE"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        TextColor="#6B7280"
+                        CharacterSpacing="1" />
 
                     <Border
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Padding="16"
+                        x:Name="ActividadCard"
+                        Padding="14"
+                        BackgroundColor="White"
                         StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <VerticalStackLayout Spacing="2">
+                        StrokeShape="RoundRectangle 16"
+                        IsVisible="False">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Border
+                                Grid.Column="0"
+                                HeightRequest="48" WidthRequest="48"
+                                BackgroundColor="#EDE9FE"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 24"
+                                VerticalOptions="Center">
+                                <Label
+                                    x:Name="ActividadInicialLabel"
+                                    Text="M"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    TextColor="#512BD4"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                <Label x:Name="ActividadNombreLabel" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
+                                <Label x:Name="ActividadDetalleLabel" Text="Pago recibido" FontSize="13" TextColor="#16A34A" />
+                                <Label x:Name="ActividadTiempoLabel" FontSize="12" TextColor="#9CA3AF" />
+                            </VerticalStackLayout>
                             <Label
-                                x:Name="PrestamosValorLabel"
-                                Text="-"
-                                FontSize="26"
+                                Grid.Column="2"
+                                x:Name="ActividadMontoLabel"
+                                FontSize="15"
                                 FontAttributes="Bold"
-                                HorizontalTextAlignment="Center" />
-                            <Label
-                                Text="Préstamos activos"
-                                FontSize="13"
-                                HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
+                                TextColor="#111827"
+                                VerticalOptions="Center" />
+                        </Grid>
                     </Border>
 
-                    <Border
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Padding="16"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <VerticalStackLayout Spacing="2">
-                            <Label
-                                x:Name="CapitalValorLabel"
-                                Text="-"
-                                FontSize="20"
-                                FontAttributes="Bold"
-                                HorizontalTextAlignment="Center" />
-                            <Label
-                                Text="Capital pendiente"
-                                FontSize="13"
-                                HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
-                    </Border>
+                    <Label
+                        x:Name="ErrorLabel"
+                        TextColor="#DC2626"
+                        IsVisible="False"
+                        HorizontalTextAlignment="Center" />
 
-                    <Border
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Padding="16"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <VerticalStackLayout Spacing="2">
-                            <Label
-                                x:Name="MoraValorLabel"
-                                Text="-"
-                                FontSize="26"
-                                FontAttributes="Bold"
-                                HorizontalTextAlignment="Center" />
-                            <Label
-                                Text="En mora"
-                                FontSize="13"
-                                HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <Border
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Padding="16"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <VerticalStackLayout Spacing="2">
-                            <Label
-                                x:Name="PagosHoyValorLabel"
-                                Text="-"
-                                FontSize="20"
-                                FontAttributes="Bold"
-                                HorizontalTextAlignment="Center" />
-                            <Label
-                                Text="Cobrado hoy"
-                                FontSize="13"
-                                HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
-                    </Border>
-
-                </Grid>
-
-                <Label
-                    x:Name="ErrorLabel"
-                    TextColor="Red"
-                    IsVisible="False"
-                    HorizontalTextAlignment="Center" />
-
-                <Grid
-                    ColumnDefinitions="*,*"
-                    RowDefinitions="Auto,Auto"
-                    ColumnSpacing="12"
-                    RowSpacing="12">
-
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Text="Clientes"
-                        Clicked="OnClientesClicked" />
-
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Text="Préstamos"
-                        Clicked="OnPrestamosClicked" />
-
-                    <Button
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Text="Pagos"
-                        Clicked="OnPagosClicked" />
-
-                    <Button
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Text="Morosidad"
-                        Clicked="OnMorosidadClicked" />
-
-                </Grid>
-
+                </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>

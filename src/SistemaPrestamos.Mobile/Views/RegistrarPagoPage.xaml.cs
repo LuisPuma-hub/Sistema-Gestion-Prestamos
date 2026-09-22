@@ -117,6 +117,11 @@ public partial class RegistrarPagoPage : ContentPage
         }
     }
 
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
     private async void OnPrestamoChanged(object? sender, EventArgs e)
     {
         if (PrestamoPicker.SelectedItem is PrestamoDto prestamo)
@@ -128,6 +133,9 @@ public partial class RegistrarPagoPage : ContentPage
     private async Task MostrarInfoAsync(PrestamoDto prestamo)
     {
         var semanal = prestamo.InteresSemanal;
+
+        PendienteValorLabel.Text = $"S/ {prestamo.CapitalPendiente:N2}";
+        CuotaValorLabel.Text = $"S/ {semanal:N2}";
 
         PrestamoInfoLabel.Text =
             $"Semanal: 5 % de S/ {prestamo.CapitalInicial:N2} = S/ {semanal:N2}";
@@ -160,6 +168,11 @@ public partial class RegistrarPagoPage : ContentPage
             PrestamoInfoLabel.Text += acumulado > 0
                 ? $" | Acumulado: S/ {acumulado:N2} ({pendientes.Count} sem.)"
                 : " | Sin interés pendiente.";
+
+            DesgloseSemanalLabel.Text =
+                $"Semanal 5% de S/ {prestamo.CapitalInicial:N2}";
+            DesgloseSemanalValor.Text = $"S/ {cuota:N2}";
+            DesgloseAcumuladoValor.Text = $"S/ {acumulado:N2}";
 
             // Días de pago: solo vencimientos (cada 7 días),
             // sin fechas futuras.

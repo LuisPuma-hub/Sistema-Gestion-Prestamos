@@ -16,7 +16,15 @@ public partial class RegistrarClientePage : ContentPage
         _clienteService = clienteService;
         _garanteService = garanteService;
         TipoDocumentoPicker.SelectedIndex = 0;
-        AvalOpcionPicker.SelectedIndex = 0;
+        _opcionAval = "Sin aval";
+        PintarRadios();
+    }
+
+    private string _opcionAval = "Sin aval";
+
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 
     protected override async void OnAppearing()
@@ -42,12 +50,36 @@ public partial class RegistrarClientePage : ContentPage
         }
     }
 
-    private void OnAvalOpcionChanged(object? sender, EventArgs e)
+    private void OnAvalOpcionTapped(object? sender, TappedEventArgs e)
     {
-        var opcion = AvalOpcionPicker.SelectedItem as string;
+        if (e.Parameter as string is string opcion)
+        {
+            _opcionAval = opcion;
+            PintarRadios();
+        }
 
-        AvalClientePicker.IsVisible = opcion == "Cliente existente";
-        AvalNuevoLayout.IsVisible = opcion == "Nuevo aval";
+        AvalClientePicker.IsVisible = _opcionAval == "Cliente existente";
+        AvalNuevoLayout.IsVisible = _opcionAval == "Nuevo aval";
+    }
+
+    private void PintarRadios()
+    {
+        PintarRadio(OpcionSinAval, RadioSinAval, RadioSinAvalDot, _opcionAval == "Sin aval");
+        PintarRadio(OpcionExistente, RadioExistente, RadioExistenteDot, _opcionAval == "Cliente existente");
+        PintarRadio(OpcionNuevo, RadioNuevo, RadioNuevoDot, _opcionAval == "Nuevo aval");
+    }
+
+    private static void PintarRadio(Border tarjeta, Border radio, BoxView punto, bool seleccionado)
+    {
+        tarjeta.Stroke = seleccionado
+            ? Color.FromArgb("#512BD4")
+            : Color.FromArgb("#E5E7EB");
+        tarjeta.StrokeThickness = seleccionado ? 2 : 1;
+        radio.Stroke = seleccionado
+            ? Color.FromArgb("#512BD4")
+            : Color.FromArgb("#D1D5DB");
+        radio.StrokeThickness = 2;
+        punto.IsVisible = seleccionado;
     }
 
     private async void OnGuardarClicked(
@@ -66,7 +98,7 @@ public partial class RegistrarClientePage : ContentPage
         var referencia = ReferenciaEntry.Text?.Trim();
         var observaciones = ObservacionesEditor.Text?.Trim();
 
-        var opcionAval = AvalOpcionPicker.SelectedItem as string;
+        var opcionAval = _opcionAval;
 
         string avalNombres = string.Empty;
         string avalApellidos = string.Empty;

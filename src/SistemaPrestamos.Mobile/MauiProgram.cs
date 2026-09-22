@@ -34,6 +34,12 @@ public static class MauiProgram
 #endif
         });
 
+#if ANDROID
+        Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(
+            "SinSubrayado",
+            (handler, _) => handler.PlatformView.Background = null);
+#endif
+
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

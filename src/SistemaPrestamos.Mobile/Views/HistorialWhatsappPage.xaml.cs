@@ -46,7 +46,13 @@ public partial class HistorialWhatsappPage : ContentPage
 
             ClienteLabel.Text = cliente is null
                 ? "Historial"
-                : $"Historial - {cliente.NombreCompleto}";
+                : cliente.NombreCompleto;
+
+            AvatarLabel.Text = cliente is null || cliente.NombreCompleto.Length == 0
+                ? "?"
+                : cliente.NombreCompleto.Substring(0, 1).ToUpperInvariant();
+
+            ClienteTelefonoLabel.Text = cliente?.Telefono ?? string.Empty;
 
             var historial = await _whatsappService
                 .ObtenerHistorialAsync(clienteId);
@@ -82,6 +88,11 @@ public partial class HistorialWhatsappPage : ContentPage
         ["Confirmación de pago"] = "confirmacion_pago",
         ["Préstamo aprobado"] = "prestamo_aprobado"
     };
+
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
 
     private async void OnEnviarMensajeClicked(object? sender, EventArgs e)
     {

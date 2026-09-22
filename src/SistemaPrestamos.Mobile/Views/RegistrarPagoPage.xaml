@@ -3,101 +3,172 @@
     x:Class="SistemaPrestamos.Mobile.Views.RegistrarPagoPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Registrar pago">
+    Title=""
+    BackgroundColor="#F8F7FC"
+    Shell.NavBarIsVisible="False">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="24"
-            Spacing="14">
-
-            <Label
-                Text="Nuevo pago"
-                FontSize="24"
-                FontAttributes="Bold" />
-
-            <Picker
-                x:Name="PrestamoPicker"
-                Title="Seleccione un préstamo activo"
-                ItemDisplayBinding="{Binding ClienteNombre}" />
-
-            <Label
-                x:Name="PrestamoInfoLabel"
-                FontSize="13" />
-
-            <Entry
-                x:Name="MontoEntry"
-                Placeholder="Monto (S/)"
-                Keyboard="Numeric"
-                ClearButtonVisibility="WhileEditing" />
-
-            <Label
-                Text="Fecha de pago" />
-            <Grid
-                ColumnDefinitions="Auto,*,Auto,Auto"
-                ColumnSpacing="8">
+    <Grid RowDefinitions="Auto,*">
+        <Border
+            Grid.Row="0"
+            BackgroundColor="#512BD4"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 0,0,28,28"
+            Padding="16,48,16,20">
+            <Grid ColumnDefinitions="Auto,*">
                 <Button
                     Grid.Column="0"
-                    Text="-"
+                    Text="←"
+                    FontSize="22"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
                     WidthRequest="44"
-                    Clicked="OnDiaMenosClicked" />
-                <Entry
+                    HeightRequest="44"
+                    Padding="0"
+                    VerticalOptions="Center"
+                    Clicked="OnVolverClicked" />
+                <Label
                     Grid.Column="1"
-                    x:Name="FechaEntry"
-                    IsReadOnly="True"
-                    HorizontalTextAlignment="Center" />
-                <Button
-                    Grid.Column="2"
-                    Text="+"
-                    WidthRequest="44"
-                    Clicked="OnDiaMasClicked" />
-                <Button
-                    Grid.Column="3"
-                    Text="Últ. vto"
-                    Clicked="OnUltimoVencimientoClicked" />
+                    Text="Registrar pago"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    VerticalOptions="Center" />
             </Grid>
+        </Border>
 
-            <Entry
-                x:Name="ComprobanteEntry"
-                Placeholder="Comprobante (opcional)"
-                ClearButtonVisibility="WhileEditing" />
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="14">
 
-            <Editor
-                x:Name="ObservacionesEditor"
-                Placeholder="Observaciones (opcional)"
-                AutoSize="TextChanges" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="PRÉSTAMO ACTIVO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="12,2">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="🔍" FontSize="16" TextColor="#9CA3AF" VerticalOptions="Center" />
+                                <Picker
+                                    x:Name="PrestamoPicker"
+                                    Title="María García Torres"
+                                    ItemDisplayBinding="{Binding ClienteNombre}"
+                                    SelectedIndexChanged="OnPrestamoChanged"
+                                    HorizontalOptions="Fill" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="0">
+                                <Label Text="Capital pendiente" FontSize="12" TextColor="#6B7280" />
+                                <Label x:Name="PendienteValorLabel" Text="S/ 0.00" FontSize="18" FontAttributes="Bold" TextColor="#DC2626" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="0" HorizontalOptions="End">
+                                <Label Text="Cuota semanal" FontSize="12" TextColor="#6B7280" HorizontalTextAlignment="End" />
+                                <Label x:Name="CuotaValorLabel" Text="S/ 0.00" FontSize="18" FontAttributes="Bold" TextColor="#16A34A" HorizontalTextAlignment="End" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Label x:Name="PrestamoInfoLabel" FontSize="12" TextColor="#9CA3AF" IsVisible="False" />
+                    </VerticalStackLayout>
+                </Border>
 
-            <Border
-                Padding="16"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="4">
-                    <Label
-                        Text="Regla de aplicación"
-                        FontAttributes="Bold" />
-                    <Label
-                        Text="El pago se aplica primero al interés pendiente y el resto al capital."
-                        FontSize="12" />
-                </VerticalStackLayout>
-            </Border>
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="MONTO DEL PAGO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="16,10">
+                            <HorizontalStackLayout Spacing="4">
+                                <Label Text="S/" FontSize="26" FontAttributes="Bold" TextColor="#111827" VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="MontoEntry"
+                                    Placeholder="100.00"
+                                    Keyboard="Numeric"
+                                    FontSize="26"
+                                    FontAttributes="Bold"
+                                    ClearButtonVisibility="WhileEditing"
+                                    HorizontalOptions="Fill" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border Padding="12" BackgroundColor="#FEF3C7" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Desglose FIFO" FontSize="13" FontAttributes="Bold" TextColor="#92400E" />
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" x:Name="DesgloseSemanalLabel" Text="Semanal" FontSize="13" TextColor="#6B7280" />
+                                    <Label Grid.Column="1" x:Name="DesgloseSemanalValor" Text="S/ 0.00" FontSize="14" FontAttributes="Bold" TextColor="#D97706" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="Acumulado interés" FontSize="13" TextColor="#6B7280" />
+                                    <Label Grid.Column="1" x:Name="DesgloseAcumuladoValor" Text="S/ 0.00" FontSize="14" FontAttributes="Bold" TextColor="#DC2626" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <Button
-                x:Name="GuardarButton"
-                Text="Guardar pago"
-                Clicked="OnGuardarClicked" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="FECHA DE VENCIMIENTO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <Button Grid.Column="0" Text="−7 días" Clicked="OnDiaMenosClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="1" Text="Últ. vto" Clicked="OnUltimoVencimientoClicked" BackgroundColor="#EDE9FE" TextColor="#512BD4" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="2" Text="+7 días" Clicked="OnDiaMasClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                        </Grid>
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="14,10">
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="📅" FontSize="18" VerticalOptions="Center" />
+                                <Label x:Name="FechaEntry" Text="" FontSize="16" TextColor="#111827" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <ActivityIndicator
-                x:Name="CargandoIndicator"
-                IsVisible="False"
-                IsRunning="False"
-                HorizontalOptions="Center" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="COMPROBANTE (OPCIONAL)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Entry
+                            x:Name="ComprobanteEntry"
+                            Placeholder="N° de comprobante"
+                            ClearButtonVisibility="WhileEditing" />
+                        <Editor
+                            x:Name="ObservacionesEditor"
+                            Placeholder="Observaciones..."
+                            AutoSize="TextChanges" />
+                    </VerticalStackLayout>
+                </Border>
 
-            <Label
-                x:Name="ErrorLabel"
-                TextColor="Red"
-                IsVisible="False"
-                HorizontalTextAlignment="Center" />
+                <Border Padding="14,12" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="ⓘ" FontSize="16" TextColor="#512BD4" VerticalOptions="Start" />
+                        <Label FontSize="13" TextColor="#4C1D95">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Regla FIFO: " FontAttributes="Bold" />
+                                    <Span Text="El pago se aplica primero a interés acumulado, luego a capital." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </HorizontalStackLayout>
+                </Border>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <Button
+                    x:Name="GuardarButton"
+                    Text="✓  Aplicar pago"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="54"
+                    Clicked="OnGuardarClicked" />
+
+                <ActivityIndicator
+                    x:Name="CargandoIndicator"
+                    IsVisible="False"
+                    IsRunning="False"
+                    Color="#512BD4"
+                    HorizontalOptions="Center" />
+
+                <Label
+                    x:Name="ErrorLabel"
+                    TextColor="#DC2626"
+                    IsVisible="False"
+                    HorizontalTextAlignment="Center" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 
 </ContentPage>

@@ -3,86 +3,143 @@
     x:Class="SistemaPrestamos.Mobile.Views.UsuariosPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Usuarios">
+    Title=""
+    BackgroundColor="#F8F7FC"
+    Shell.NavBarIsVisible="False">
 
-    <Grid
-        RowDefinitions="Auto,*,Auto"
-        Padding="16"
-        RowSpacing="12">
-
-        <Label
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border
             Grid.Row="0"
-            x:Name="ResumenLabel"
-            Text="Usuarios: 0"
-            FontAttributes="Bold" />
+            BackgroundColor="#512BD4"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 0,0,28,28"
+            Padding="16,48,16,20">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    Grid.Column="0"
+                    Text="Usuarios"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+                <Button
+                    Grid.Column="1"
+                    Text="+"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    BackgroundColor="#6D4DE0"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    CornerRadius="22"
+                    Padding="0"
+                    VerticalOptions="Center"
+                    Clicked="OnNuevoUsuarioClicked" />
+            </Grid>
+        </Border>
 
-        <CollectionView
-            Grid.Row="1"
-            x:Name="UsuariosCollection"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border
-                        Padding="14"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Tapped="OnUsuarioTapped"
-                                CommandParameter="{Binding Id}" />
-                        </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                Text="{Binding NombreCompleto}"
-                                FontSize="18"
-                                FontAttributes="Bold" />
-                            <Label
-                                Text="{Binding Email}"
-                                FontSize="14" />
-                            <Label
-                                Text="{Binding Rol, StringFormat='Rol: {0}'}"
-                                FontSize="14"
-                                FontAttributes="Bold" />
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <Grid Grid.Row="1" Padding="16,12,16,0">
+            <CollectionView
+                x:Name="UsuariosCollection"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Padding="14,12"
+                            Margin="0,0,0,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnUsuarioTapped"
+                                    CommandParameter="{Binding Id}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <Border
+                                    Grid.Column="0"
+                                    HeightRequest="52"
+                                    WidthRequest="52"
+                                    BackgroundColor="#EDE9FE"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 26"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        Text="{Binding Inicial}"
+                                        FontSize="20"
+                                        FontAttributes="Bold"
+                                        TextColor="#512BD4"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                    <Label
+                                        Text="{Binding NombreCompleto}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="#111827" />
+                                    <Label
+                                        Text="{Binding Email}"
+                                        FontSize="13"
+                                        TextColor="#6B7280" />
+                                </VerticalStackLayout>
+                                <Border
+                                    Grid.Column="2"
+                                    Padding="10,4"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center"
+                                    BackgroundColor="{Binding Rol, Converter={StaticResource EstadoFondo}}">
+                                    <Label
+                                        Text="{Binding Rol}"
+                                        FontSize="12"
+                                        FontAttributes="Bold"
+                                        TextColor="{Binding Rol, Converter={StaticResource EstadoTexto}}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-        <Grid
-            Grid.Row="2"
-            ColumnDefinitions="*,Auto"
-            ColumnSpacing="12">
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                Color="#512BD4"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <Label
+                x:Name="EstadoLabel"
+                IsVisible="False"
+                TextColor="#6B7280"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="2" Padding="16,8" ColumnDefinitions="*,Auto" ColumnSpacing="12">
             <Button
                 Grid.Column="0"
                 x:Name="ReintentarButton"
                 Text="Reintentar"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="12"
                 IsVisible="False"
                 Clicked="OnReintentarClicked" />
             <Button
                 Grid.Column="1"
                 Text="+"
-                FontSize="24"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="White"
+                BackgroundColor="#512BD4"
                 WidthRequest="60"
                 HeightRequest="60"
                 CornerRadius="30"
                 Clicked="OnNuevoUsuarioClicked" />
         </Grid>
-
-        <ActivityIndicator
-            Grid.Row="1"
-            x:Name="CargandoIndicator"
-            IsVisible="False"
-            IsRunning="False"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
-
-        <Label
-            Grid.Row="1"
-            x:Name="EstadoLabel"
-            IsVisible="False"
-            HorizontalTextAlignment="Center"
-            VerticalTextAlignment="Center" />
 
     </Grid>
 

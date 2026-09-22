@@ -20,7 +20,7 @@ public partial class BloqueoPage : ContentPage
 
         if (!string.IsNullOrWhiteSpace(nombre))
         {
-            NombreLabel.Text = $"Hola de nuevo, {nombre}";
+            NombreLabel.Text = nombre;
         }
     }
 

@@ -3,102 +3,183 @@
     x:Class="SistemaPrestamos.Mobile.Views.RegistrarPrestamoPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Registrar préstamo">
+    Title=""
+    BackgroundColor="#F8F7FC"
+    Shell.NavBarIsVisible="False">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="24"
-            Spacing="14">
-
-            <Label
-                Text="Nuevo préstamo"
-                FontSize="24"
-                FontAttributes="Bold" />
-
-            <Picker
-                x:Name="ClientePicker"
-                Title="Seleccione un cliente"
-                ItemDisplayBinding="{Binding NombreCompleto}"
-                SelectedIndexChanged="OnClienteChanged" />
-
-            <Label
-                x:Name="ClienteInfoLabel"
-                FontSize="13" />
-
-            <Entry
-                x:Name="CapitalEntry"
-                Placeholder="Capital inicial (S/)"
-                Keyboard="Numeric"
-                TextChanged="OnCapitalChanged"
-                ClearButtonVisibility="WhileEditing" />
-
-            <Label
-                Text="Fecha de inicio" />
-            <Grid
-                ColumnDefinitions="Auto,*,Auto,Auto"
-                ColumnSpacing="8">
+    <Grid RowDefinitions="Auto,*">
+        <Border
+            Grid.Row="0"
+            BackgroundColor="#512BD4"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 0,0,28,28"
+            Padding="16,48,16,20">
+            <Grid ColumnDefinitions="Auto,*">
                 <Button
                     Grid.Column="0"
-                    Text="-"
+                    Text="←"
+                    FontSize="22"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
                     WidthRequest="44"
-                    Clicked="OnDiaMenosClicked" />
-                <Entry
+                    HeightRequest="44"
+                    Padding="0"
+                    VerticalOptions="Center"
+                    Clicked="OnVolverClicked" />
+                <Label
                     Grid.Column="1"
-                    x:Name="FechaEntry"
-                    IsReadOnly="True"
-                    HorizontalTextAlignment="Center" />
-                <Button
-                    Grid.Column="2"
-                    Text="+"
-                    WidthRequest="44"
-                    Clicked="OnDiaMasClicked" />
-                <Button
-                    Grid.Column="3"
-                    Text="Hoy"
-                    Clicked="OnHoyClicked" />
+                    Text="Registrar préstamo"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    VerticalOptions="Center" />
             </Grid>
+        </Border>
 
-            <Picker
-                x:Name="GarantePicker"
-                Title="Aval (opcional)"
-                ItemDisplayBinding="{Binding NombreCompleto}" />
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="14">
 
-            <Border
-                Padding="16"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="4">
-                    <Label
-                        Text="Resumen"
-                        FontAttributes="Bold" />
-                    <Label
-                        x:Name="ResumenInteresLabel"
-                        Text="Interés semanal (5 %): S/ 0.00"
-                        FontSize="15" />
-                    <Label
-                        Text="El interés es fijo, no compuesto, sobre el capital inicial."
-                        FontSize="12" />
-                </VerticalStackLayout>
-            </Border>
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="CLIENTE" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="12,2">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="🔍" FontSize="16" TextColor="#9CA3AF" VerticalOptions="Center" />
+                                <Picker
+                                    x:Name="ClientePicker"
+                                    Title="María García Torres"
+                                    ItemDisplayBinding="{Binding NombreCompleto}"
+                                    SelectedIndexChanged="OnClienteChanged"
+                                    HorizontalOptions="Fill" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border
+                            x:Name="ClienteValidCard"
+                            Padding="12"
+                            BackgroundColor="#DCFCE7"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            IsVisible="False">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="44" WidthRequest="44"
+                                    BackgroundColor="#16A34A"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 22"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        x:Name="ClienteValidInicial"
+                                        Text="M"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        TextColor="White"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                    <Label x:Name="ClienteValidNombre" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
+                                    <Label x:Name="ClienteValidDetalle" FontSize="13" TextColor="#16A34A" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <Button
-                x:Name="GuardarButton"
-                Text="Guardar préstamo"
-                Clicked="OnGuardarClicked" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="MONTO DEL PRÉSTAMO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="16,10">
+                            <HorizontalStackLayout Spacing="4">
+                                <Label Text="S/" FontSize="26" FontAttributes="Bold" TextColor="#111827" VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="CapitalEntry"
+                                    Placeholder="0.00"
+                                    Keyboard="Numeric"
+                                    FontSize="26"
+                                    FontAttributes="Bold"
+                                    TextChanged="OnCapitalChanged"
+                                    ClearButtonVisibility="WhileEditing"
+                                    HorizontalOptions="Fill" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border Padding="12" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                            <Label x:Name="ResumenInteresLabel" Text="Interés semanal (5 %): S/ 0.00" FontSize="14" TextColor="#512BD4" FontAttributes="Bold" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <ActivityIndicator
-                x:Name="CargandoIndicator"
-                IsVisible="False"
-                IsRunning="False"
-                HorizontalOptions="Center" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="FECHAS DE VENCIMIENTO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <Button Grid.Column="0" Text="−7 días" Clicked="OnDiaMenosClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="1" Text="Últ. vto" Clicked="OnUltimoVencimientoClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="2" Text="+7 días" Clicked="OnDiaMasClicked" BackgroundColor="#EDE9FE" TextColor="#512BD4" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                        </Grid>
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="14,10">
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="📅" FontSize="18" VerticalOptions="Center" />
+                                <Label x:Name="FechaEntry" Text="" FontSize="16" TextColor="#111827" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <Label
-                x:Name="ErrorLabel"
-                TextColor="Red"
-                IsVisible="False"
-                HorizontalTextAlignment="Center" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="AVAL (OPCIONAL)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="12,2">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="🔍" FontSize="16" TextColor="#9CA3AF" VerticalOptions="Center" />
+                                <Picker
+                                    x:Name="GarantePicker"
+                                    Title="Sin aval seleccionado"
+                                    ItemDisplayBinding="{Binding NombreCompleto}"
+                                    HorizontalOptions="Fill" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <Border Padding="14,12" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="ⓘ" FontSize="16" TextColor="#512BD4" VerticalOptions="Start" />
+                        <Label FontSize="13" TextColor="#4C1D95">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Regla de interés: " FontAttributes="Bold" />
+                                    <Span Text="El interés es fijo del 5% semanal sobre el capital inicial. No es compuesto." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Button
+                    x:Name="GuardarButton"
+                    Text="✓  Registrar préstamo"
+                    BackgroundColor="#C4B5FD"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="54"
+                    Clicked="OnGuardarClicked" />
+
+                <ActivityIndicator
+                    x:Name="CargandoIndicator"
+                    IsVisible="False"
+                    IsRunning="False"
+                    Color="#512BD4"
+                    HorizontalOptions="Center" />
+
+                <Label
+                    x:Name="ErrorLabel"
+                    TextColor="#DC2626"
+                    IsVisible="False"
+                    HorizontalTextAlignment="Center" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 
 </ContentPage>

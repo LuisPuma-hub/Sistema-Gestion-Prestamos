@@ -3,113 +3,170 @@
     x:Class="SistemaPrestamos.Mobile.Views.PrestamosPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Préstamos">
+    Title=""
+    BackgroundColor="#F8F7FC">
 
-    <Grid
-        RowDefinitions="Auto,Auto,Auto,*,Auto"
-        Padding="16"
-        RowSpacing="12">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <SearchBar
-            Grid.Row="0"
-            x:Name="BuscarBar"
-            Placeholder="Buscar por cliente..."
-            TextChanged="OnBuscarTextChanged" />
-
-        <Picker
-            Grid.Row="1"
-            x:Name="FiltroEstadoPicker"
-            Title="Filtrar por estado"
-            SelectedIndexChanged="OnFiltroEstadoChanged">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>Todos</x:String>
-                    <x:String>Pendiente</x:String>
-                    <x:String>Activo</x:String>
-                    <x:String>Cancelado</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
-
-        <Label
-            Grid.Row="2"
-            x:Name="ResumenLabel"
-            Text="Préstamos registrados: 0"
-            FontAttributes="Bold" />
-
-        <CollectionView
-            Grid.Row="3"
-            x:Name="PrestamosCollection"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
+        <VerticalStackLayout Grid.Row="0" Spacing="0">
+            <Border
+                BackgroundColor="#512BD4"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 0,0,28,28"
+                Padding="24,48,24,20">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label
+                        Grid.Column="0"
+                        Text="Préstamos"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        VerticalOptions="Center" />
                     <Border
-                        Padding="14"
+                        Grid.Column="1"
+                        HeightRequest="36"
+                        WidthRequest="36"
+                        BackgroundColor="#6D4DE0"
                         StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Tapped="OnPrestamoTapped"
-                                CommandParameter="{Binding Id}" />
-                        </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                Text="{Binding ClienteNombre}"
-                                FontSize="18"
-                                FontAttributes="Bold" />
-                            <Label
-                                Text="{Binding CapitalInicial, StringFormat='Capital: S/ {0:N2}'}"
-                                FontSize="14" />
-                            <Label
-                                Text="{Binding CapitalPendiente, StringFormat='Pendiente: S/ {0:N2}'}"
-                                FontSize="14" />
-                            <Label
-                                Text="{Binding InteresSemanal, StringFormat='Interés semanal: S/ {0:N2}'}"
-                                FontSize="14" />
-                            <Label
-                                Text="{Binding Estado, StringFormat='Estado: {0}'}"
-                                FontSize="14"
-                                FontAttributes="Bold" />
-                        </VerticalStackLayout>
+                        StrokeShape="RoundRectangle 18"
+                        VerticalOptions="Center">
+                        <Label
+                            x:Name="ResumenLabel"
+                            Text="0"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
                     </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                </Grid>
+            </Border>
 
-        <Grid
-            Grid.Row="4"
-            ColumnDefinitions="*,Auto"
-            ColumnSpacing="12">
+            <VerticalStackLayout Padding="16,12,16,4" Spacing="10">
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="#E5E7EB"
+                    BackgroundColor="White"
+                    Padding="12,2">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label
+                            Text="🔍"
+                            FontSize="16"
+                            TextColor="#9CA3AF"
+                            VerticalOptions="Center" />
+                        <SearchBar
+                            x:Name="BuscarBar"
+                            Placeholder="Buscar por cliente..."
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="Fill"
+                            TextChanged="OnBuscarTextChanged" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout Spacing="8">
+                        <Button x:Name="ChipTodos" Text="Todos" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipPendiente" Text="Pendiente" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipActivo" Text="Activo" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipCancelado" Text="Cancelado" Clicked="OnFiltroChipClicked" />
+                    </HorizontalStackLayout>
+                </ScrollView>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" Padding="16,4,16,0">
+            <CollectionView
+                x:Name="PrestamosCollection"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Padding="16,14"
+                            Margin="0,0,0,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnPrestamoTapped"
+                                    CommandParameter="{Binding Id}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
+                                <Label
+                                    Grid.Row="0" Grid.Column="0"
+                                    Text="{Binding ClienteNombre}"
+                                    FontSize="17"
+                                    FontAttributes="Bold"
+                                    TextColor="#111827" />
+                                <Border
+                                    Grid.Row="0" Grid.Column="1"
+                                    Padding="10,4"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Start"
+                                    BackgroundColor="{Binding Estado, Converter={StaticResource EstadoFondo}}">
+                                    <Label
+                                        Text="{Binding Estado}"
+                                        FontSize="12"
+                                        FontAttributes="Bold"
+                                        TextColor="{Binding Estado, Converter={StaticResource EstadoTexto}}" />
+                                </Border>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="0">
+                                    <Label Text="Capital" FontSize="12" TextColor="#9CA3AF" />
+                                    <Label Text="{Binding CapitalInicial, StringFormat='S/ {0:N2}'}" FontSize="17" FontAttributes="Bold" TextColor="#111827" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="0" HorizontalOptions="End">
+                                    <Label Text="Pendiente" FontSize="12" TextColor="#9CA3AF" HorizontalTextAlignment="End" />
+                                    <Label Text="{Binding CapitalPendiente, StringFormat='S/ {0:N2}'}" FontSize="17" FontAttributes="Bold" TextColor="#DC2626" HorizontalTextAlignment="End" />
+                                </VerticalStackLayout>
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="4">
+                                    <Label Text="◉" FontSize="12" TextColor="#D97706" VerticalOptions="Center" />
+                                    <Label Text="{Binding InteresSemanal, StringFormat='Interés semanal 5%: S/ {0:N2}/sem.'}" FontSize="13" TextColor="#6B7280" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                Color="#512BD4"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <Label
+                x:Name="EstadoLabel"
+                IsVisible="False"
+                TextColor="#6B7280"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="2" Padding="16,8" ColumnDefinitions="*,Auto" ColumnSpacing="12">
             <Button
                 Grid.Column="0"
                 x:Name="ReintentarButton"
                 Text="Reintentar"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="12"
                 IsVisible="False"
                 Clicked="OnReintentarClicked" />
             <Button
                 Grid.Column="1"
                 Text="+"
-                FontSize="24"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="White"
+                BackgroundColor="#512BD4"
                 WidthRequest="60"
                 HeightRequest="60"
                 CornerRadius="30"
                 Clicked="OnNuevoPrestamoClicked" />
         </Grid>
-
-        <ActivityIndicator
-            Grid.Row="3"
-            x:Name="CargandoIndicator"
-            IsVisible="False"
-            IsRunning="False"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
-
-        <Label
-            Grid.Row="3"
-            x:Name="EstadoLabel"
-            IsVisible="False"
-            HorizontalTextAlignment="Center"
-            VerticalTextAlignment="Center" />
 
     </Grid>
 

@@ -3,110 +3,183 @@
     x:Class="SistemaPrestamos.Mobile.Views.ClientesPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Clientes">
+    Title=""
+    BackgroundColor="#F8F7FC">
 
-    <Grid
-        RowDefinitions="Auto,Auto,Auto,*,Auto"
-        Padding="16"
-        RowSpacing="12">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <SearchBar
-            Grid.Row="0"
-            x:Name="BuscarBar"
-            Placeholder="Buscar cliente..."
-            TextChanged="OnBuscarTextChanged" />
-
-        <Picker
-            Grid.Row="1"
-            x:Name="FiltroEstadoPicker"
-            Title="Filtrar por estado"
-            SelectedIndexChanged="OnFiltroEstadoChanged">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>Todos</x:String>
-                    <x:String>Activo</x:String>
-                    <x:String>En observación</x:String>
-                    <x:String>Moroso</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
-
-        <Label
-            Grid.Row="2"
-            x:Name="ResumenLabel"
-            Text="Clientes registrados: 0"
-            FontAttributes="Bold" />
-
-        <CollectionView
-            Grid.Row="3"
-            x:Name="ClientesCollection"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
+        <VerticalStackLayout Grid.Row="0" Spacing="0">
+            <Border
+                BackgroundColor="#512BD4"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 0,0,28,28"
+                Padding="24,48,24,20">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label
+                        Grid.Column="0"
+                        Text="Clientes"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        VerticalOptions="Center" />
                     <Border
-                        Padding="14"
+                        Grid.Column="1"
+                        HeightRequest="36"
+                        WidthRequest="36"
+                        BackgroundColor="#6D4DE0"
                         StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Tapped="OnClienteTapped"
-                                CommandParameter="{Binding Id}" />
-                        </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                Text="{Binding NombreCompleto}"
-                                FontSize="18"
-                                FontAttributes="Bold" />
-                            <Label
-                                Text="{Binding DocumentoCompleto}"
-                                FontSize="14" />
-                            <Label
-                                Text="{Binding Telefono}"
-                                FontSize="14" />
-                            <Label
-                                Text="{Binding Estado, StringFormat='Estado: {0}'}"
-                                FontSize="14"
-                                FontAttributes="Bold" />
-                        </VerticalStackLayout>
+                        StrokeShape="RoundRectangle 18"
+                        VerticalOptions="Center">
+                        <Label
+                            x:Name="ResumenLabel"
+                            Text="0"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
                     </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                </Grid>
+            </Border>
 
-        <Grid
-            Grid.Row="4"
-            ColumnDefinitions="*,Auto"
-            ColumnSpacing="12">
+            <VerticalStackLayout Padding="16,12,16,4" Spacing="10">
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="#E5E7EB"
+                    BackgroundColor="White"
+                    Padding="12,2">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label
+                            Text="🔍"
+                            FontSize="16"
+                            TextColor="#9CA3AF"
+                            VerticalOptions="Center" />
+                        <SearchBar
+                            x:Name="BuscarBar"
+                            Placeholder="Buscar cliente, DNI..."
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="Fill"
+                            TextChanged="OnBuscarTextChanged" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout x:Name="ChipsLayout" Spacing="8">
+                        <Button x:Name="ChipTodos" Text="Todos" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipActivo" Text="Activo" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipObservacion" Text="En observación" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipMoroso" Text="Moroso" Clicked="OnFiltroChipClicked" />
+                    </HorizontalStackLayout>
+                </ScrollView>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" Padding="16,4,16,0">
+            <CollectionView
+                x:Name="ClientesCollection"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Padding="14,12"
+                            Margin="0,0,0,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnClienteTapped"
+                                    CommandParameter="{Binding Id}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <Border
+                                    Grid.Column="0"
+                                    HeightRequest="52"
+                                    WidthRequest="52"
+                                    BackgroundColor="#EDE9FE"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 26"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        Text="{Binding Inicial}"
+                                        FontSize="20"
+                                        FontAttributes="Bold"
+                                        TextColor="#512BD4"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                    <Label
+                                        Text="{Binding NombreCompleto}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="#111827" />
+                                    <Label
+                                        Text="{Binding NumeroDocumento}"
+                                        FontSize="13"
+                                        TextColor="#6B7280" />
+                                    <Label
+                                        Text="{Binding Telefono}"
+                                        FontSize="13"
+                                        TextColor="#6B7280" />
+                                </VerticalStackLayout>
+                                <Border
+                                    Grid.Column="2"
+                                    Padding="10,6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 12"
+                                    VerticalOptions="Start"
+                                    BackgroundColor="{Binding Estado, Converter={StaticResource EstadoFondo}}">
+                                    <Label
+                                        Text="{Binding Estado}"
+                                        FontSize="12"
+                                        FontAttributes="Bold"
+                                        TextColor="{Binding Estado, Converter={StaticResource EstadoTexto}}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                Color="#512BD4"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <Label
+                x:Name="EstadoLabel"
+                IsVisible="False"
+                TextColor="#6B7280"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="2" Padding="16,8" ColumnDefinitions="*,Auto" ColumnSpacing="12">
             <Button
                 Grid.Column="0"
                 x:Name="ReintentarButton"
                 Text="Reintentar"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="12"
                 IsVisible="False"
                 Clicked="OnReintentarClicked" />
             <Button
                 Grid.Column="1"
                 Text="+"
-                FontSize="24"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="White"
+                BackgroundColor="#512BD4"
                 WidthRequest="60"
                 HeightRequest="60"
                 CornerRadius="30"
                 Clicked="OnNuevoClienteClicked" />
         </Grid>
-
-        <ActivityIndicator
-            Grid.Row="3"
-            x:Name="CargandoIndicator"
-            IsVisible="False"
-            IsRunning="False"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
-
-        <Label
-            Grid.Row="3"
-            x:Name="EstadoLabel"
-            IsVisible="False"
-            HorizontalTextAlignment="Center"
-            VerticalTextAlignment="Center" />
 
     </Grid>
 

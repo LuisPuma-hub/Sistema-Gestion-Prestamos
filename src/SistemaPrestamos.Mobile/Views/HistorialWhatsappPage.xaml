@@ -3,78 +3,149 @@
     x:Class="SistemaPrestamos.Mobile.Views.HistorialWhatsappPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Historial WhatsApp">
+    Title=""
+    BackgroundColor="#E7DFD3"
+    Shell.NavBarIsVisible="False">
 
-    <Grid
-        RowDefinitions="Auto,*,Auto"
-        Padding="16"
-        RowSpacing="12">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <Label
+        <Border
             Grid.Row="0"
-            x:Name="ClienteLabel"
-            FontSize="20"
-            FontAttributes="Bold"
-            HorizontalTextAlignment="Center" />
+            BackgroundColor="#128C7E"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 0,0,0,0"
+            Padding="8,48,16,12">
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                <Button
+                    Grid.Column="0"
+                    Text="←"
+                    FontSize="22"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    Padding="0"
+                    VerticalOptions="Center"
+                    Clicked="OnVolverClicked" />
+                <Border
+                    Grid.Column="1"
+                    HeightRequest="44" WidthRequest="44"
+                    BackgroundColor="#25D366"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 22"
+                    VerticalOptions="Center">
+                    <Label
+                        x:Name="AvatarLabel"
+                        Text="M"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
+                </Border>
+                <VerticalStackLayout Grid.Column="2" Spacing="0" VerticalOptions="Center" Padding="8,0,0,0">
+                    <Label
+                        x:Name="ClienteLabel"
+                        Text=""
+                        FontSize="17"
+                        FontAttributes="Bold"
+                        TextColor="White" />
+                    <Label
+                        x:Name="ClienteTelefonoLabel"
+                        Text=""
+                        FontSize="13"
+                        TextColor="#D1FAE5" />
+                </VerticalStackLayout>
+                <Label
+                    Grid.Column="3"
+                    Text="💬"
+                    FontSize="20"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+            </Grid>
+        </Border>
 
-        <CollectionView
-            Grid.Row="1"
-            x:Name="HistorialCollection"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border
-                        Padding="14"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                Text="{Binding TipoPlantilla}"
-                                FontSize="13"
-                                FontAttributes="Bold" />
-                            <Label
-                                Text="{Binding Contenido}"
-                                FontSize="15" />
-                            <Label
-                                Text="{Binding FechaCreacion, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
-                                FontSize="12" />
-                            <Label
-                                Text="{Binding Estado, StringFormat='Estado: {0}'}"
-                                FontSize="12" />
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <Grid Grid.Row="1" Padding="12,8">
+            <CollectionView
+                x:Name="HistorialCollection"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="60,*" Padding="0,0,0,8">
+                            <Border
+                                Grid.Column="1"
+                                Padding="10,8"
+                                BackgroundColor="#DCF8C6"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12">
+                                <VerticalStackLayout Spacing="2">
+                                    <Border
+                                        Padding="8,2"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 8"
+                                        HorizontalOptions="Start"
+                                        BackgroundColor="#D1FAE5">
+                                        <Label
+                                            Text="{Binding TipoPlantilla}"
+                                            FontSize="11"
+                                            FontAttributes="Bold"
+                                            TextColor="#047857" />
+                                    </Border>
+                                    <Label
+                                        Text="{Binding Contenido}"
+                                        FontSize="15"
+                                        TextColor="#111827" />
+                                    <HorizontalStackLayout Spacing="4" HorizontalOptions="End">
+                                        <Label
+                                            Text="{Binding FechaCreacion, StringFormat='{0:HH:mm}'}"
+                                            FontSize="11"
+                                            TextColor="#6B7280"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            Text="✓✓"
+                                            FontSize="12"
+                                            TextColor="#34B7F1"
+                                            VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-        <VerticalStackLayout
-            Grid.Row="2"
-            Spacing="8">
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                Color="#128C7E"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <Label
+                x:Name="EstadoLabel"
+                IsVisible="False"
+                TextColor="#6B7280"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center" />
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="2" Padding="12,8" Spacing="6" BackgroundColor="#E7DFD3">
             <Button
                 x:Name="RecordatorioButton"
-                Text="Enviar mensaje"
+                Text="➤  Enviar mensaje"
+                BackgroundColor="#16A34A"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="24"
+                HeightRequest="52"
                 Clicked="OnEnviarMensajeClicked" />
             <Label
                 x:Name="ErrorLabel"
-                TextColor="Red"
+                TextColor="#DC2626"
                 IsVisible="False"
                 HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
-
-        <ActivityIndicator
-            Grid.Row="1"
-            x:Name="CargandoIndicator"
-            IsVisible="False"
-            IsRunning="False"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
-
-        <Label
-            Grid.Row="1"
-            x:Name="EstadoLabel"
-            IsVisible="False"
-            HorizontalTextAlignment="Center"
-            VerticalTextAlignment="Center" />
 
     </Grid>
 

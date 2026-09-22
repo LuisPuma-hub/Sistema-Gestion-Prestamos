@@ -6,10 +6,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SistemaPrestamos.Mobile"
     xmlns:views="clr-namespace:SistemaPrestamos.Mobile.Views"
-    Title="Sistema de Pr�stamos">
+    Title="Sistema de Préstamos"
+    Shell.TabBarBackgroundColor="White"
+    Shell.TabBarTitleColor="#6B7280"
+    Shell.TabBarUnselectedColor="#9CA3AF"
+    Shell.TabBarForegroundColor="#512BD4">
 
     <ShellContent
-        Title="Dashboard"
+        Title="Inicio"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
@@ -29,7 +33,7 @@
         Route="Pagos" />
 
     <ShellContent
-        Title="Morosidad"
+        Title="Mora"
         ContentTemplate="{DataTemplate views:MorosidadPage}"
         Route="Morosidad" />
 

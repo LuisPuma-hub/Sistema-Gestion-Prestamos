@@ -12,6 +12,7 @@ public partial class DetalleClientePage : ContentPage
     private ClienteDto? _cliente;
     private GaranteDto? _garanteActual;
     private byte[]? _fotoBytes;
+    private string _opcionAval = "Sin aval";
     private bool _editando;
 
     public string IdTexto { get; set; } = string.Empty;
@@ -57,7 +58,11 @@ public partial class DetalleClientePage : ContentPage
             }
 
             NombreLabel.Text = _cliente.NombreCompleto;
-            EstadoLabel.Text = $"Estado: {_cliente.Estado}";
+            AvatarLabel.Text = _cliente.Inicial;
+            DocumentoLabel.Text = $"{_cliente.TipoDocumento} {_cliente.NumeroDocumento}";
+
+            EstadoPill.BindingContext = _cliente;
+            EstadoLabel.Text = _cliente.Estado;
 
             TipoDocumentoPicker.SelectedItem = _cliente.TipoDocumento;
             NumeroDocumentoEntry.Text = _cliente.NumeroDocumento;
@@ -80,7 +85,11 @@ public partial class DetalleClientePage : ContentPage
 
             GaranteLabel.Text = _garanteActual is null
                 ? "Sin aval registrado."
-                : $"{_garanteActual.NombreCompleto} - {_garanteActual.Telefono}";
+                : _garanteActual.NombreCompleto;
+
+            GaranteDetalleLabel.Text = _garanteActual is null
+                ? string.Empty
+                : $"{_garanteActual.Telefono}";
 
             QuitarAvalButton.IsVisible = _garanteActual is not null;
 
@@ -94,10 +103,7 @@ public partial class DetalleClientePage : ContentPage
                 AvalDireccionEntry.Text = _garanteActual.Direccion;
             }
 
-            AvalOpcionPicker.SelectedIndex = -1;
-            AvalClientePicker.IsVisible = false;
-            AvalNuevoLayout.IsVisible = false;
-            GuardarAvalButton.IsVisible = false;
+            AvalOpcionSeleccionada("Sin aval");
 
             var todos = await _clienteService.ObtenerTodosAsync();
 
@@ -280,14 +286,39 @@ public partial class DetalleClientePage : ContentPage
         }
     }
 
-    private void OnAvalOpcionChanged(object? sender, EventArgs e)
+    private void OnAvalOpcionTapped(object? sender, TappedEventArgs e)
     {
-        var opcion = AvalOpcionPicker.SelectedItem as string;
+        if (e.Parameter as string is string opcion)
+        {
+            AvalOpcionSeleccionada(opcion);
+        }
+    }
+
+    private void AvalOpcionSeleccionada(string opcion)
+    {
+        _opcionAval = opcion;
+
+        PintarRadioD(OpcionSinAvalD, RadioSinAvalD, RadioSinAvalDotD, opcion == "Sin aval");
+        PintarRadioD(OpcionExistenteD, RadioExistenteD, RadioExistenteDotD, opcion == "Cliente existente");
+        PintarRadioD(OpcionNuevoD, RadioNuevoD, RadioNuevoDotD, opcion == "Nuevo aval");
 
         AvalClientePicker.IsVisible = opcion == "Cliente existente";
         AvalNuevoLayout.IsVisible = opcion == "Nuevo aval";
         GuardarAvalButton.IsVisible =
             opcion == "Cliente existente" || opcion == "Nuevo aval";
+    }
+
+    private static void PintarRadioD(Border tarjeta, Border radio, BoxView punto, bool seleccionado)
+    {
+        tarjeta.Stroke = seleccionado
+            ? Color.FromArgb("#512BD4")
+            : Color.FromArgb("#E5E7EB");
+        tarjeta.StrokeThickness = seleccionado ? 2 : 1;
+        radio.Stroke = seleccionado
+            ? Color.FromArgb("#512BD4")
+            : Color.FromArgb("#D1D5DB");
+        radio.StrokeThickness = 2;
+        punto.IsVisible = seleccionado;
     }
 
     private async void OnGuardarAvalClicked(object? sender, EventArgs e)
@@ -297,7 +328,7 @@ public partial class DetalleClientePage : ContentPage
             return;
         }
 
-        var opcion = AvalOpcionPicker.SelectedItem as string;
+        var opcion = _opcionAval;
 
         string nombres;
         string apellidos;
@@ -460,6 +491,7 @@ public partial class DetalleClientePage : ContentPage
     {
         FotoImage.IsVisible = false;
         FotoImage.Source = null;
+        FotoPlaceholder.IsVisible = true;
 
         if (_cliente is null ||
             string.IsNullOrWhiteSpace(_cliente.FotoReciboServicio))
@@ -480,6 +512,7 @@ public partial class DetalleClientePage : ContentPage
 
         FotoImage.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
         FotoImage.IsVisible = true;
+        FotoPlaceholder.IsVisible = false;
         FotoLabel.Text = "Recibo registrado. Tócalo para ampliar.";
         _fotoBytes = bytes;
     }
@@ -585,6 +618,11 @@ public partial class DetalleClientePage : ContentPage
         {
             MostrarCargando(false);
         }
+    }
+
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 
     private async void OnWhatsappClicked(object? sender, EventArgs e)

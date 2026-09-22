@@ -51,16 +51,20 @@ public partial class DetallePrestamoPage : ContentPage
             }
 
             ClienteLabel.Text = _prestamo.ClienteNombre;
-            EstadoLabel2.Text = $"Estado: {_prestamo.Estado}";
+            AvatarLabel.Text = _prestamo.ClienteNombre.Length > 0
+                ? _prestamo.ClienteNombre.Substring(0, 1).ToUpperInvariant()
+                : "?";
+            DocumentoLabel.Text = _prestamo.FechaAprobacion is null
+                ? "Sin aprobar"
+                : $"Aprobado {_prestamo.FechaAprobacion:dd/MM/yyyy}";
+            EstadoPill.BindingContext = _prestamo;
+            EstadoLabel2.Text = _prestamo.Estado;
 
-            CapitalLabel.Text = $"Capital inicial: S/ {_prestamo.CapitalInicial:N2}";
-            PendienteLabel.Text = $"Capital pendiente: S/ {_prestamo.CapitalPendiente:N2}";
-            InteresLabel.Text = $"Interés semanal: S/ {_prestamo.InteresSemanal:N2}";
-            TasaLabel.Text = $"Tasa semanal: {_prestamo.TasaInteresSemanal:P0}";
-            FechaInicioLabel.Text = $"Inicio: {_prestamo.FechaInicio:dd/MM/yyyy}";
-            FechaAprobacionLabel.Text = _prestamo.FechaAprobacion is null
-                ? "Aprobación: pendiente"
-                : $"Aprobación: {_prestamo.FechaAprobacion:dd/MM/yyyy}";
+            CapitalLabel.Text = $"S/ {_prestamo.CapitalInicial:N2}";
+            PendienteLabel.Text = $"S/ {_prestamo.CapitalPendiente:N2}";
+            InteresLabel.Text = $"S/ {_prestamo.InteresSemanal:N2}";
+            TasaLabel.Text = $"{_prestamo.TasaInteresSemanal:P0} semanal";
+            FechaInicioLabel.Text = $"{_prestamo.FechaInicio:dd/MM/yyyy}";
 
             AprobarButton.IsVisible =
                 string.Equals(_prestamo.Estado, "Pendiente", StringComparison.OrdinalIgnoreCase)
@@ -90,7 +94,28 @@ public partial class DetallePrestamoPage : ContentPage
 
             PagosResumenLabel.Text = listaPagos.Count == 0
                 ? "Sin pagos registrados."
-                : $"Pagos: {listaPagos.Count} - Total: S/ {listaPagos.Sum(p => p.Monto):N2}";
+                : "";
+            PagosResumenLabel.IsVisible = listaPagos.Count == 0;
+
+            TotalPagadoLabel.Text = $"S/ {listaPagos.Sum(p => p.Monto):N2}";
+
+            try
+            {
+                var periodos = await _prestamoService.ObtenerPeriodosAsync(_prestamo.Id);
+
+                var proximo = periodos
+                    .Where(p => p.InteresPendiente > 0)
+                    .OrderBy(p => p.FechaVencimiento)
+                    .FirstOrDefault();
+
+                ProxVencLabel.Text = proximo is null
+                    ? "-"
+                    : $"{proximo.FechaVencimiento:dd/MM/yyyy}";
+            }
+            catch
+            {
+                ProxVencLabel.Text = "-";
+            }
         }
         catch (HttpRequestException)
         {
@@ -104,6 +129,11 @@ public partial class DetallePrestamoPage : ContentPage
         {
             MostrarCargando(false);
         }
+    }
+
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 
     private async void OnPagoTapped(object? sender, TappedEventArgs e)

@@ -3,63 +3,138 @@
     x:Class="SistemaPrestamos.Mobile.Views.DetallePagoPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Detalle del pago">
+    Title=""
+    BackgroundColor="#F8F7FC"
+    Shell.NavBarIsVisible="False">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="24"
-            Spacing="14">
-
-            <Label
-                x:Name="MontoLabel"
-                FontSize="28"
-                FontAttributes="Bold"
-                HorizontalTextAlignment="Center" />
-
-            <Label
-                x:Name="FechaLabel"
-                FontSize="15"
-                HorizontalTextAlignment="Center" />
-
+        <VerticalStackLayout Spacing="0">
             <Border
-                Padding="16"
+                BackgroundColor="#512BD4"
                 StrokeThickness="0"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="6">
+                StrokeShape="RoundRectangle 0,0,28,28"
+                Padding="16,48,16,20">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Button
+                        Grid.Column="0"
+                        Text="←"
+                        FontSize="22"
+                        TextColor="White"
+                        BackgroundColor="Transparent"
+                        WidthRequest="44"
+                        HeightRequest="44"
+                        Padding="0"
+                        VerticalOptions="Center"
+                        Clicked="OnVolverClicked" />
                     <Label
-                        Text="Distribución"
-                        FontAttributes="Bold" />
-                    <Label x:Name="InteresLabel" FontSize="15" />
-                    <Label x:Name="CapitalLabel" FontSize="15" />
-                    <Label x:Name="PendienteLabel" FontSize="15" />
-                </VerticalStackLayout>
+                        Grid.Column="1"
+                        Text="Detalle de pago"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                </Grid>
             </Border>
 
-            <Border
-                Padding="16"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="6">
-                    <Label
-                        Text="Adicional"
-                        FontAttributes="Bold" />
-                    <Label x:Name="ComprobanteLabel" FontSize="14" />
-                    <Label x:Name="ObservacionesLabel" FontSize="14" />
-                </VerticalStackLayout>
-            </Border>
+            <VerticalStackLayout Padding="16" Spacing="14">
 
-            <ActivityIndicator
-                x:Name="CargandoIndicator"
-                IsVisible="False"
-                IsRunning="False"
-                HorizontalOptions="Center" />
+                <Border Padding="20,18" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Monto pagado" FontSize="13" TextColor="#6B7280" HorizontalTextAlignment="Center" />
+                        <Label x:Name="MontoLabel" Text="S/ 0.00" FontSize="34" FontAttributes="Bold" TextColor="#16A34A" HorizontalTextAlignment="Center" />
+                        <Label x:Name="FechaLabel" Text="" FontSize="13" TextColor="#6B7280" HorizontalTextAlignment="Center" />
+                        <Border
+                            Padding="12,4"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 10"
+                            HorizontalOptions="Center"
+                            BackgroundColor="#DCFCE7"
+                            Margin="0,6,0,0">
+                            <Label Text="Aplicado" FontSize="12" FontAttributes="Bold" TextColor="#16A34A" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <Label
-                x:Name="ErrorLabel"
-                TextColor="Red"
-                IsVisible="False"
-                HorizontalTextAlignment="Center" />
+                <Label Text="CLIENTE" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Border
+                            HeightRequest="48" WidthRequest="48"
+                            BackgroundColor="#EDE9FE"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 24"
+                            VerticalOptions="Center">
+                            <Label
+                                x:Name="AvatarLabel"
+                                Text="M"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                TextColor="#512BD4"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                            <Label x:Name="ClienteLabel" FontSize="16" FontAttributes="Bold" TextColor="#111827" />
+                            <Label x:Name="PrestamoInfoLabel" FontSize="13" TextColor="#6B7280" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
 
+                <Label Text="DISTRIBUCIÓN DEL PAGO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="10">
+                        <Border Padding="14,10" BackgroundColor="#FEF3C7" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="A interés" FontSize="14" TextColor="#92400E" VerticalOptions="Center" />
+                                <Label Grid.Column="1" x:Name="InteresLabel" Text="S/ 0.00" FontSize="16" FontAttributes="Bold" TextColor="#D97706" VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                        <Border Padding="14,10" BackgroundColor="#DCFCE7" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="A capital" FontSize="14" TextColor="#166534" VerticalOptions="Center" />
+                                <Label Grid.Column="1" x:Name="CapitalLabel" Text="S/ 0.00" FontSize="16" FontAttributes="Bold" TextColor="#16A34A" VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                        <Border Padding="14,10" BackgroundColor="#FEE2E2" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="Capital restante" FontSize="14" TextColor="#991B1B" VerticalOptions="Center" />
+                                <Label Grid.Column="1" x:Name="PendienteLabel" Text="S/ 0.00" FontSize="16" FontAttributes="Bold" TextColor="#DC2626" VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="COMPROBANTE" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid HeightRequest="120" BackgroundColor="#F3F4F6">
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
+                                <Label Text="▣" FontSize="28" TextColor="#9CA3AF" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Label x:Name="ComprobanteLabel" Text="-" FontSize="13" TextColor="#6B7280" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="OBSERVACIONES" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <Label x:Name="ObservacionesLabel" Text="Sin observaciones." FontSize="14" TextColor="#111827" />
+                </Border>
+
+                <ActivityIndicator
+                    x:Name="CargandoIndicator"
+                    IsVisible="False"
+                    IsRunning="False"
+                    Color="#512BD4"
+                    HorizontalOptions="Center" />
+
+                <Label
+                    x:Name="ErrorLabel"
+                    TextColor="#DC2626"
+                    IsVisible="False"
+                    HorizontalTextAlignment="Center" />
+
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 

@@ -85,7 +85,15 @@ public partial class LoginPage : ContentPage
 
     private void MostrarError(string mensaje)
     {
-        ErrorLabel.Text = TextoError.Limpiar(mensaje);
+        ErrorLabel.Text = mensaje;
         ErrorLabel.IsVisible = true;
+    }
+
+    private async void OnOlvidoClicked(object? sender, TappedEventArgs e)
+    {
+        await DisplayAlertAsync(
+            "Recuperar contraseña",
+            "Contacta a tu administrador o llama al 01-234-5678 para restablecerla.",
+            "OK");
     }
 }

@@ -46,12 +46,25 @@ public partial class PerfilPage : ContentPage
             {
                 var usuario = await _usuarioService.ObtenerPorIdAsync(id);
 
-                if (usuario is not null)
-                {
-                    NombreLabel.Text = usuario.NombreCompleto;
-                    EmailLabel.Text = usuario.Email;
-                    RolLabel.Text = usuario.Rol;
-                }
+            if (usuario is not null)
+            {
+                NombreLabel.Text = usuario.NombreCompleto;
+                AvatarLabel.Text = usuario.NombreCompleto.Length > 0
+                    ? usuario.NombreCompleto.Substring(0, 1).ToUpperInvariant()
+                    : "?";
+                EmailLabel.Text = usuario.Email;
+                EmailDetalleLabel.Text = usuario.Email;
+                RolLabel.Text = usuario.Rol;
+                RolDetalleLabel.Text = usuario.Rol;
+            }
+            else
+            {
+                AvatarLabel.Text = nombre.Length > 0
+                    ? nombre.Substring(0, 1).ToUpperInvariant()
+                    : "?";
+                EmailDetalleLabel.Text = email;
+                RolDetalleLabel.Text = rol;
+            }
             }
 
             var disponible = await _biometriaService.EstaDisponibleAsync();
@@ -93,14 +106,13 @@ public partial class PerfilPage : ContentPage
             return;
         }
 
-        await _authService.CerrarSesionAsync();
-
         try
         {
             var serviciosPush = Handler?.MauiContext?.Services;
 
             if (serviciosPush is IServiceProvider proveedorPush)
             {
+                // Primero: dar de baja el push (aún hay auth).
                 await proveedorPush
                     .GetRequiredService<NotificacionPushService>()
                     .DarDeBajaAsync();
@@ -108,8 +120,10 @@ public partial class PerfilPage : ContentPage
         }
         catch
         {
-            // La limpieza local ya se hizo.
+            // Sigue el logout local igual.
         }
+
+        await _authService.CerrarSesionAsync();
 
         var ventana = Application.Current?.Windows.FirstOrDefault();
 

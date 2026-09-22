@@ -83,7 +83,7 @@ public partial class PagosPage : ContentPage
         var lista = filtrados.ToList();
 
         PagosCollection.ItemsSource = lista;
-        ResumenLabel.Text = $"Pagos registrados: {lista.Count}";
+        ResumenLabel.Text = lista.Count.ToString();
 
         if (_todos.Count == 0)
         {

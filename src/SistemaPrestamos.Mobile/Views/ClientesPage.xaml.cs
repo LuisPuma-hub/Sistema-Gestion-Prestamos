@@ -7,12 +7,13 @@ public partial class ClientesPage : ContentPage
 {
     private readonly ClienteService _clienteService;
     private List<ClienteDto> _todos = new();
+    private string _filtroEstado = "Todos";
 
     public ClientesPage(ClienteService clienteService)
     {
         InitializeComponent();
         _clienteService = clienteService;
-        FiltroEstadoPicker.SelectedIndex = 0;
+        ActualizarChips();
     }
 
     protected override async void OnAppearing()
@@ -50,7 +51,7 @@ public partial class ClientesPage : ContentPage
     private void AplicarFiltros()
     {
         var texto = BuscarBar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-        var filtroEstado = FiltroEstadoPicker.SelectedItem as string ?? "Todos";
+        var filtroEstado = _filtroEstado;
 
         var filtrados = _todos.AsEnumerable();
 
@@ -72,7 +73,7 @@ public partial class ClientesPage : ContentPage
         var lista = filtrados.ToList();
 
         ClientesCollection.ItemsSource = lista;
-        ResumenLabel.Text = $"Clientes registrados: {lista.Count}";
+        ResumenLabel.Text = lista.Count.ToString();
 
         if (_todos.Count == 0)
         {
@@ -107,9 +108,51 @@ public partial class ClientesPage : ContentPage
         AplicarFiltros();
     }
 
-    private void OnFiltroEstadoChanged(object? sender, EventArgs e)
+    private void OnFiltroChipClicked(object? sender, EventArgs e)
     {
+        if (sender == ChipTodos)
+        {
+            _filtroEstado = "Todos";
+        }
+        else if (sender == ChipActivo)
+        {
+            _filtroEstado = "Activo";
+        }
+        else if (sender == ChipObservacion)
+        {
+            _filtroEstado = "En observación";
+        }
+        else if (sender == ChipMoroso)
+        {
+            _filtroEstado = "Moroso";
+        }
+
+        ActualizarChips();
         AplicarFiltros();
+    }
+
+    private void ActualizarChips()
+    {
+        PintarChip(ChipTodos, _filtroEstado == "Todos");
+        PintarChip(ChipActivo, _filtroEstado == "Activo");
+        PintarChip(ChipObservacion, _filtroEstado == "En observación");
+        PintarChip(ChipMoroso, _filtroEstado == "Moroso");
+    }
+
+    private static void PintarChip(Button chip, bool seleccionado)
+    {
+        chip.BackgroundColor = seleccionado
+            ? Color.FromArgb("#512BD4")
+            : Colors.White;
+        chip.TextColor = seleccionado
+            ? Colors.White
+            : Color.FromArgb("#6B7280");
+        chip.BorderColor = seleccionado
+            ? Color.FromArgb("#512BD4")
+            : Color.FromArgb("#E5E7EB");
+        chip.BorderWidth = 1;
+        chip.CornerRadius = 18;
+        chip.FontSize = 13;
     }
 
     private async void OnReintentarClicked(object? sender, EventArgs e)

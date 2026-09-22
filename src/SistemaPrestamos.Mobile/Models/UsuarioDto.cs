@@ -17,4 +17,8 @@ public class UsuarioDto
     public DateTime FechaCreacion { get; set; }
 
     public string NombreCompleto => $"{Nombres} {Apellidos}".Trim();
+
+    public string Inicial => Nombres.Length > 0
+        ? Nombres.Substring(0, 1).ToUpperInvariant()
+        : "?";
 }

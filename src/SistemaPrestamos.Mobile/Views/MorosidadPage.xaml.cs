@@ -8,6 +8,7 @@ public partial class MorosidadPage : ContentPage
     private readonly PrestamoService _prestamoService;
     private readonly MorosidadService _morosidadService;
     private List<MorosidadDto> _todos = new();
+    private bool _soloMorosos = true;
 
     public MorosidadPage(
         PrestamoService prestamoService,
@@ -16,7 +17,7 @@ public partial class MorosidadPage : ContentPage
         InitializeComponent();
         _prestamoService = prestamoService;
         _morosidadService = morosidadService;
-        FiltroPicker.SelectedIndex = 0;
+        ActualizarChips();
     }
 
     protected override async void OnAppearing()
@@ -84,20 +85,19 @@ public partial class MorosidadPage : ContentPage
 
     private void AplicarFiltro()
     {
-        var soloMorosos = (FiltroPicker.SelectedItem as string) != "Todos los activos";
-
-        var lista = soloMorosos
+        var lista = _soloMorosos
             ? _todos.Where(m => m.Activa).ToList()
             : _todos;
 
         MorosidadCollection.ItemsSource = lista;
 
         var enMora = _todos.Count(m => m.Activa);
-        ResumenLabel.Text = $"Préstamos en mora: {enMora}";
+        ResumenLabel.Text = $"En mora: {enMora} cliente{(enMora == 1 ? "" : "s")}";
+        BannerMora.IsVisible = enMora > 0;
 
         if (lista.Count == 0)
         {
-            EstadoLabel.Text = soloMorosos
+            EstadoLabel.Text = _soloMorosos
                 ? "No hay préstamos en mora."
                 : "No hay préstamos activos para evaluar.";
             EstadoLabel.IsVisible = true;
@@ -119,6 +119,35 @@ public partial class MorosidadPage : ContentPage
         EstadoLabel.Text = mensaje;
         EstadoLabel.IsVisible = true;
         ReintentarButton.IsVisible = true;
+    }
+
+    private void OnFiltroChipClicked(object? sender, EventArgs e)
+    {
+        _soloMorosos = sender != ChipTodos;
+        ActualizarChips();
+        AplicarFiltro();
+    }
+
+    private void ActualizarChips()
+    {
+        PintarChip(ChipMorosos, _soloMorosos);
+        PintarChip(ChipTodos, !_soloMorosos);
+    }
+
+    private static void PintarChip(Button chip, bool seleccionado)
+    {
+        chip.BackgroundColor = seleccionado
+            ? Color.FromArgb("#512BD4")
+            : Colors.White;
+        chip.TextColor = seleccionado
+            ? Colors.White
+            : Color.FromArgb("#6B7280");
+        chip.BorderColor = seleccionado
+            ? Color.FromArgb("#512BD4")
+            : Color.FromArgb("#E5E7EB");
+        chip.BorderWidth = 1;
+        chip.CornerRadius = 18;
+        chip.FontSize = 13;
     }
 
     private void OnFiltroChanged(object? sender, EventArgs e)

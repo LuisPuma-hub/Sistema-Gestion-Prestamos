@@ -7,13 +7,17 @@ namespace SistemaPrestamos.Mobile.Views;
 public partial class DetallePagoPage : ContentPage
 {
     private readonly PagoService _pagoService;
+    private readonly PrestamoService _prestamoService;
 
     public string IdTexto { get; set; } = string.Empty;
 
-    public DetallePagoPage(PagoService pagoService)
+    public DetallePagoPage(
+        PagoService pagoService,
+        PrestamoService prestamoService)
     {
         InitializeComponent();
         _pagoService = pagoService;
+        _prestamoService = prestamoService;
     }
 
     protected override async void OnAppearing()
@@ -46,19 +50,47 @@ public partial class DetallePagoPage : ContentPage
             }
 
             MontoLabel.Text = $"S/ {pago.Monto:N2}";
-            FechaLabel.Text = $"Pagado: {pago.FechaPago:dd/MM/yyyy}";
+            FechaLabel.Text = pago.FechaPago.ToLocalTime().ToString(
+                "dd/MM/yyyy · h:mm tt",
+                new System.Globalization.CultureInfo("es-PE"));
 
-            InteresLabel.Text = $"A interés: S/ {pago.MontoInteres:N2}";
-            CapitalLabel.Text = $"A capital: S/ {pago.MontoCapital:N2}";
-            PendienteLabel.Text = $"Capital pendiente restante: S/ {pago.CapitalPendiente:N2}";
+            InteresLabel.Text = $"S/ {pago.MontoInteres:N2}";
+            CapitalLabel.Text = $"S/ {pago.MontoCapital:N2}";
+            PendienteLabel.Text = $"S/ {pago.CapitalPendiente:N2}";
 
             ComprobanteLabel.Text = string.IsNullOrWhiteSpace(pago.Comprobante)
-                ? "Comprobante: -"
-                : $"Comprobante: {pago.Comprobante}";
+                ? "-"
+                : pago.Comprobante;
 
             ObservacionesLabel.Text = string.IsNullOrWhiteSpace(pago.Observaciones)
                 ? "Sin observaciones."
                 : pago.Observaciones;
+
+            try
+            {
+                var prestamo = await _prestamoService
+                    .ObtenerPorIdAsync(pago.PrestamoId);
+
+                if (prestamo is not null)
+                {
+                    ClienteLabel.Text = prestamo.ClienteNombre;
+                    AvatarLabel.Text = prestamo.ClienteNombre.Length > 0
+                        ? prestamo.ClienteNombre.Substring(0, 1).ToUpperInvariant()
+                        : "?";
+                    PrestamoInfoLabel.Text =
+                        $"Préstamo S/ {prestamo.CapitalInicial:N2}";
+                }
+                else
+                {
+                    ClienteLabel.Text = "Préstamo";
+                    PrestamoInfoLabel.Text = string.Empty;
+                }
+            }
+            catch
+            {
+                ClienteLabel.Text = "Préstamo";
+                PrestamoInfoLabel.Text = string.Empty;
+            }
         }
         catch (HttpRequestException)
         {
@@ -72,6 +104,11 @@ public partial class DetallePagoPage : ContentPage
         {
             MostrarCargando(false);
         }
+    }
+
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 
     private void MostrarCargando(bool cargando)

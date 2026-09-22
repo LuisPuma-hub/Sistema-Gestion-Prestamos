@@ -45,7 +45,6 @@ public partial class UsuariosPage : ContentPage
             _todos = await _usuarioService.ObtenerTodosAsync();
 
             UsuariosCollection.ItemsSource = _todos;
-            ResumenLabel.Text = $"Usuarios: {_todos.Count}";
 
             if (_todos.Count == 0)
             {

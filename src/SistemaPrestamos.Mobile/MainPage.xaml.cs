@@ -42,9 +42,14 @@ public partial class MainPage : ContentPage
 
             var nombre = await SecureStorage.Default.GetAsync("usuario_nombre");
 
+            FechaLabel.Text = DateTime.Today.ToString(
+                "dddd, dd 'de' MMMM",
+                new System.Globalization.CultureInfo("es-PE"));
+
             if (!string.IsNullOrWhiteSpace(nombre))
             {
-                SaludoLabel.Text = $"Hola, {nombre}";
+                var primero = nombre.Trim().Split(' ')[0];
+                SaludoLabel.Text = $"Hola, {primero} 👋";
             }
 
             var clientesTask = _clienteService.ObtenerTodosAsync();
@@ -82,6 +87,44 @@ public partial class MainPage : ContentPage
             MoraValorLabel.Text = moras
                 .Count(m => m is not null && m.Activa)
                 .ToString();
+
+            var nombresPrestamo = prestamos.ToDictionary(
+                p => p.Id,
+                p => p.ClienteNombre);
+
+            var ultimo = pagos
+                .OrderByDescending(p => p.FechaPago)
+                .FirstOrDefault();
+
+            if (ultimo is not null)
+            {
+                var nombreCli = nombresPrestamo.TryGetValue(
+                    ultimo.PrestamoId,
+                    out var n) ? n : "Cliente";
+
+                ActividadNombreLabel.Text = nombreCli;
+                ActividadInicialLabel.Text = nombreCli.Length > 0
+                    ? nombreCli.Substring(0, 1).ToUpperInvariant()
+                    : "?";
+                ActividadDetalleLabel.Text = "Pago recibido";
+                ActividadMontoLabel.Text = $"S/ {ultimo.Monto:N2}";
+
+                var hace = DateTime.Now - ultimo.FechaPago.ToLocalTime();
+
+                ActividadTiempoLabel.Text = hace.TotalMinutes < 1
+                    ? "ahora mismo"
+                    : hace.TotalHours < 1
+                        ? $"hace {(int)hace.TotalMinutes} min"
+                        : hace.TotalDays < 1
+                            ? $"hace {(int)hace.TotalHours} h"
+                            : $"hace {(int)hace.TotalDays} días";
+
+                ActividadCard.IsVisible = true;
+            }
+            else
+            {
+                ActividadCard.IsVisible = false;
+            }
         }
         catch (HttpRequestException)
         {
@@ -93,6 +136,11 @@ public partial class MainPage : ContentPage
             ErrorLabel.Text = $"No se pudo cargar: {ex.Message}";
             ErrorLabel.IsVisible = true;
         }
+    }
+
+    private async void OnRefrescarClicked(object? sender, TappedEventArgs e)
+    {
+        await CargarAsync();
     }
 
     private async void OnClientesClicked(

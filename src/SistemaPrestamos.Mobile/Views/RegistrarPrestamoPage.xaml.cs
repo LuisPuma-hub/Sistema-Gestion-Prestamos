@@ -32,20 +32,25 @@ public partial class RegistrarPrestamoPage : ContentPage
 
     private void OnDiaMenosClicked(object? sender, EventArgs e)
     {
-        _fechaInicio = _fechaInicio.AddDays(-1);
+        _fechaInicio = _fechaInicio.AddDays(-7);
         MostrarFecha();
     }
 
     private void OnDiaMasClicked(object? sender, EventArgs e)
     {
-        _fechaInicio = _fechaInicio.AddDays(1);
+        _fechaInicio = _fechaInicio.AddDays(7);
         MostrarFecha();
     }
 
-    private void OnHoyClicked(object? sender, EventArgs e)
+    private void OnUltimoVencimientoClicked(object? sender, EventArgs e)
     {
         _fechaInicio = DateTime.Today;
         MostrarFecha();
+    }
+
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 
     protected override async void OnAppearing()
@@ -92,10 +97,16 @@ public partial class RegistrarPrestamoPage : ContentPage
     {
         if (ClientePicker.SelectedItem is not ClienteDto cliente)
         {
+            ClienteValidCard.IsVisible = false;
             return;
         }
 
-        ClienteInfoLabel.Text =
+        ClienteValidCard.IsVisible = true;
+        ClienteValidNombre.Text = cliente.NombreCompleto;
+        ClienteValidInicial.Text = cliente.Inicial;
+        ActualizarBoton();
+
+        ClienteValidDetalle.Text =
             $"{cliente.DocumentoCompleto} - {cliente.Telefono}";
 
         try
@@ -127,6 +138,23 @@ public partial class RegistrarPrestamoPage : ContentPage
         {
             ResumenInteresLabel.Text = "Interés semanal (5 %): S/ 0.00";
         }
+
+        ActualizarBoton();
+    }
+
+    private void ActualizarBoton()
+    {
+        var valido = ClientePicker.SelectedItem is ClienteDto
+            && decimal.TryParse(
+                CapitalEntry.Text?.Trim(),
+                NumberStyles.Number,
+                CultureInfo.CurrentCulture,
+                out var capital)
+            && capital > 0;
+
+        GuardarButton.BackgroundColor = valido
+            ? Color.FromArgb("#512BD4")
+            : Color.FromArgb("#C4B5FD");
     }
 
     private async void OnGuardarClicked(object? sender, EventArgs e)

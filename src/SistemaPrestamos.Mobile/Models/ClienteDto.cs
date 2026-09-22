@@ -30,5 +30,9 @@ public class ClienteDto
 
     public string NombreCompleto => $"{Nombres} {Apellidos}".Trim();
 
+    public string Inicial => Nombres.Length > 0
+        ? Nombres.Substring(0, 1).ToUpperInvariant()
+        : "?";
+
     public string DocumentoCompleto => $"{TipoDocumento}: {NumeroDocumento}";
 }

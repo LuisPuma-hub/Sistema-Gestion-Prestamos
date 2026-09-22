@@ -54,7 +54,8 @@ public partial class DetalleMorosidadPage : ContentPage
             if (mora is null)
             {
                 EstadoLabel2.Text = "Sin mora";
-                SemanasLabel.Text = "Semanas vencidas: 0";
+                EstadoLabel2.TextColor = Color.FromArgb("#16A34A");
+                SemanasLabel.Text = "0";
                 InicioLabel.Text = string.Empty;
                 ReactivacionLabel.Text = string.Empty;
                 ObservacionesLabel.Text = "El préstamo está al día.";
@@ -63,7 +64,10 @@ public partial class DetalleMorosidadPage : ContentPage
             }
 
             EstadoLabel2.Text = mora.Activa ? "En mora" : "Sin mora activa";
-            SemanasLabel.Text = $"Semanas vencidas: {mora.PagosInteresVencidos}";
+            EstadoLabel2.TextColor = mora.Activa
+                ? Color.FromArgb("#DC2626")
+                : Color.FromArgb("#16A34A");
+            SemanasLabel.Text = $"{mora.PagosInteresVencidos}";
             InicioLabel.Text = mora.FechaInicio is null
                 ? "Inicio de mora: -"
                 : $"Inicio de mora: {mora.FechaInicio:dd/MM/yyyy}";
@@ -148,6 +152,11 @@ public partial class DetalleMorosidadPage : ContentPage
         var rol = await SecureStorage.Default.GetAsync("usuario_rol");
 
         return string.Equals(rol, "Administrador", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async void OnVolverClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 
     private void MostrarCargando(bool cargando)

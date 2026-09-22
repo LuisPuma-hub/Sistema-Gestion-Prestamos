@@ -3,92 +3,160 @@
     x:Class="SistemaPrestamos.Mobile.Views.MorosidadPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Morosidad">
+    Title=""
+    BackgroundColor="#F8F7FC">
 
-    <Grid
-        RowDefinitions="Auto,Auto,Auto,*,Auto"
-        Padding="16"
-        RowSpacing="12">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <Picker
-            Grid.Row="0"
-            x:Name="FiltroPicker"
-            Title="Mostrar"
-            SelectedIndexChanged="OnFiltroChanged">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>Solo morosos</x:String>
-                    <x:String>Todos los activos</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
-        </Picker>
+        <VerticalStackLayout Grid.Row="0" Spacing="0">
+            <Border
+                BackgroundColor="#512BD4"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 0,0,28,28"
+                Padding="24,48,24,20">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label
+                        Grid.Column="0"
+                        Text="Morosidad"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="1"
+                        x:Name="EvaluarButton"
+                        Text="⟳ Evaluar"
+                        FontSize="13"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        BackgroundColor="#6D4DE0"
+                        CornerRadius="10"
+                        Padding="14,8"
+                        VerticalOptions="Center"
+                        Clicked="OnEvaluarClicked" />
+                </Grid>
+            </Border>
 
-        <Button
-            Grid.Row="1"
-            x:Name="EvaluarButton"
-            Text="Evaluar morosidad"
-            Clicked="OnEvaluarClicked" />
+            <VerticalStackLayout Padding="16,12,16,4" Spacing="10">
+                <Border
+                    x:Name="BannerMora"
+                    Padding="14,12"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12"
+                    BackgroundColor="#FEE2E2"
+                    IsVisible="False">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="⚠️" FontSize="18" VerticalOptions="Center" />
+                        <Label
+                            x:Name="ResumenLabel"
+                            Text="En mora: 0 clientes"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="#991B1B"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
 
-        <Label
-            Grid.Row="2"
-            x:Name="ResumenLabel"
-            Text="Préstamos en mora: 0"
-            FontAttributes="Bold" />
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout Spacing="8">
+                        <Button x:Name="ChipMorosos" Text="Solo morosos" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipTodos" Text="Todos" Clicked="OnFiltroChipClicked" />
+                    </HorizontalStackLayout>
+                </ScrollView>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
 
-        <CollectionView
-            Grid.Row="3"
-            x:Name="MorosidadCollection"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border
-                        Padding="14"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 12">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Tapped="OnMorosidadTapped"
-                                CommandParameter="{Binding PrestamoId}" />
-                        </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                Text="{Binding PrestamoNombre}"
-                                FontSize="18"
-                                FontAttributes="Bold" />
-                            <Label
-                                Text="{Binding PagosInteresVencidos, StringFormat='Semanas vencidas: {0}'}"
-                                FontSize="14" />
-                            <Label
-                                Text="{Binding Activa, StringFormat='Mora activa: {0}'}"
-                                FontSize="14"
-                                FontAttributes="Bold" />
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <Grid Grid.Row="1" Padding="16,4,16,0">
+            <CollectionView
+                x:Name="MorosidadCollection"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Padding="0"
+                            Margin="0,0,0,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnMorosidadTapped"
+                                    CommandParameter="{Binding PrestamoId}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="6,*,Auto">
+                                <BoxView
+                                    Grid.Column="0"
+                                    Color="#DC2626"
+                                    CornerRadius="3,0,0,3" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="1" Padding="14,12" VerticalOptions="Center">
+                                    <Label
+                                        Text="{Binding PrestamoNombre}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="#111827" />
+                                    <Label
+                                        Text="{Binding PagosInteresVencidos, StringFormat='Semanas vencidas: {0}'}"
+                                        FontSize="13"
+                                        TextColor="#6B7280" />
+                                    <Border
+                                        Padding="10,4"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 10"
+                                        HorizontalOptions="Start"
+                                        BackgroundColor="#FEE2E2">
+                                        <Label
+                                            Text="Moroso"
+                                            FontSize="12"
+                                            FontAttributes="Bold"
+                                            TextColor="#DC2626" />
+                                    </Border>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="2" Spacing="0" Padding="0,12,14,12" VerticalOptions="Center">
+                                    <Label
+                                        Text="{Binding PagosInteresVencidos}"
+                                        FontSize="30"
+                                        FontAttributes="Bold"
+                                        TextColor="#DC2626"
+                                        HorizontalTextAlignment="Center" />
+                                    <Label
+                                        Text="sem. vencidas"
+                                        FontSize="11"
+                                        TextColor="#DC2626"
+                                        HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-        <Button
-            Grid.Row="4"
-            x:Name="ReintentarButton"
-            Text="Reintentar"
-            IsVisible="False"
-            Clicked="OnEvaluarClicked" />
+            <ActivityIndicator
+                x:Name="CargandoIndicator"
+                IsVisible="False"
+                IsRunning="False"
+                Color="#512BD4"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
 
-        <ActivityIndicator
-            Grid.Row="3"
-            x:Name="CargandoIndicator"
-            IsVisible="False"
-            IsRunning="False"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
+            <Label
+                x:Name="EstadoLabel"
+                IsVisible="False"
+                TextColor="#6B7280"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center" />
+        </Grid>
 
-        <Label
-            Grid.Row="3"
-            x:Name="EstadoLabel"
-            IsVisible="False"
-            HorizontalTextAlignment="Center"
-            VerticalTextAlignment="Center" />
+        <Grid Grid.Row="2" Padding="16,8" ColumnDefinitions="*">
+            <Button
+                Grid.Column="0"
+                x:Name="ReintentarButton"
+                Text="Reintentar"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="12"
+                IsVisible="False"
+                Clicked="OnEvaluarClicked" />
+        </Grid>
 
     </Grid>
 
