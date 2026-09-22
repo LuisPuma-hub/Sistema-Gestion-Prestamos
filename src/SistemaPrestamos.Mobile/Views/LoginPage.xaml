@@ -84,16 +84,6 @@
                             Placeholder="cobrador@empresa.pe"
                             Keyboard="Email"
                             HorizontalOptions="Fill" />
-                        <Label
-                            Text="✕"
-                            FontSize="18"
-                            FontAttributes="Bold"
-                            TextColor="#9CA3AF"
-                            VerticalOptions="Center">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnLimpiarEmail" />
-                            </Label.GestureRecognizers>
-                        </Label>
                     </HorizontalStackLayout>
                 </Border>
 
@@ -121,21 +111,10 @@
                             HorizontalOptions="Fill" />
                         <Label
                             x:Name="OjoLabel"
-                            Text="✕"
-                            FontSize="18"
+                            Text="○"
+                            FontSize="22"
                             FontAttributes="Bold"
                             TextColor="#9CA3AF"
-                            VerticalOptions="Center">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnLimpiarClave" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                        <Label
-                            x:Name="VerLabel"
-                            Text="Ver"
-                            FontSize="13"
-                            FontAttributes="Bold"
-                            TextColor="#512BD4"
                             VerticalOptions="Center">
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnOjoClicked" />
