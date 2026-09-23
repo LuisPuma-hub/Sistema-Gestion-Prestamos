@@ -23,10 +23,10 @@
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 12"
                         VerticalOptions="Center">
-                        <Label
-                            Text="▤"
-                            FontSize="22"
-                            TextColor="White"
+                        <Image
+                            Source="ic_card_w.png"
+                            WidthRequest="26"
+                            HeightRequest="26"
                             HorizontalOptions="Center"
                             VerticalOptions="Center" />
                     </Border>
@@ -78,13 +78,22 @@
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnEmailBoxTapped" />
                     </Border.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                    <Grid ColumnDefinitions="34,*" ColumnSpacing="8" VerticalOptions="Center">
+                        <Image
+                            Grid.Column="0"
+                            Source="ic_mail.png"
+                            WidthRequest="22"
+                            HeightRequest="22"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
                         <Entry
+                            Grid.Column="1"
                             x:Name="EmailEntry"
-                            Placeholder="cobrador@empresa.pe"
+                            Placeholder="correo@empresa.com"
                             Keyboard="Email"
-                            HorizontalOptions="Fill" />
-                    </HorizontalStackLayout>
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Center" />
+                    </Grid>
                 </Border>
 
                 <Label
@@ -103,24 +112,34 @@
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnClaveBoxTapped" />
                     </Border.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                    <Grid ColumnDefinitions="34,*,34" ColumnSpacing="8" VerticalOptions="Center">
+                        <Image
+                            Grid.Column="0"
+                            Source="ic_lock.png"
+                            WidthRequest="22"
+                            HeightRequest="22"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
                         <Entry
+                            Grid.Column="1"
                             x:Name="PasswordEntry"
-                            Placeholder="••••••••"
+                            Placeholder="Ingresa tu contraseña"
                             IsPassword="True"
-                            HorizontalOptions="Fill" />
-                        <Label
-                            x:Name="OjoLabel"
-                            Text="○"
-                            FontSize="22"
-                            FontAttributes="Bold"
-                            TextColor="#9CA3AF"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Center" />
+                        <Image
+                            Grid.Column="2"
+                            x:Name="OjoIcon"
+                            Source="ic_eye.png"
+                            WidthRequest="22"
+                            HeightRequest="22"
+                            HorizontalOptions="End"
                             VerticalOptions="Center">
-                            <Label.GestureRecognizers>
+                            <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnOjoClicked" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </HorizontalStackLayout>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Grid>
                 </Border>
 
                 <Button
@@ -164,10 +183,11 @@
                     Padding="14,12"
                     Margin="0,8,0,0">
                     <HorizontalStackLayout Spacing="8">
-                        <Label
-                            Text="ⓘ"
-                            FontSize="16"
-                            TextColor="#512BD4"
+                        <Image
+                            Source="ic_info_p.png"
+                            WidthRequest="18"
+                            HeightRequest="18"
+                            HorizontalOptions="Center"
                             VerticalOptions="Start" />
                         <Label FontSize="13" TextColor="#4C1D95">
                             <Label.FormattedText>

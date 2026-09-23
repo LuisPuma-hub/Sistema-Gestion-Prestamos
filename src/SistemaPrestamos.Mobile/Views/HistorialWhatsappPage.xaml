@@ -16,17 +16,17 @@
             StrokeShape="RoundRectangle 0,0,0,0"
             Padding="8,48,16,12">
             <Grid ColumnDefinitions="Auto,Auto,*,Auto">
-                <Button
+                <Image
                     Grid.Column="0"
-                    Text="‹"
-                    FontSize="22"
-                    TextColor="White"
-                    BackgroundColor="Transparent"
-                    WidthRequest="44"
-                    HeightRequest="44"
-                    Padding="0"
-                    VerticalOptions="Center"
-                    Clicked="OnVolverClicked" />
+                    Source="ic_chev_l_w.png"
+                    WidthRequest="24"
+                    HeightRequest="24"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnVolverClicked" />
+                    </Image.GestureRecognizers>
+                </Image>
                 <Border
                     Grid.Column="1"
                     HeightRequest="44" WidthRequest="44"
@@ -56,11 +56,12 @@
                         FontSize="13"
                         TextColor="#D1FAE5" />
                 </VerticalStackLayout>
-                <Label
+                <Image
                     Grid.Column="3"
-                    Text="💬"
-                    FontSize="20"
-                    TextColor="White"
+                    Source="ic_msg_w.png"
+                    WidthRequest="24"
+                    HeightRequest="24"
+                    HorizontalOptions="Center"
                     VerticalOptions="Center" />
             </Grid>
         </Border>

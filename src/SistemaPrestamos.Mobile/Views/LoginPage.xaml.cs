@@ -86,7 +86,7 @@ public partial class LoginPage : ContentPage
     private void OnOjoClicked(object? sender, TappedEventArgs e)
     {
         PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
-        OjoLabel.Text = PasswordEntry.IsPassword ? "○" : "◉";
+        OjoIcon.Source = PasswordEntry.IsPassword ? "ic_eye.png" : "ic_eye_off.png";
     }
 
     private void OnEmailBoxTapped(object? sender, TappedEventArgs e)

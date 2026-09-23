@@ -45,10 +45,10 @@
                 StrokeShape="RoundRectangle 70"
                 Margin="0,-70,0,0"
                 Padding="0">
-                <Label
-                    Text="◉"
-                    FontSize="64"
-                    TextColor="#512BD4"
+                <Image
+                    Source="ic_lock_p.png"
+                    WidthRequest="56"
+                    HeightRequest="56"
                     HorizontalOptions="Center"
                     VerticalOptions="Center" />
             </Border>

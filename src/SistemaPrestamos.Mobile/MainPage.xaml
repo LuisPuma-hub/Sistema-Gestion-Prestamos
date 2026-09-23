@@ -45,10 +45,10 @@
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnRefrescarClicked" />
                             </Border.GestureRecognizers>
-                            <Label
-                                Text="⟳"
-                                FontSize="22"
-                                TextColor="White"
+                            <Image
+                                Source="ic_refresh_w.png"
+                                WidthRequest="24"
+                                HeightRequest="24"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center" />
                         </Border>
@@ -83,7 +83,7 @@
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
                                     VerticalOptions="Center">
-                                    <Label Text="◉" FontSize="16" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_users_d.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                     <Label Text="Clientes" FontSize="12" TextColor="#6B7280" />
@@ -105,7 +105,7 @@
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
                                     VerticalOptions="Center">
-                                    <Label Text="▤" FontSize="16" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_card_d.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                     <Label Text="Préstamos" FontSize="12" TextColor="#6B7280" />
@@ -127,7 +127,7 @@
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
                                     VerticalOptions="Center">
-                                    <Label Text="$" FontSize="16" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_dollar_d.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label
                                     Grid.Column="1"
@@ -159,7 +159,7 @@
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
                                     VerticalOptions="Center">
-                                    <Label Text="!" FontSize="16" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_alert_d.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                     <Label Text="En mora" FontSize="12" TextColor="#6B7280" />
@@ -181,7 +181,7 @@
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
                                     VerticalOptions="Center">
-                                    <Label Text="✓" FontSize="16" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_check_d.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                     <Label Text="Cobrado hoy" FontSize="12" TextColor="#6B7280" />
@@ -206,7 +206,7 @@
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
                                 <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                                    <Label Text="◉" FontSize="20" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_users_d.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label Text="Clientes" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
@@ -217,7 +217,7 @@
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
                                 <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                                    <Label Text="▤" FontSize="20" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_card_d.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label Text="Préstamos" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
@@ -228,7 +228,7 @@
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
                                 <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                                    <Label Text="$" FontSize="20" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_dollar_d.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label Text="Pagos" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>
@@ -239,7 +239,7 @@
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
                                 <Border HeightRequest="44" WidthRequest="44" HorizontalOptions="Center" BackgroundColor="#F3F4F6" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                                    <Label Text="!" FontSize="20" FontAttributes="Bold" TextColor="#4B5563" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="ic_alert_d.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
                                 <Label Text="Morosidad" FontSize="12" TextColor="#111827" HorizontalTextAlignment="Center" />
                             </VerticalStackLayout>

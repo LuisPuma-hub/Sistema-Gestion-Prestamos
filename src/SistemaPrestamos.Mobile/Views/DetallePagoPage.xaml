@@ -15,17 +15,17 @@
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="16,48,16,20">
                 <Grid ColumnDefinitions="Auto,*">
-                    <Button
+                    <Image
                         Grid.Column="0"
-                        Text="‹"
-                        FontSize="22"
-                        TextColor="White"
-                        BackgroundColor="Transparent"
-                        WidthRequest="44"
-                        HeightRequest="44"
-                        Padding="0"
-                        VerticalOptions="Center"
-                        Clicked="OnVolverClicked" />
+                        Source="ic_chev_l_w.png"
+                        WidthRequest="24"
+                        HeightRequest="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnVolverClicked" />
+                        </Image.GestureRecognizers>
+                    </Image>
                     <Label
                         Grid.Column="1"
                         Text="Detalle de pago"
@@ -109,7 +109,7 @@
                     <VerticalStackLayout Spacing="8">
                         <Grid HeightRequest="120" BackgroundColor="#F3F4F6">
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center" VerticalOptions="Center">
-                                <Label Text="▣" FontSize="28" TextColor="#9CA3AF" HorizontalTextAlignment="Center" />
+                                <Image Source="ic_image.png" WidthRequest="32" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center" />
                             </VerticalStackLayout>
                         </Grid>
                         <Label x:Name="ComprobanteLabel" Text="-" FontSize="13" TextColor="#6B7280" />

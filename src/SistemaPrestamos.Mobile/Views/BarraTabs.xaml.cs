@@ -38,15 +38,15 @@ public partial class BarraTabs : ContentView
 
     private void Pintar(string? actual)
     {
-        PintarTab(TextoInicio, IconoInicio, actual == "MainPage");
-        PintarTab(TextoClientes, IconoClientes, actual == "Clientes");
-        PintarTab(TextoPrestamos, IconoPrestamos, actual == "Prestamos");
-        PintarTab(TextoPagos, IconoPagos, actual == "Pagos");
-        PintarTab(TextoMora, IconoMora, actual == "Morosidad");
-        PintarTab(TextoMas, IconoMas, actual == "Mas");
+        PintarTab(TextoInicio, IconoInicio, "ic_home", actual == "MainPage");
+        PintarTab(TextoClientes, IconoClientes, "ic_users", actual == "Clientes");
+        PintarTab(TextoPrestamos, IconoPrestamos, "ic_card", actual == "Prestamos");
+        PintarTab(TextoPagos, IconoPagos, "ic_dollar", actual == "Pagos");
+        PintarTab(TextoMora, IconoMora, "ic_alert", actual == "Morosidad");
+        PintarTab(TextoMas, IconoMas, "ic_more", actual == "Mas");
     }
 
-    private static void PintarTab(Label texto, Label icono, bool seleccionado)
+    private static void PintarTab(Label texto, Image icono, string baseIcono, bool seleccionado)
     {
         var color = seleccionado
             ? Color.FromArgb("#512BD4")
@@ -56,6 +56,7 @@ public partial class BarraTabs : ContentView
         texto.FontAttributes = seleccionado
             ? FontAttributes.Bold
             : FontAttributes.None;
+        icono.Source = seleccionado ? $"{baseIcono}_p.png" : $"{baseIcono}.png";
         icono.Opacity = seleccionado ? 1 : 0.6;
     }
 }

@@ -16,7 +16,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="MainPage" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoInicio" Text="⌂" FontSize="22" HorizontalTextAlignment="Center" />
+            <Image x:Name="IconoInicio" Source="ic_home.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" />
             <Label x:Name="TextoInicio" Text="Inicio" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -27,7 +27,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Clientes" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoClientes" Text="◉" FontSize="22" HorizontalTextAlignment="Center" />
+            <Image x:Name="IconoClientes" Source="ic_users.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" />
             <Label x:Name="TextoClientes" Text="Clientes" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -38,7 +38,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Prestamos" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoPrestamos" Text="▤" FontSize="22" HorizontalTextAlignment="Center" />
+            <Image x:Name="IconoPrestamos" Source="ic_card.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" />
             <Label x:Name="TextoPrestamos" Text="Préstamos" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -49,7 +49,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Pagos" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoPagos" Text="$" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            <Image x:Name="IconoPagos" Source="ic_dollar.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" />
             <Label x:Name="TextoPagos" Text="Pagos" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -60,7 +60,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Morosidad" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoMora" Text="!" FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            <Image x:Name="IconoMora" Source="ic_alert.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" />
             <Label x:Name="TextoMora" Text="Mora" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 
@@ -71,7 +71,7 @@
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="Mas" />
             </VerticalStackLayout.GestureRecognizers>
-            <Label x:Name="IconoMas" Text="•••" FontSize="22" HorizontalTextAlignment="Center" />
+            <Image x:Name="IconoMas" Source="ic_more.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" />
             <Label x:Name="TextoMas" Text="Más" FontSize="11" HorizontalTextAlignment="Center" />
         </VerticalStackLayout>
 

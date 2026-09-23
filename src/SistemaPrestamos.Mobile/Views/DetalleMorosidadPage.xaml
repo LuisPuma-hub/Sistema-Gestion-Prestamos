@@ -15,17 +15,17 @@
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="16,48,16,20">
                 <Grid ColumnDefinitions="Auto,*">
-                    <Button
+                    <Image
                         Grid.Column="0"
-                        Text="‹"
-                        FontSize="22"
-                        TextColor="White"
-                        BackgroundColor="Transparent"
-                        WidthRequest="44"
-                        HeightRequest="44"
-                        Padding="0"
-                        VerticalOptions="Center"
-                        Clicked="OnVolverClicked" />
+                        Source="ic_chev_l_w.png"
+                        WidthRequest="24"
+                        HeightRequest="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnVolverClicked" />
+                        </Image.GestureRecognizers>
+                    </Image>
                     <Label
                         Grid.Column="1"
                         Text="Detalle de mora"

@@ -15,17 +15,17 @@
             StrokeShape="RoundRectangle 0,0,28,28"
             Padding="16,48,16,20">
             <Grid ColumnDefinitions="Auto,*">
-                <Button
+                <Image
                     Grid.Column="0"
-                    Text="‹"
-                    FontSize="22"
-                    TextColor="White"
-                    BackgroundColor="Transparent"
-                    WidthRequest="44"
-                    HeightRequest="44"
-                    Padding="0"
-                    VerticalOptions="Center"
-                    Clicked="OnVolverClicked" />
+                    Source="ic_chev_l_w.png"
+                    WidthRequest="24"
+                    HeightRequest="24"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnVolverClicked" />
+                    </Image.GestureRecognizers>
+                </Image>
                 <Label
                     Grid.Column="1"
                     Text="Registrar préstamo"
@@ -44,7 +44,7 @@
                         <Label Text="CLIENTE" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                         <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="12,2">
                             <HorizontalStackLayout Spacing="8">
-                                <Label Text="🔍" FontSize="16" TextColor="#9CA3AF" VerticalOptions="Center" />
+                                <Image Source="ic_search.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" />
                                 <Picker
                                     x:Name="ClientePicker"
                                     Title="María García Torres"
@@ -118,7 +118,7 @@
                         </Grid>
                         <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="14,10">
                             <HorizontalStackLayout Spacing="10">
-                                <Label Text="📅" FontSize="18" VerticalOptions="Center" />
+                                <Image Source="ic_calendar.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                                 <Label x:Name="FechaEntry" Text="" FontSize="16" TextColor="#111827" VerticalOptions="Center" />
                             </HorizontalStackLayout>
                         </Border>
@@ -130,7 +130,7 @@
                         <Label Text="AVAL (OPCIONAL)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                         <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="12,2">
                             <HorizontalStackLayout Spacing="8">
-                                <Label Text="🔍" FontSize="16" TextColor="#9CA3AF" VerticalOptions="Center" />
+                                <Image Source="ic_search.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" />
                                 <Picker
                                     x:Name="GarantePicker"
                                     Title="Sin aval seleccionado"
@@ -143,7 +143,7 @@
 
                 <Border Padding="14,12" BackgroundColor="#EDE9FE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
                     <HorizontalStackLayout Spacing="8">
-                        <Label Text="ⓘ" FontSize="16" TextColor="#512BD4" VerticalOptions="Start" />
+                        <Image Source="ic_info_p.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Start" />
                         <Label FontSize="13" TextColor="#4C1D95">
                             <Label.FormattedText>
                                 <FormattedString>

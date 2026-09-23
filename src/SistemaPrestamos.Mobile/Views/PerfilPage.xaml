@@ -15,17 +15,17 @@
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="16,48,16,32">
                 <Grid ColumnDefinitions="Auto,*">
-                    <Button
+                    <Image
                         Grid.Column="0"
-                        Text="‹"
-                        FontSize="22"
-                        TextColor="White"
-                        BackgroundColor="Transparent"
-                        WidthRequest="44"
-                        HeightRequest="44"
-                        Padding="0"
-                        VerticalOptions="Center"
-                        Clicked="OnVolverClicked" />
+                        Source="ic_chev_l_w.png"
+                        WidthRequest="24"
+                        HeightRequest="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnVolverClicked" />
+                        </Image.GestureRecognizers>
+                    </Image>
                     <Label
                         Grid.Column="1"
                         Text="Mi perfil"
@@ -87,7 +87,7 @@
                 <Border Padding="6,4" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
                     <VerticalStackLayout Spacing="0">
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="12,12">
-                        <Label Grid.Column="0" Text="✉" FontSize="18" TextColor="#6B7280" VerticalOptions="Center" />
+                        <Image Grid.Column="0" Source="ic_mail.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                             <VerticalStackLayout Grid.Column="1" Spacing="0">
                                 <Label Text="Correo" FontSize="12" TextColor="#9CA3AF" />
                                 <Label x:Name="EmailDetalleLabel" Text="" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
@@ -95,7 +95,7 @@
                         </Grid>
                         <BoxView HeightRequest="1" Color="#F3F4F6" Margin="12,0" />
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="12,12">
-                            <Label Grid.Column="0" Text="✓" FontSize="18" FontAttributes="Bold" TextColor="#6B7280" VerticalOptions="Center" />
+                            <Image Grid.Column="0" Source="ic_shield.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                             <VerticalStackLayout Grid.Column="1" Spacing="0">
                                 <Label Text="Rol" FontSize="12" TextColor="#9CA3AF" />
                                 <Label x:Name="RolDetalleLabel" Text="" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
@@ -103,7 +103,7 @@
                         </Grid>
                         <BoxView HeightRequest="1" Color="#F3F4F6" Margin="12,0" />
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="12,12">
-                            <Label Grid.Column="0" Text="ⓘ" FontSize="18" TextColor="#6B7280" VerticalOptions="Center" />
+                            <Image Grid.Column="0" Source="ic_info.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                             <VerticalStackLayout Grid.Column="1" Spacing="0">
                                 <Label Text="Versión app" FontSize="12" TextColor="#9CA3AF" />
                                 <Label x:Name="VersionLabel" Text="Sistema de Préstamos v1.0" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
@@ -119,7 +119,7 @@
                         ColumnSpacing="12"
                         Padding="12,12"
                         IsVisible="False">
-                        <Label Grid.Column="0" Text="◉" FontSize="18" TextColor="#6B7280" VerticalOptions="Center" />
+                        <Image Grid.Column="0" Source="ic_lock.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                         <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                             <Label Text="Desbloqueo con huella" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
                             <Label Text="Biometría disponible" FontSize="12" TextColor="#9CA3AF" />
