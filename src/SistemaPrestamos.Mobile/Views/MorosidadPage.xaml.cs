@@ -139,13 +139,13 @@ public partial class MorosidadPage : ContentPage
     private static void PintarChip(Button chip, bool seleccionado)
     {
         chip.BackgroundColor = seleccionado
-            ? Color.FromArgb("#512BD4")
+            ? Color.FromArgb("#1D4ED8")
             : Colors.White;
         chip.TextColor = seleccionado
             ? Colors.White
             : Color.FromArgb("#6B7280");
         chip.BorderColor = seleccionado
-            ? Color.FromArgb("#512BD4")
+            ? Color.FromArgb("#1D4ED8")
             : Color.FromArgb("#E5E7EB");
         chip.BorderWidth = 1;
         chip.CornerRadius = 18;

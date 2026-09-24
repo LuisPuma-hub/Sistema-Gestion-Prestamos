@@ -17,7 +17,7 @@
             <VerticalStackLayout Spacing="0">
 
                 <Border
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="#1D4ED8"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 0,0,28,28"
                     Padding="24,48,24,28">
@@ -26,7 +26,7 @@
                             <Label
                                 x:Name="FechaLabel"
                                 FontSize="13"
-                                TextColor="#DDD6FE" />
+                                TextColor="#DBEAFE" />
                             <Label
                                 x:Name="SaludoLabel"
                                 Text="Hola"
@@ -38,7 +38,7 @@
                             Grid.Column="1"
                             HeightRequest="44"
                             WidthRequest="44"
-                            BackgroundColor="#6D4DE0"
+                            BackgroundColor="#3B82F6"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 12"
                             VerticalOptions="Center">
@@ -87,7 +87,7 @@
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                     <Label Text="Clientes" FontSize="12" TextColor="#6B7280" />
-                                    <Label x:Name="ClientesValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#512BD4" />
+                                    <Label x:Name="ClientesValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#1D4ED8" />
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>
@@ -109,7 +109,7 @@
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                     <Label Text="Préstamos" FontSize="12" TextColor="#6B7280" />
-                                    <Label x:Name="PrestamosValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#512BD4" />
+                                    <Label x:Name="PrestamosValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#1D4ED8" />
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>
@@ -264,7 +264,7 @@
                             <Border
                                 Grid.Column="0"
                                 HeightRequest="48" WidthRequest="48"
-                                BackgroundColor="#EDE9FE"
+                                BackgroundColor="#DBEAFE"
                                 StrokeThickness="0"
                                 StrokeShape="RoundRectangle 24"
                                 VerticalOptions="Center">
@@ -273,7 +273,7 @@
                                     Text="M"
                                     FontSize="20"
                                     FontAttributes="Bold"
-                                    TextColor="#512BD4"
+                                    TextColor="#1D4ED8"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center" />
                             </Border>

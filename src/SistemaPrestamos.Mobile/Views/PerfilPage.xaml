@@ -10,7 +10,7 @@
     <ScrollView>
         <VerticalStackLayout Spacing="0">
             <Border
-                BackgroundColor="#512BD4"
+                BackgroundColor="#1D4ED8"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="16,48,16,32">
@@ -53,7 +53,7 @@
                         <Border
                             HeightRequest="72" WidthRequest="72"
                             HorizontalOptions="Center"
-                            BackgroundColor="#EDE9FE"
+                            BackgroundColor="#DBEAFE"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 36">
                             <Label
@@ -61,7 +61,7 @@
                                 Text="C"
                                 FontSize="30"
                                 FontAttributes="Bold"
-                                TextColor="#512BD4"
+                                TextColor="#1D4ED8"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center" />
                         </Border>
@@ -81,13 +81,13 @@
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 10"
                             HorizontalOptions="Center"
-                            BackgroundColor="#EDE9FE">
+                            BackgroundColor="#DBEAFE">
                             <Label
                                 x:Name="RolLabel"
                                 Text=""
                                 FontSize="12"
                                 FontAttributes="Bold"
-                                TextColor="#512BD4"
+                                TextColor="#1D4ED8"
                                 HorizontalTextAlignment="Center" />
                         </Border>
                     </VerticalStackLayout>
@@ -136,7 +136,7 @@
                         <Switch
                             Grid.Column="2"
                             x:Name="BiometriaSwitch"
-                            OnColor="#512BD4"
+                            OnColor="#1D4ED8"
                             VerticalOptions="Center"
                             Toggled="OnBiometriaToggled" />
                     </Grid>
@@ -146,9 +146,9 @@
                     x:Name="CambiarClaveButton"
                     Text="Cambiar contraseña"
                     BackgroundColor="White"
-                    TextColor="#512BD4"
+                    TextColor="#1D4ED8"
                     FontAttributes="Bold"
-                    BorderColor="#512BD4"
+                    BorderColor="#1D4ED8"
                     BorderWidth="1.5"
                     CornerRadius="12"
                     HeightRequest="52"
@@ -168,7 +168,7 @@
                     x:Name="CargandoIndicator"
                     IsVisible="False"
                     IsRunning="False"
-                    Color="#512BD4"
+                    Color="#1D4ED8"
                     HorizontalOptions="Center" />
 
                 <Label

@@ -155,8 +155,8 @@ public partial class RegistrarPrestamoPage : ContentPage
             && capital > 0;
 
         GuardarButton.BackgroundColor = valido
-            ? Color.FromArgb("#512BD4")
-            : Color.FromArgb("#C4B5FD");
+            ? Color.FromArgb("#1D4ED8")
+            : Color.FromArgb("#BFDBFE");
     }
 
     private async void OnGuardarClicked(object? sender, EventArgs e)

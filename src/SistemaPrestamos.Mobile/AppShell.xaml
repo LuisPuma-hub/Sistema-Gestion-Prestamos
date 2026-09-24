@@ -12,7 +12,7 @@
     Shell.TabBarBackgroundColor="White"
     Shell.TabBarTitleColor="#6B7280"
     Shell.TabBarUnselectedColor="#9CA3AF"
-    Shell.TabBarForegroundColor="#512BD4">
+    Shell.TabBarForegroundColor="#1D4ED8">
 
     <TabBar Route="Tabs">
         <ShellContent

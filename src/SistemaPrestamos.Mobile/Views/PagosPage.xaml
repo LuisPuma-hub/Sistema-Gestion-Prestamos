@@ -11,7 +11,7 @@
 
         <VerticalStackLayout Grid.Row="0" Spacing="0">
             <Border
-                BackgroundColor="#512BD4"
+                BackgroundColor="#1D4ED8"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="24,48,24,20">
@@ -27,7 +27,7 @@
                         Grid.Column="1"
                         HeightRequest="36"
                         WidthRequest="36"
-                        BackgroundColor="#6D4DE0"
+                        BackgroundColor="#3B82F6"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 18"
                         VerticalOptions="Center">
@@ -133,7 +133,7 @@
                 x:Name="CargandoIndicator"
                 IsVisible="False"
                 IsRunning="False"
-                Color="#512BD4"
+                Color="#1D4ED8"
                 HorizontalOptions="Center"
                 VerticalOptions="Center" />
 
@@ -150,14 +150,14 @@
                 Grid.Column="0"
                 x:Name="ReintentarButton"
                 Text="Reintentar"
-                BackgroundColor="#512BD4"
+                BackgroundColor="#1D4ED8"
                 TextColor="White"
                 CornerRadius="12"
                 IsVisible="False"
                 Clicked="OnReintentarClicked" />
             <Border
                 Grid.Column="1"
-                BackgroundColor="#512BD4"
+                BackgroundColor="#1D4ED8"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 30"
                 HeightRequest="60"

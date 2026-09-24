@@ -10,7 +10,7 @@
     <ScrollView>
         <VerticalStackLayout Spacing="0">
             <Border
-                BackgroundColor="#512BD4"
+                BackgroundColor="#1D4ED8"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="16,48,16,20">
@@ -94,7 +94,7 @@
                     x:Name="CargandoIndicator"
                     IsVisible="False"
                     IsRunning="False"
-                    Color="#512BD4"
+                    Color="#1D4ED8"
                     HorizontalOptions="Center" />
 
                 <Label

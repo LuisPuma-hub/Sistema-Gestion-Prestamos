@@ -10,7 +10,7 @@
     <ScrollView>
         <VerticalStackLayout Spacing="0">
             <Border
-                BackgroundColor="#512BD4"
+                BackgroundColor="#1D4ED8"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="16,48,16,20">
@@ -70,7 +70,7 @@
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                         <Border
                             HeightRequest="48" WidthRequest="48"
-                            BackgroundColor="#EDE9FE"
+                            BackgroundColor="#DBEAFE"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 24"
                             VerticalOptions="Center">
@@ -79,7 +79,7 @@
                                 Text="M"
                                 FontSize="18"
                                 FontAttributes="Bold"
-                                TextColor="#512BD4"
+                                TextColor="#1D4ED8"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center" />
                         </Border>
@@ -135,7 +135,7 @@
                     x:Name="CargandoIndicator"
                     IsVisible="False"
                     IsRunning="False"
-                    Color="#512BD4"
+                    Color="#1D4ED8"
                     HorizontalOptions="Center" />
 
                 <Label

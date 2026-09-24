@@ -10,7 +10,7 @@
     <ScrollView>
         <VerticalStackLayout Spacing="0">
             <Border
-                BackgroundColor="#512BD4"
+                BackgroundColor="#1D4ED8"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="16,48,16,20">
@@ -52,7 +52,7 @@
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
                         <Border
                             HeightRequest="56" WidthRequest="56"
-                            BackgroundColor="#EDE9FE"
+                            BackgroundColor="#DBEAFE"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 28"
                             VerticalOptions="Center">
@@ -61,7 +61,7 @@
                                 Text="M"
                                 FontSize="22"
                                 FontAttributes="Bold"
-                                TextColor="#512BD4"
+                                TextColor="#1D4ED8"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center" />
                         </Border>
@@ -110,7 +110,7 @@
                         <Border Grid.Row="1" Grid.Column="1" Padding="12,10" BackgroundColor="#F8F7FC" StrokeThickness="0" StrokeShape="RoundRectangle 12">
                             <VerticalStackLayout Spacing="0">
                                 <Label Text="Tasa" FontSize="12" TextColor="#6B7280" />
-                                <Label x:Name="TasaLabel" FontSize="17" FontAttributes="Bold" TextColor="#512BD4" />
+                                <Label x:Name="TasaLabel" FontSize="17" FontAttributes="Bold" TextColor="#1D4ED8" />
                             </VerticalStackLayout>
                         </Border>
                         <Border Grid.Row="2" Grid.Column="0" Padding="12,10" BackgroundColor="#F8F7FC" StrokeThickness="0" StrokeShape="RoundRectangle 12">
@@ -161,7 +161,7 @@
                 <Button
                     x:Name="AprobarButton"
                     Text="Aprobar préstamo"
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="#1D4ED8"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="12"
@@ -172,7 +172,7 @@
                 <Button
                     x:Name="PagarButton"
                     Text="$  Registrar pago"
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="#1D4ED8"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="12"
@@ -182,8 +182,8 @@
                 <Button
                     x:Name="MorosidadButton"
                     Text="Ver morosidad"
-                    BackgroundColor="#EDE9FE"
-                    TextColor="#512BD4"
+                    BackgroundColor="#DBEAFE"
+                    TextColor="#1D4ED8"
                     FontAttributes="Bold"
                     CornerRadius="12"
                     HeightRequest="50"
@@ -217,7 +217,7 @@
                     x:Name="CargandoIndicator"
                     IsVisible="False"
                     IsRunning="False"
-                    Color="#512BD4"
+                    Color="#1D4ED8"
                     HorizontalOptions="Center" />
 
                 <Label

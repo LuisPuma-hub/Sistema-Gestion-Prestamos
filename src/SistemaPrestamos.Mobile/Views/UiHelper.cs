@@ -2,11 +2,11 @@ using Microsoft.Maui.ApplicationModel;
 
 namespace SistemaPrestamos.Mobile.Views;
 
-// Barra de estado morada con iconos claros.
+// Barra de estado azul con iconos claros.
 
 public static class UiHelper
 {
-    public static void StatusBarMorada()
+    public static void StatusBarAzul()
     {
 #if ANDROID
         try
@@ -22,7 +22,7 @@ public static class UiHelper
             // SetStatusBarColor obsoleto en API 35+, pero sigue
             // funcionando en 36. Sin reemplazo directo simple.
 #pragma warning disable CA1422
-            ventana.SetStatusBarColor(new Android.Graphics.Color(0x51, 0x2B, 0xD4));
+                ventana.SetStatusBarColor(new Android.Graphics.Color(0x1D, 0x4E, 0xD8));
 #pragma warning restore CA1422
 
             var vista = ventana.DecorView;

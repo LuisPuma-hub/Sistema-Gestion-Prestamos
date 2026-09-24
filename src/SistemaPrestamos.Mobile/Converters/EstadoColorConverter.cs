@@ -13,7 +13,7 @@ public class EstadoFondoConverter : IValueConverter
             "En observación" => Color.FromArgb("#FEF3C7"),
             "Pendiente" => Color.FromArgb("#FEF3C7"),
             "Cancelado" => Color.FromArgb("#F3F4F6"),
-            "Administrador" => Color.FromArgb("#EDE9FE"),
+            "Administrador" => Color.FromArgb("#DBEAFE"),
             "Cobrador" => Color.FromArgb("#DCFCE7"),
             _ => Color.FromArgb("#F3F4F6")
         });
@@ -36,7 +36,7 @@ public class EstadoTextoConverter : IValueConverter
             "En observación" => Color.FromArgb("#D97706"),
             "Pendiente" => Color.FromArgb("#D97706"),
             "Cancelado" => Color.FromArgb("#6B7280"),
-            "Administrador" => Color.FromArgb("#512BD4"),
+            "Administrador" => Color.FromArgb("#1D4ED8"),
             "Cobrador" => Color.FromArgb("#16A34A"),
             _ => Color.FromArgb("#6B7280")
         });

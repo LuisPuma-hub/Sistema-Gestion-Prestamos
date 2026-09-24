@@ -10,7 +10,7 @@
 
         <Border
             Grid.Row="0"
-            BackgroundColor="#512BD4"
+            BackgroundColor="#1D4ED8"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 0,0,28,28"
             Padding="24,48,24,32">
@@ -19,7 +19,7 @@
                     <Border
                         HeightRequest="44"
                         WidthRequest="44"
-                        BackgroundColor="#6D4DE0"
+                        BackgroundColor="#3B82F6"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 12"
                         VerticalOptions="Center">
@@ -32,14 +32,14 @@
                     </Border>
                     <VerticalStackLayout Spacing="0" VerticalOptions="Center">
                         <Label
-                            Text="PréstamosPE"
+                            Text="CrediVzla"
                             FontSize="20"
                             FontAttributes="Bold"
                             TextColor="White" />
                         <Label
                             Text="SISTEMA DE PRÉSTAMOS"
                             FontSize="10"
-                            TextColor="#C4B5FD"
+                            TextColor="#BFDBFE"
                             CharacterSpacing="1" />
                     </VerticalStackLayout>
                 </HorizontalStackLayout>
@@ -54,7 +54,7 @@
                 <Label
                     Text="Ingresa con tu cuenta de cobrador"
                     FontSize="14"
-                    TextColor="#DDD6FE" />
+                    TextColor="#DBEAFE" />
             </VerticalStackLayout>
         </Border>
 
@@ -145,7 +145,7 @@
                 <Button
                     x:Name="LoginButton"
                     Text="Ingresar"
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="#1D4ED8"
                     TextColor="White"
                     CornerRadius="12"
                     HeightRequest="52"
@@ -156,7 +156,7 @@
                     x:Name="LoadingIndicator"
                     IsVisible="False"
                     IsRunning="False"
-                    Color="#512BD4"
+                    Color="#1D4ED8"
                     HorizontalOptions="Center" />
 
                 <Label
@@ -168,7 +168,7 @@
                 <Label
                     Text="¿Olvidaste tu contraseña?"
                     FontSize="13"
-                    TextColor="#512BD4"
+                    TextColor="#1D4ED8"
                     FontAttributes="Bold"
                     HorizontalTextAlignment="Center">
                     <Label.GestureRecognizers>
@@ -179,7 +179,7 @@
                 <Border
                     StrokeShape="RoundRectangle 12"
                     StrokeThickness="0"
-                    BackgroundColor="#EDE9FE"
+                    BackgroundColor="#DBEAFE"
                     Padding="14,12"
                     Margin="0,8,0,0">
                     <HorizontalStackLayout Spacing="8">
@@ -189,7 +189,7 @@
                             HeightRequest="18"
                             HorizontalOptions="Center"
                             VerticalOptions="Start" />
-                        <Label FontSize="13" TextColor="#4C1D95">
+                        <Label FontSize="13" TextColor="#1E3A8A">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="Para soporte contacta a tu administrador o llama al " />

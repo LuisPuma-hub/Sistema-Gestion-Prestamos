@@ -4,7 +4,7 @@ public static class Animaciones
 {
     public static async Task EntradaAsync(VisualElement? vista)
     {
-        UiHelper.StatusBarMorada();
+        UiHelper.StatusBarAzul();
 
         if (vista is null)
         {

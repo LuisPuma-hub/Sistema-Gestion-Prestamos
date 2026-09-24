@@ -49,7 +49,7 @@ public partial class BarraTabs : ContentView
     private static void PintarTab(Label texto, Image icono, string baseIcono, bool seleccionado)
     {
         var color = seleccionado
-            ? Color.FromArgb("#512BD4")
+            ? Color.FromArgb("#1D4ED8")
             : Color.FromArgb("#9CA3AF");
 
         texto.TextColor = color;

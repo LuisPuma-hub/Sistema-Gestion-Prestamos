@@ -11,7 +11,7 @@
         <ScrollView>
             <VerticalStackLayout Spacing="0">
                 <Border
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="#1D4ED8"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 0,0,28,28"
                     Padding="16,48,16,24">
@@ -47,7 +47,7 @@
                             FontSize="13"
                             FontAttributes="Bold"
                             TextColor="White"
-                            BackgroundColor="#6D4DE0"
+                            BackgroundColor="#3B82F6"
                             CornerRadius="10"
                             Padding="16,8"
                             VerticalOptions="Center"
@@ -62,7 +62,7 @@
                             <Border
                                 Grid.Column="0"
                                 HeightRequest="64" WidthRequest="64"
-                                BackgroundColor="#EDE9FE"
+                                BackgroundColor="#DBEAFE"
                                 StrokeThickness="0"
                                 StrokeShape="RoundRectangle 32"
                                 VerticalOptions="Center">
@@ -71,7 +71,7 @@
                                     Text="M"
                                     FontSize="26"
                                     FontAttributes="Bold"
-                                    TextColor="#512BD4"
+                                    TextColor="#1D4ED8"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center" />
                             </Border>
@@ -123,7 +123,7 @@
                             <Button
                                 x:Name="GuardarButton"
                                 Text="Guardar cambios"
-                                BackgroundColor="#512BD4"
+                                BackgroundColor="#1D4ED8"
                                 TextColor="White"
                                 CornerRadius="12"
                                 HeightRequest="50"
@@ -162,8 +162,8 @@
                                     Grid.Column="0"
                                     x:Name="CamaraButton"
                                     Text="◉ Cámara"
-                                    BackgroundColor="#EDE9FE"
-                                    TextColor="#512BD4"
+                                    BackgroundColor="#DBEAFE"
+                                    TextColor="#1D4ED8"
                                     FontAttributes="Bold"
                                     CornerRadius="12"
                                     HeightRequest="48"
@@ -211,7 +211,7 @@
                                 </Border.GestureRecognizers>
                                 <HorizontalStackLayout Spacing="10">
                                     <Border x:Name="RadioSinAvalD" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
-                                        <BoxView x:Name="RadioSinAvalDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#512BD4" />
+                                        <BoxView x:Name="RadioSinAvalDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#1D4ED8" />
                                     </Border>
                                     <Label Text="Sin aval" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
@@ -223,7 +223,7 @@
                                 </Border.GestureRecognizers>
                                 <HorizontalStackLayout Spacing="10">
                                     <Border x:Name="RadioExistenteD" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
-                                        <BoxView x:Name="RadioExistenteDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#512BD4" />
+                                        <BoxView x:Name="RadioExistenteDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#1D4ED8" />
                                     </Border>
                                     <Label Text="Cliente existente" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
@@ -235,7 +235,7 @@
                                 </Border.GestureRecognizers>
                                 <HorizontalStackLayout Spacing="10">
                                     <Border x:Name="RadioNuevoD" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
-                                        <BoxView x:Name="RadioNuevoDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#512BD4" />
+                                        <BoxView x:Name="RadioNuevoDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#1D4ED8" />
                                     </Border>
                                     <Label Text="Nuevo aval" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
@@ -257,7 +257,7 @@
                             <Button
                                 x:Name="GuardarAvalButton"
                                 Text="Guardar aval"
-                                BackgroundColor="#512BD4"
+                                BackgroundColor="#1D4ED8"
                                 TextColor="White"
                                 CornerRadius="12"
                                 HeightRequest="50"
@@ -318,7 +318,7 @@
                             <Button
                                 x:Name="CambiarEstadoButton"
                                 Text="Guardar estado"
-                                BackgroundColor="#512BD4"
+                                BackgroundColor="#1D4ED8"
                                 TextColor="White"
                                 CornerRadius="12"
                                 HeightRequest="50"
@@ -354,7 +354,7 @@
                         x:Name="CargandoIndicator"
                         IsVisible="False"
                         IsRunning="False"
-                        Color="#512BD4"
+                        Color="#1D4ED8"
                         HorizontalOptions="Center" />
 
                     <Label

@@ -11,7 +11,7 @@
     <ScrollView Grid.Row="0">
         <VerticalStackLayout Spacing="0">
             <Border
-                BackgroundColor="#512BD4"
+                BackgroundColor="#1D4ED8"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="24,48,24,20">
@@ -35,7 +35,7 @@
                     <HorizontalStackLayout Spacing="12">
                         <Border
                             HeightRequest="44" WidthRequest="44"
-                            BackgroundColor="#EDE9FE"
+                            BackgroundColor="#DBEAFE"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 22"
                             VerticalOptions="Center">
@@ -61,7 +61,7 @@
                     <HorizontalStackLayout Spacing="12">
                         <Border
                             HeightRequest="44" WidthRequest="44"
-                            BackgroundColor="#EDE9FE"
+                            BackgroundColor="#DBEAFE"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 22"
                             VerticalOptions="Center">

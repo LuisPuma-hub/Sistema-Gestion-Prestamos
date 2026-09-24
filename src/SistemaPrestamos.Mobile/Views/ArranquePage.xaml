@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title=""
-    BackgroundColor="#512BD4">
+    BackgroundColor="#1D4ED8">
 
     <VerticalStackLayout
         Padding="32"
@@ -22,13 +22,13 @@
                 Text="P"
                 FontSize="52"
                 FontAttributes="Bold"
-                TextColor="#512BD4"
+                TextColor="#1D4ED8"
                 HorizontalOptions="Center"
                 VerticalOptions="Center" />
         </Border>
 
         <Label
-            Text="PréstamosPE"
+                    Text="CrediVzla"
             FontSize="30"
             FontAttributes="Bold"
             TextColor="White"
@@ -37,7 +37,7 @@
         <Label
             Text="SISTEMA DE PRÉSTAMOS"
             FontSize="12"
-            TextColor="#C4B5FD"
+            TextColor="#BFDBFE"
             CharacterSpacing="2"
             HorizontalTextAlignment="Center" />
 
