@@ -565,3 +565,26 @@ No se deben registrar como implementadas funcionalidades que únicamente estén:
 - En desarrollo.
 
 La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmente hayan sido realizados.
+
+---
+
+# 14. Interfaz Móvil - Set Feather y Cabeceras Unificadas - 2026-09-24
+
+## Changed
+
+- Migración de ~40 glifos de texto y emojis a iconos outline estilo Feather (set `ic_*` en `Resources/Images`: gris, blanco, púrpura, rojo y oscuro).
+- Barra de tabs con iconos Feather y estado activo en púrpura (`BarraTabs` + `BarraTabs.xaml.cs`).
+- Cabeceras de 10 páginas unificadas: grilla `44,*,44`, título centrado de 20px y zona táctil de 44px para el botón atrás (Perfil, DetalleCliente, DetallePago, DetalleMorosidad, DetallePrestamo, RegistrarCliente, RegistrarPago, RegistrarPrestamo, Usuarios, HistorialWhatsapp).
+- Login: iconos de sobre, candado y ojo monocromático fijo a la derecha con alternancia ojo/ojo-tachado; cajas blancas con borde `#E5E7EB`.
+- FABs `+`, lupa, calendario, chevrones, placeholder de foto, banner de mora y doble-check de WhatsApp en estilo Feather.
+
+## Fixed
+
+- Ojo del login que flotaba al centro por usar `HorizontalStackLayout` sin restricción de ancho.
+- Tildes corruptas en mensajes del login (`contrase�a`).
+- Eliminado `Class1.cs` residual de plantilla en Infrastructure.
+
+## Tests
+
+- `dotnet test`: 32/32 pruebas correctas.
+- Verificado en emulador Pixel_5: login (incluye toggle del ojo), dashboard, tabs, Más, Perfil, DetalleCliente, DetallePrestamo, RegistrarCliente, RegistrarPago, RegistrarPrestamo, Usuarios e HistorialWhatsapp.

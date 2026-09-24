@@ -34,7 +34,7 @@ public partial class LoginPage : ContentPage
 
         if (string.IsNullOrWhiteSpace(password))
         {
-            MostrarError("Ingrese su contrase�a.");
+            MostrarError("Ingrese su contraseña.");
             return;
         }
 
@@ -50,7 +50,7 @@ public partial class LoginPage : ContentPage
 
             if (resultado is null)
             {
-                MostrarError("Correo o contrase�a incorrectos.");
+                MostrarError("Correo o contraseña incorrectos.");
                 return;
             }
 
