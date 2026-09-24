@@ -17,16 +17,16 @@
             <VerticalStackLayout Spacing="4">
                 <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
                     <Border
-                        HeightRequest="44"
-                        WidthRequest="44"
-                        BackgroundColor="#3B82F6"
+                        HeightRequest="48"
+                        WidthRequest="48"
+                        BackgroundColor="White"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 12"
                         VerticalOptions="Center">
                         <Image
-                            Source="ic_card_w.png"
-                            WidthRequest="26"
-                            HeightRequest="26"
+                            Source="logo_credivzla.png"
+                            WidthRequest="40"
+                            HeightRequest="40"
                             HorizontalOptions="Center"
                             VerticalOptions="Center" />
                     </Border>

@@ -18,11 +18,10 @@
             BackgroundColor="White"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 24">
-            <Label
-                Text="P"
-                FontSize="52"
-                FontAttributes="Bold"
-                TextColor="#15307A"
+            <Image
+                Source="logo_credivzla.png"
+                HeightRequest="84"
+                WidthRequest="84"
                 HorizontalOptions="Center"
                 VerticalOptions="Center" />
         </Border>
