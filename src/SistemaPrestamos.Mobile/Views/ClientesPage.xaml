@@ -164,17 +164,18 @@
                 CornerRadius="12"
                 IsVisible="False"
                 Clicked="OnReintentarClicked" />
-            <Button
+            <Border
                 Grid.Column="1"
-                Text="+"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="White"
                 BackgroundColor="#512BD4"
-                WidthRequest="60"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 30"
                 HeightRequest="60"
-                CornerRadius="30"
-                Clicked="OnNuevoClienteClicked" />
+                WidthRequest="60">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNuevoClienteClicked" />
+                </Border.GestureRecognizers>
+                <Image Source="ic_plus_w.png" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
         </Grid>
 
         <views:BarraTabs Grid.Row="3" TabActual="Clientes" />

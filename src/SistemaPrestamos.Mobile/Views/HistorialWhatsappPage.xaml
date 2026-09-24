@@ -16,17 +16,22 @@
             StrokeShape="RoundRectangle 0,0,0,0"
             Padding="8,48,16,12">
             <Grid ColumnDefinitions="Auto,Auto,*,Auto">
-                <Image
+                <Grid
                     Grid.Column="0"
-                    Source="ic_chev_l_w.png"
-                    WidthRequest="24"
-                    HeightRequest="24"
-                    HorizontalOptions="Center"
+                    HeightRequest="44"
+                    WidthRequest="44"
+                    HorizontalOptions="Start"
                     VerticalOptions="Center">
-                    <Image.GestureRecognizers>
+                    <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnVolverClicked" />
-                    </Image.GestureRecognizers>
-                </Image>
+                    </Grid.GestureRecognizers>
+                    <Image
+                        Source="ic_chev_l_w.png"
+                        WidthRequest="24"
+                        HeightRequest="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
+                </Grid>
                 <Border
                     Grid.Column="1"
                     HeightRequest="44" WidthRequest="44"
@@ -102,11 +107,7 @@
                                             FontSize="11"
                                             TextColor="#6B7280"
                                             VerticalOptions="Center" />
-                                        <Label
-                                            Text="✓✓"
-                                            FontSize="12"
-                                            TextColor="#34B7F1"
-                                            VerticalOptions="Center" />
+                                        <Image Source="ic_checks_b.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
                             </Border>

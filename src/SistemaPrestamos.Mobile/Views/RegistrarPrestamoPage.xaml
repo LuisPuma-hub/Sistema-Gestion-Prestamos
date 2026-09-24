@@ -14,25 +14,35 @@
             StrokeThickness="0"
             StrokeShape="RoundRectangle 0,0,28,28"
             Padding="16,48,16,20">
-            <Grid ColumnDefinitions="Auto,*">
-                <Image
+            <Grid ColumnDefinitions="44,*,44" VerticalOptions="Center">
+                <Grid
                     Grid.Column="0"
-                    Source="ic_chev_l_w.png"
-                    WidthRequest="24"
-                    HeightRequest="24"
-                    HorizontalOptions="Center"
+                    HeightRequest="44"
+                    WidthRequest="44"
+                    HorizontalOptions="Start"
                     VerticalOptions="Center">
-                    <Image.GestureRecognizers>
+                    <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnVolverClicked" />
-                    </Image.GestureRecognizers>
-                </Image>
+                    </Grid.GestureRecognizers>
+                    <Image
+                        Source="ic_chev_l_w.png"
+                        WidthRequest="24"
+                        HeightRequest="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
+                </Grid>
                 <Label
                     Grid.Column="1"
                     Text="Registrar préstamo"
-                    FontSize="22"
+                    FontSize="20"
                     FontAttributes="Bold"
                     TextColor="White"
+                    HorizontalTextAlignment="Center"
                     VerticalOptions="Center" />
+                <BoxView
+                    Grid.Column="2"
+                    WidthRequest="44"
+                    BackgroundColor="Transparent" />
             </Grid>
         </Border>
 

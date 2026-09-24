@@ -14,38 +14,44 @@
             StrokeThickness="0"
             StrokeShape="RoundRectangle 0,0,28,28"
             Padding="16,48,16,20">
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <Image
+            <Grid ColumnDefinitions="44,*,44" VerticalOptions="Center">
+                <Grid
                     Grid.Column="0"
-                    Source="ic_chev_l_w.png"
-                    WidthRequest="24"
-                    HeightRequest="24"
-                    HorizontalOptions="Center"
+                    HeightRequest="44"
+                    WidthRequest="44"
+                    HorizontalOptions="Start"
                     VerticalOptions="Center">
-                    <Image.GestureRecognizers>
+                    <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnVolverClicked" />
-                    </Image.GestureRecognizers>
-                </Image>
+                    </Grid.GestureRecognizers>
+                    <Image
+                        Source="ic_chev_l_w.png"
+                        WidthRequest="24"
+                        HeightRequest="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
+                </Grid>
                 <Label
                     Grid.Column="1"
                     Text="Usuarios"
-                    FontSize="24"
+                    FontSize="20"
                     FontAttributes="Bold"
                     TextColor="White"
+                    HorizontalTextAlignment="Center"
                     VerticalOptions="Center" />
-                <Button
+                <Border
                     Grid.Column="2"
-                    Text="+"
-                    FontSize="22"
-                    FontAttributes="Bold"
-                    TextColor="White"
                     BackgroundColor="#6D4DE0"
-                    WidthRequest="44"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 22"
                     HeightRequest="44"
-                    CornerRadius="22"
-                    Padding="0"
-                    VerticalOptions="Center"
-                    Clicked="OnNuevoUsuarioClicked" />
+                    WidthRequest="44"
+                    VerticalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNuevoUsuarioClicked" />
+                    </Border.GestureRecognizers>
+                    <Image Source="ic_plus_w.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
             </Grid>
         </Border>
 
@@ -139,17 +145,18 @@
                 CornerRadius="12"
                 IsVisible="False"
                 Clicked="OnReintentarClicked" />
-            <Button
+            <Border
                 Grid.Column="1"
-                Text="+"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="White"
                 BackgroundColor="#512BD4"
-                WidthRequest="60"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 30"
                 HeightRequest="60"
-                CornerRadius="30"
-                Clicked="OnNuevoUsuarioClicked" />
+                WidthRequest="60">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNuevoUsuarioClicked" />
+                </Border.GestureRecognizers>
+                <Image Source="ic_plus_w.png" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
         </Grid>
 
     </Grid>
