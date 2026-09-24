@@ -15,10 +15,13 @@ public partial class MasPage : ContentPage
 
         var rol = await SecureStorage.Default.GetAsync("usuario_rol");
 
-        UsuariosCard.IsVisible = string.Equals(
+        var esAdmin = string.Equals(
             rol,
             "Administrador",
             StringComparison.OrdinalIgnoreCase);
+
+        UsuariosCard.IsVisible = esAdmin;
+        NotificacionesCard.IsVisible = esAdmin;
     }
 
     private async void OnPerfilClicked(object? sender, TappedEventArgs e)
@@ -29,5 +32,10 @@ public partial class MasPage : ContentPage
     private async void OnUsuariosClicked(object? sender, TappedEventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(UsuariosPage));
+    }
+
+    private async void OnNotificacionesClicked(object? sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(NotificacionesPage));
     }
 }

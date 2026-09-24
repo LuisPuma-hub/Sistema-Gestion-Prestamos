@@ -6,6 +6,8 @@ public interface IMorosidadRepository
 {
     Task<Morosidad?> ObtenerPorPrestamoAsync(Guid prestamoId);
 
+    Task<IEnumerable<Morosidad>> ObtenerActivasAsync();
+
     Task<Morosidad?> ObtenerPorIdAsync(Guid id);
 
     Task<Morosidad> CrearAsync(Morosidad morosidad);

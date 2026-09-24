@@ -10,6 +10,8 @@ public interface IPrestamoRepository
 
     Task<IEnumerable<Prestamo>> ObtenerPorClienteAsync(Guid clienteId);
 
+    Task<IEnumerable<Prestamo>> ObtenerActivosAsync();
+
     Task<Prestamo> CrearAsync(Prestamo prestamo);
 
     Task ActualizarAsync(Prestamo prestamo);

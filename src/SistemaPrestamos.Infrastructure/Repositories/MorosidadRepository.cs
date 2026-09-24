@@ -27,6 +27,17 @@ public class MorosidadRepository : IMorosidadRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<IEnumerable<Morosidad>> ObtenerActivasAsync()
+    {
+        return await _context.Morosidades
+            .AsNoTracking()
+            .Include(x => x.Prestamo)
+                .ThenInclude(p => p.Cliente)
+            .Where(x => x.Activa)
+            .OrderBy(x => x.FechaInicio)
+            .ToListAsync();
+    }
+
     public async Task<Morosidad> CrearAsync(
         Morosidad morosidad)
     {

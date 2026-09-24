@@ -49,5 +49,17 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(
             nameof(Views.RegistrarUsuarioPage),
             typeof(Views.RegistrarUsuarioPage));
+
+        Routing.RegisterRoute(
+            nameof(Views.NotificacionesPage),
+            typeof(Views.NotificacionesPage));
+
+        Routing.RegisterRoute(
+            nameof(Views.EditarReglaPage),
+            typeof(Views.EditarReglaPage));
+
+        Routing.RegisterRoute(
+            nameof(Views.HistorialEnviosPage),
+            typeof(Views.HistorialEnviosPage));
     }
 }

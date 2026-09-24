@@ -9,6 +9,9 @@ public interface IPeriodoInteresRepository
     Task<IEnumerable<PeriodoInteres>> ObtenerPorPrestamoAsync(
         Guid prestamoId);
 
+    Task<IEnumerable<PeriodoInteres>> ObtenerConVencimientoAsync(
+        DateTime fecha);
+
     Task<PeriodoInteres?> ObtenerPorIdAsync(Guid id);
 
     Task EliminarAsync(PeriodoInteres periodo);

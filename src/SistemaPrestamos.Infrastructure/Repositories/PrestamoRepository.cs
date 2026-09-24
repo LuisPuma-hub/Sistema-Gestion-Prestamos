@@ -90,6 +90,16 @@ public class PrestamoRepository : IPrestamoRepository
             .ExecuteDeleteAsync();
     }
 
+    public async Task<IEnumerable<Prestamo>> ObtenerActivosAsync()
+    {
+        return await _context.Prestamos
+            .AsNoTracking()
+            .Include(x => x.Cliente)
+            .Where(x => x.Estado == "Activo")
+            .OrderBy(x => x.FechaInicio)
+            .ToListAsync();
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

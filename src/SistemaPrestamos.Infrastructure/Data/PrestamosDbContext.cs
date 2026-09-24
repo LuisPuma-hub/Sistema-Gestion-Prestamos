@@ -30,6 +30,8 @@ public class PrestamosDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<Auditoria> Auditorias => Set<Auditoria>();
     public DbSet<PeriodoInteres> PeriodosInteres => Set<PeriodoInteres>();
+    public DbSet<ReglaNotificacion> ReglasNotificacion => Set<ReglaNotificacion>();
+    public DbSet<EnvioNotificacion> EnviosNotificacion => Set<EnvioNotificacion>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

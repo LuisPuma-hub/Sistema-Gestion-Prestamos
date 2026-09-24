@@ -38,6 +38,23 @@ public class PeriodoInteresRepository : IPeriodoInteresRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<IEnumerable<PeriodoInteres>> ObtenerConVencimientoAsync(
+        DateTime fecha)
+    {
+        var dia = fecha.Date;
+
+        return await _context.PeriodosInteres
+            .AsNoTracking()
+            .Include(x => x.Prestamo)
+                .ThenInclude(p => p.Cliente)
+            .Where(x =>
+                x.InteresPendiente > 0 &&
+                x.FechaVencimiento.Date == dia &&
+                x.Prestamo.Estado == "Activo")
+            .OrderBy(x => x.FechaVencimiento)
+            .ToListAsync();
+    }
+
     public Task EliminarAsync(PeriodoInteres periodo)
     {
         var rastreado = _context.ChangeTracker.Entries<PeriodoInteres>()

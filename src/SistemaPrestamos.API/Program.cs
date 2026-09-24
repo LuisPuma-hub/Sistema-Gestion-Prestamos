@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SistemaPrestamos.API.Jobs;
 using SistemaPrestamos.Application.Interfaces;
 using SistemaPrestamos.Application.Services;
 using SistemaPrestamos.Infrastructure.Data;
@@ -62,6 +63,9 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddHttpClient<IWhatsappService, WhatsappService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IReglaNotificacionService, ReglaNotificacionService>();
+builder.Services.AddScoped<IProgramadorService, ProgramadorService>();
+builder.Services.AddHostedService<ProgramadorJob>();
 
 // Repositories
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
@@ -72,6 +76,8 @@ builder.Services.AddScoped<IMorosidadRepository, MorosidadRepository>();
 builder.Services.AddScoped<IGaranteRepository, GaranteRepository>();
 builder.Services.AddScoped<IDispositivoRepository, DispositivoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IReglaNotificacionRepository, ReglaNotificacionRepository>();
+builder.Services.AddScoped<IEnvioNotificacionRepository, EnvioNotificacionRepository>();
 
 // OpenAPI
 builder.Services.AddOpenApi();
