@@ -581,7 +581,7 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 ## Fixed
 
 - Ojo del login que flotaba al centro por usar `HorizontalStackLayout` sin restricción de ancho.
-- Tildes corruptas en mensajes del login (`contrase�a`).
+- Tildes corruptas en mensajes del login (signos `?` en lugar de eñes).
 - Eliminado `Class1.cs` residual de plantilla en Infrastructure.
 
 ## Tests
