@@ -36,7 +36,7 @@ public class EstadoTextoConverter : IValueConverter
             "En observación" => Color.FromArgb("#D97706"),
             "Pendiente" => Color.FromArgb("#D97706"),
             "Cancelado" => Color.FromArgb("#6B7280"),
-            "Administrador" => Color.FromArgb("#1D4ED8"),
+            "Administrador" => Color.FromArgb("#15307A"),
             "Cobrador" => Color.FromArgb("#16A34A"),
             _ => Color.FromArgb("#6B7280")
         });

@@ -11,7 +11,7 @@
     <ScrollView Grid.Row="0">
         <VerticalStackLayout Spacing="0">
             <Border
-                BackgroundColor="#1D4ED8"
+                BackgroundColor="#15307A"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="24,48,24,20">

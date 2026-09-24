@@ -141,13 +141,13 @@ public partial class PrestamosPage : ContentPage
     private static void PintarChip(Button chip, bool seleccionado)
     {
         chip.BackgroundColor = seleccionado
-            ? Color.FromArgb("#1D4ED8")
+            ? Color.FromArgb("#15307A")
             : Colors.White;
         chip.TextColor = seleccionado
             ? Colors.White
             : Color.FromArgb("#6B7280");
         chip.BorderColor = seleccionado
-            ? Color.FromArgb("#1D4ED8")
+            ? Color.FromArgb("#15307A")
             : Color.FromArgb("#E5E7EB");
         chip.BorderWidth = 1;
         chip.CornerRadius = 18;

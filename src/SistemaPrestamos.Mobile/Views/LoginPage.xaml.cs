@@ -28,7 +28,7 @@ public partial class LoginPage : ContentPage
 
         if (string.IsNullOrWhiteSpace(email))
         {
-            MostrarError("Ingrese su correo electr�nico.");
+            MostrarError("Ingrese su correo electrónico.");
             return;
         }
 
@@ -73,7 +73,7 @@ public partial class LoginPage : ContentPage
         catch (Exception ex)
         {
             MostrarError(
-                $"Ocurri� un error al iniciar sesi�n: {ex.Message}");
+                $"Ocurrió un error al iniciar sesión: {ex.Message}");
         }
         finally
         {

@@ -10,7 +10,7 @@
 
         <Border
             Grid.Row="0"
-            BackgroundColor="#1D4ED8"
+            BackgroundColor="#15307A"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 0,0,28,28"
             Padding="24,56,24,40">
@@ -62,7 +62,7 @@
             <Button
                 x:Name="HuellaButton"
                 Text="Desbloquear con huella"
-                BackgroundColor="#1D4ED8"
+                BackgroundColor="#15307A"
                 TextColor="White"
                 CornerRadius="12"
                 HeightRequest="52"
@@ -72,8 +72,8 @@
                 x:Name="ClaveButton"
                 Text="Usar contraseña"
                 BackgroundColor="Transparent"
-                TextColor="#1D4ED8"
-                BorderColor="#1D4ED8"
+                TextColor="#15307A"
+                BorderColor="#15307A"
                 BorderWidth="1.5"
                 CornerRadius="12"
                 HeightRequest="52"
@@ -83,7 +83,7 @@
                 x:Name="CargandoIndicator"
                 IsVisible="False"
                 IsRunning="False"
-                Color="#1D4ED8"
+                Color="#15307A"
                 HorizontalOptions="Center" />
 
             <Label

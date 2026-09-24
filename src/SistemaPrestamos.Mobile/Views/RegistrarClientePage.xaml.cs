@@ -74,11 +74,11 @@ public partial class RegistrarClientePage : ContentPage
     private static void PintarRadio(Border tarjeta, Border radio, BoxView punto, bool seleccionado)
     {
         tarjeta.Stroke = seleccionado
-            ? Color.FromArgb("#1D4ED8")
+            ? Color.FromArgb("#15307A")
             : Color.FromArgb("#E5E7EB");
         tarjeta.StrokeThickness = seleccionado ? 2 : 1;
         radio.Stroke = seleccionado
-            ? Color.FromArgb("#1D4ED8")
+            ? Color.FromArgb("#15307A")
             : Color.FromArgb("#D1D5DB");
         radio.StrokeThickness = 2;
         punto.IsVisible = seleccionado;

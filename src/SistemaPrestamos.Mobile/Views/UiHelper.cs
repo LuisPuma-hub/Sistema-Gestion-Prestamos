@@ -22,7 +22,7 @@ public static class UiHelper
             // SetStatusBarColor obsoleto en API 35+, pero sigue
             // funcionando en 36. Sin reemplazo directo simple.
 #pragma warning disable CA1422
-                ventana.SetStatusBarColor(new Android.Graphics.Color(0x1D, 0x4E, 0xD8));
+                ventana.SetStatusBarColor(new Android.Graphics.Color(0x15, 0x30, 0x7A));
 #pragma warning restore CA1422
 
             var vista = ventana.DecorView;

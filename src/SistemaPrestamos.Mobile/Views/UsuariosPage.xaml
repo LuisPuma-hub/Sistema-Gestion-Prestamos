@@ -10,7 +10,7 @@
     <Grid RowDefinitions="Auto,*,Auto">
         <Border
             Grid.Row="0"
-            BackgroundColor="#1D4ED8"
+            BackgroundColor="#15307A"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 0,0,28,28"
             Padding="16,48,16,20">
@@ -85,7 +85,7 @@
                                         Text="{Binding Inicial}"
                                         FontSize="20"
                                         FontAttributes="Bold"
-                                        TextColor="#1D4ED8"
+                                        TextColor="#15307A"
                                         HorizontalOptions="Center"
                                         VerticalOptions="Center" />
                                 </Border>
@@ -123,7 +123,7 @@
                 x:Name="CargandoIndicator"
                 IsVisible="False"
                 IsRunning="False"
-                Color="#1D4ED8"
+                Color="#15307A"
                 HorizontalOptions="Center"
                 VerticalOptions="Center" />
 
@@ -140,14 +140,14 @@
                 Grid.Column="0"
                 x:Name="ReintentarButton"
                 Text="Reintentar"
-                BackgroundColor="#1D4ED8"
+                BackgroundColor="#15307A"
                 TextColor="White"
                 CornerRadius="12"
                 IsVisible="False"
                 Clicked="OnReintentarClicked" />
             <Border
                 Grid.Column="1"
-                BackgroundColor="#1D4ED8"
+                BackgroundColor="#15307A"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 30"
                 HeightRequest="60"

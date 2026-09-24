@@ -17,7 +17,7 @@
             <VerticalStackLayout Spacing="0">
 
                 <Border
-                    BackgroundColor="#1D4ED8"
+                    BackgroundColor="#15307A"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 0,0,28,28"
                     Padding="24,48,24,28">
@@ -87,7 +87,7 @@
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                     <Label Text="Clientes" FontSize="12" TextColor="#6B7280" />
-                                    <Label x:Name="ClientesValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#1D4ED8" />
+                                    <Label x:Name="ClientesValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#15307A" />
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>
@@ -109,7 +109,7 @@
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
                                     <Label Text="Préstamos" FontSize="12" TextColor="#6B7280" />
-                                    <Label x:Name="PrestamosValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#1D4ED8" />
+                                    <Label x:Name="PrestamosValorLabel" Text="-" FontSize="20" FontAttributes="Bold" TextColor="#15307A" />
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>
@@ -273,7 +273,7 @@
                                     Text="M"
                                     FontSize="20"
                                     FontAttributes="Bold"
-                                    TextColor="#1D4ED8"
+                                    TextColor="#15307A"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center" />
                             </Border>

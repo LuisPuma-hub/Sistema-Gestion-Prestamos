@@ -10,7 +10,7 @@
     <Grid RowDefinitions="Auto,*">
         <Border
             Grid.Row="0"
-            BackgroundColor="#1D4ED8"
+            BackgroundColor="#15307A"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 0,0,28,28"
             Padding="16,48,16,20">
@@ -113,7 +113,7 @@
                             </HorizontalStackLayout>
                         </Border>
                         <Border Padding="12" BackgroundColor="#DBEAFE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
-                            <Label x:Name="ResumenInteresLabel" Text="Interés semanal (5 %): S/ 0.00" FontSize="14" TextColor="#1D4ED8" FontAttributes="Bold" />
+                            <Label x:Name="ResumenInteresLabel" Text="Interés semanal (5 %): S/ 0.00" FontSize="14" TextColor="#15307A" FontAttributes="Bold" />
                         </Border>
                     </VerticalStackLayout>
                 </Border>
@@ -124,7 +124,7 @@
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                             <Button Grid.Column="0" Text="−7 días" Clicked="OnDiaMenosClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
                             <Button Grid.Column="1" Text="Últ. vto" Clicked="OnUltimoVencimientoClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
-                            <Button Grid.Column="2" Text="+7 días" Clicked="OnDiaMasClicked" BackgroundColor="#DBEAFE" TextColor="#1D4ED8" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="2" Text="+7 días" Clicked="OnDiaMasClicked" BackgroundColor="#DBEAFE" TextColor="#15307A" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
                         </Grid>
                         <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="14,10">
                             <HorizontalStackLayout Spacing="10">
@@ -179,7 +179,7 @@
                     x:Name="CargandoIndicator"
                     IsVisible="False"
                     IsRunning="False"
-                    Color="#1D4ED8"
+                    Color="#15307A"
                     HorizontalOptions="Center" />
 
                 <Label

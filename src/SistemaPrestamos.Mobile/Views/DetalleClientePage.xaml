@@ -11,7 +11,7 @@
         <ScrollView>
             <VerticalStackLayout Spacing="0">
                 <Border
-                    BackgroundColor="#1D4ED8"
+                    BackgroundColor="#15307A"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 0,0,28,28"
                     Padding="16,48,16,24">
@@ -71,7 +71,7 @@
                                     Text="M"
                                     FontSize="26"
                                     FontAttributes="Bold"
-                                    TextColor="#1D4ED8"
+                                    TextColor="#15307A"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center" />
                             </Border>
@@ -123,7 +123,7 @@
                             <Button
                                 x:Name="GuardarButton"
                                 Text="Guardar cambios"
-                                BackgroundColor="#1D4ED8"
+                                BackgroundColor="#15307A"
                                 TextColor="White"
                                 CornerRadius="12"
                                 HeightRequest="50"
@@ -163,7 +163,7 @@
                                     x:Name="CamaraButton"
                                     Text="◉ Cámara"
                                     BackgroundColor="#DBEAFE"
-                                    TextColor="#1D4ED8"
+                                    TextColor="#15307A"
                                     FontAttributes="Bold"
                                     CornerRadius="12"
                                     HeightRequest="48"
@@ -211,7 +211,7 @@
                                 </Border.GestureRecognizers>
                                 <HorizontalStackLayout Spacing="10">
                                     <Border x:Name="RadioSinAvalD" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
-                                        <BoxView x:Name="RadioSinAvalDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#1D4ED8" />
+                                        <BoxView x:Name="RadioSinAvalDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#15307A" />
                                     </Border>
                                     <Label Text="Sin aval" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
@@ -223,7 +223,7 @@
                                 </Border.GestureRecognizers>
                                 <HorizontalStackLayout Spacing="10">
                                     <Border x:Name="RadioExistenteD" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
-                                        <BoxView x:Name="RadioExistenteDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#1D4ED8" />
+                                        <BoxView x:Name="RadioExistenteDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#15307A" />
                                     </Border>
                                     <Label Text="Cliente existente" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
@@ -235,7 +235,7 @@
                                 </Border.GestureRecognizers>
                                 <HorizontalStackLayout Spacing="10">
                                     <Border x:Name="RadioNuevoD" HeightRequest="22" WidthRequest="22" StrokeShape="RoundRectangle 11" VerticalOptions="Center">
-                                        <BoxView x:Name="RadioNuevoDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#1D4ED8" />
+                                        <BoxView x:Name="RadioNuevoDotD" HeightRequest="12" WidthRequest="12" CornerRadius="6" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" Color="#15307A" />
                                     </Border>
                                     <Label Text="Nuevo aval" FontSize="15" TextColor="#111827" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
@@ -257,7 +257,7 @@
                             <Button
                                 x:Name="GuardarAvalButton"
                                 Text="Guardar aval"
-                                BackgroundColor="#1D4ED8"
+                                BackgroundColor="#15307A"
                                 TextColor="White"
                                 CornerRadius="12"
                                 HeightRequest="50"
@@ -318,7 +318,7 @@
                             <Button
                                 x:Name="CambiarEstadoButton"
                                 Text="Guardar estado"
-                                BackgroundColor="#1D4ED8"
+                                BackgroundColor="#15307A"
                                 TextColor="White"
                                 CornerRadius="12"
                                 HeightRequest="50"
@@ -354,7 +354,7 @@
                         x:Name="CargandoIndicator"
                         IsVisible="False"
                         IsRunning="False"
-                        Color="#1D4ED8"
+                        Color="#15307A"
                         HorizontalOptions="Center" />
 
                     <Label

@@ -10,7 +10,7 @@
     <ScrollView>
         <VerticalStackLayout Spacing="0">
             <Border
-                BackgroundColor="#1D4ED8"
+                BackgroundColor="#15307A"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 0,0,28,28"
                 Padding="16,48,16,20">
@@ -61,7 +61,7 @@
                                 Text="M"
                                 FontSize="22"
                                 FontAttributes="Bold"
-                                TextColor="#1D4ED8"
+                                TextColor="#15307A"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center" />
                         </Border>
@@ -110,7 +110,7 @@
                         <Border Grid.Row="1" Grid.Column="1" Padding="12,10" BackgroundColor="#F8F7FC" StrokeThickness="0" StrokeShape="RoundRectangle 12">
                             <VerticalStackLayout Spacing="0">
                                 <Label Text="Tasa" FontSize="12" TextColor="#6B7280" />
-                                <Label x:Name="TasaLabel" FontSize="17" FontAttributes="Bold" TextColor="#1D4ED8" />
+                                <Label x:Name="TasaLabel" FontSize="17" FontAttributes="Bold" TextColor="#15307A" />
                             </VerticalStackLayout>
                         </Border>
                         <Border Grid.Row="2" Grid.Column="0" Padding="12,10" BackgroundColor="#F8F7FC" StrokeThickness="0" StrokeShape="RoundRectangle 12">
@@ -161,7 +161,7 @@
                 <Button
                     x:Name="AprobarButton"
                     Text="Aprobar préstamo"
-                    BackgroundColor="#1D4ED8"
+                    BackgroundColor="#15307A"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="12"
@@ -172,7 +172,7 @@
                 <Button
                     x:Name="PagarButton"
                     Text="$  Registrar pago"
-                    BackgroundColor="#1D4ED8"
+                    BackgroundColor="#15307A"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="12"
@@ -183,7 +183,7 @@
                     x:Name="MorosidadButton"
                     Text="Ver morosidad"
                     BackgroundColor="#DBEAFE"
-                    TextColor="#1D4ED8"
+                    TextColor="#15307A"
                     FontAttributes="Bold"
                     CornerRadius="12"
                     HeightRequest="50"
@@ -217,7 +217,7 @@
                     x:Name="CargandoIndicator"
                     IsVisible="False"
                     IsRunning="False"
-                    Color="#1D4ED8"
+                    Color="#15307A"
                     HorizontalOptions="Center" />
 
                 <Label
