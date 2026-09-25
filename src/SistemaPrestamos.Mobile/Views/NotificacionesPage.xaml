@@ -56,6 +56,12 @@
                     TextColor="#6B7280"
                     CharacterSpacing="1" />
 
+                <Label
+                    x:Name="ServidorLabel"
+                    FontSize="12"
+                    TextColor="#6B7280"
+                    HorizontalTextAlignment="Center" />
+
                 <CollectionView
                     x:Name="ReglasCollection"
                     SelectionMode="None">

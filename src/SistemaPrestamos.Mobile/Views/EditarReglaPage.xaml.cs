@@ -87,8 +87,22 @@ public partial class EditarReglaPage : ContentPage
 
         _ = Animaciones.EntradaAsync(Content);
 
-        HoraLimaLabel.Text =
-            $"Hora actual en Lima: {DateTime.UtcNow.AddHours(-5):HH:mm}";
+        HoraLimaLabel.Text = "Hora actual en Lima: ...";
+
+        try
+        {
+            var diagnostico = await _notificacionesService
+                .ObtenerDiagnosticoAsync();
+
+            HoraLimaLabel.Text = diagnostico is null
+                ? $"Hora actual en Lima: {DateTime.UtcNow.AddHours(-5):HH:mm} (aprox.)"
+                : $"Hora actual en Lima: {diagnostico.HoraLima} (servidor)";
+        }
+        catch
+        {
+            HoraLimaLabel.Text =
+                $"Hora actual en Lima: {DateTime.UtcNow.AddHours(-5):HH:mm} (aprox.)";
+        }
 
         if (!_id.HasValue)
         {

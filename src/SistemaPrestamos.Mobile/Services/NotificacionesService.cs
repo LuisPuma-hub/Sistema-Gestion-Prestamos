@@ -169,6 +169,25 @@ public class NotificacionesService
         }
     }
 
+    public async Task<DiagnosticoDto?> ObtenerDiagnosticoAsync()
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.GetAsync(
+            "api/ReglasNotificacion/diagnostico");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        var contenido = await response.Content.ReadAsStringAsync();
+
+        return JsonSerializer.Deserialize<DiagnosticoDto>(
+            contenido,
+            _jsonOptions);
+    }
+
     public async Task<List<EnvioDto>> ObtenerEnviosAsync()
     {
         await AplicarTokenAsync();

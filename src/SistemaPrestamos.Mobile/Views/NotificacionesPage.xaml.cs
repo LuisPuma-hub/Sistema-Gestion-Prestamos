@@ -37,6 +37,22 @@ public partial class NotificacionesPage : ContentPage
                 EstadoLabel.Text = "Sin reglas. Crea la primera con +.";
                 EstadoLabel.IsVisible = true;
             }
+
+            try
+            {
+                var diagnostico = await _notificacionesService
+                    .ObtenerDiagnosticoAsync();
+
+                ServidorLabel.Text = diagnostico is null
+                    ? "Servidor: sin conexión."
+                    : $"Servidor Lima {diagnostico.HoraLima} • " +
+                      $"job {(diagnostico.UltimoTickUtc ?? "sin ticks")} • " +
+                      $"{diagnostico.ReglasActivas} activas.";
+            }
+            catch
+            {
+                ServidorLabel.Text = "Servidor: sin conexión.";
+            }
         }
         catch (HttpRequestException)
         {
