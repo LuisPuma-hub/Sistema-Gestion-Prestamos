@@ -1,3 +1,4 @@
+using SistemaPrestamos.Mobile.Models;
 using SistemaPrestamos.Mobile.Services;
 
 namespace SistemaPrestamos.Mobile.Views;
@@ -34,6 +35,10 @@ public partial class EditarReglaPage : ContentPage
     private static readonly Color TextoInactivo = Color.FromArgb("#374151");
 
     private readonly NotificacionesService _notificacionesService;
+    private readonly ClienteService _clienteService;
+    private readonly PrestamoService _prestamoService;
+    private List<ClienteDto> _clientes = new();
+    private List<PrestamoDto> _prestamos = new();
     private readonly bool[] _dias = [true, true, true, true, true, true, true];
     private Guid? _id;
 
@@ -48,10 +53,15 @@ public partial class EditarReglaPage : ContentPage
         }
     }
 
-    public EditarReglaPage(NotificacionesService notificacionesService)
+    public EditarReglaPage(
+        NotificacionesService notificacionesService,
+        ClienteService clienteService,
+        PrestamoService prestamoService)
     {
         InitializeComponent();
         _notificacionesService = notificacionesService;
+        _clienteService = clienteService;
+        _prestamoService = prestamoService;
 
         foreach (var (_, texto) in Eventos)
         {
@@ -77,6 +87,9 @@ public partial class EditarReglaPage : ContentPage
 
         _ = Animaciones.EntradaAsync(Content);
 
+        HoraLimaLabel.Text =
+            $"Hora actual en Lima: {DateTime.UtcNow.AddHours(-5):HH:mm}";
+
         if (!_id.HasValue)
         {
             return;
@@ -84,7 +97,10 @@ public partial class EditarReglaPage : ContentPage
 
         TituloLabel.Text = "Editar regla";
         ProbarButton.IsVisible = true;
+        DestinoCard.IsVisible = true;
         EliminarButton.IsVisible = true;
+
+        await CargarDestinatariosAsync();
 
         var regla = await _notificacionesService.ObtenerReglaAsync(
             _id.Value);
@@ -242,6 +258,45 @@ public partial class EditarReglaPage : ContentPage
         await Shell.Current.GoToAsync("..");
     }
 
+    private async Task CargarDestinatariosAsync()
+    {
+        _clientes = await _clienteService.ObtenerTodosAsync();
+
+        ClientePicker.Items.Clear();
+
+        foreach (var c in _clientes)
+        {
+            ClientePicker.Items.Add($"{c.Nombres} {c.Apellidos}");
+        }
+    }
+
+    private async void OnClienteChanged(object? sender, EventArgs e)
+    {
+        PrestamoPicker.Items.Clear();
+        _prestamos.Clear();
+
+        if (ClientePicker.SelectedIndex < 0 ||
+            ClientePicker.SelectedIndex >= _clientes.Count)
+        {
+            return;
+        }
+
+        var clienteId = _clientes[ClientePicker.SelectedIndex].Id;
+
+        _prestamos = await _prestamoService.ObtenerPorClienteAsync(clienteId);
+
+        foreach (var p in _prestamos)
+        {
+            PrestamoPicker.Items.Add(
+                $"S/ {p.CapitalPendiente:N2} - {p.Estado}");
+        }
+
+        if (_prestamos.Count > 0)
+        {
+            PrestamoPicker.SelectedIndex = 0;
+        }
+    }
+
     private async void OnProbarClicked(object? sender, EventArgs e)
     {
         if (!_id.HasValue)
@@ -251,8 +306,25 @@ public partial class EditarReglaPage : ContentPage
 
         ErrorLabel.IsVisible = false;
 
+        Guid? clienteId = null;
+        Guid? prestamoId = null;
+
+        if (ClientePicker.SelectedIndex >= 0 &&
+            ClientePicker.SelectedIndex < _clientes.Count)
+        {
+            clienteId = _clientes[ClientePicker.SelectedIndex].Id;
+        }
+
+        if (PrestamoPicker.SelectedIndex >= 0 &&
+            PrestamoPicker.SelectedIndex < _prestamos.Count)
+        {
+            prestamoId = _prestamos[PrestamoPicker.SelectedIndex].Id;
+        }
+
         var (exito, mensaje) = await _notificacionesService.ProbarReglaAsync(
-            _id.Value);
+            _id.Value,
+            clienteId,
+            prestamoId);
 
         await DisplayAlertAsync(
             exito ? "Prueba correcta" : "Prueba fallida",

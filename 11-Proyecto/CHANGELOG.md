@@ -588,3 +588,19 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 
 - `dotnet test`: 32/32 pruebas correctas.
 - Verificado en emulador Pixel_5: login (incluye toggle del ojo), dashboard, tabs, Más, Perfil, DetalleCliente, DetallePrestamo, RegistrarCliente, RegistrarPago, RegistrarPrestamo, Usuarios e HistorialWhatsapp.
+
+---
+
+# 15. Módulo Notificaciones Programables - 2026-09-24
+
+## Added
+
+- Entidades `ReglaNotificacion` (evento, canal, hora, días bitmask, plantilla, activa, última ejecución) y `EnvioNotificacion` (log + antispam) con migración aplicada.
+- `ReglasNotificacionController` (solo Administrador): CRUD, activar/desactivar, probar, historial de envíos y diagnóstico del job.
+- `ProgramadorJob` minutal (`BackgroundService`): ejecuta reglas por hora de Lima, resuelve destinatarios (vencimientos, moras, resumen cobrador) y registra cada envío.
+- UI móvil: `NotificacionesPage` (lista + switches), `EditarReglaPage` (hora, días, canal, plantilla, destinatario de prueba, hora Lima actual) e `HistorialEnviosPage`; entrada en Más solo-admin.
+- 3 reglas semilla: Vencen hoy 08:00, Vencen mañana 16:00, Resumen cobrador 07:30.
+
+## Tests
+
+- `dotnet test`: 40/40 pruebas correctas (8 nuevas del módulo).

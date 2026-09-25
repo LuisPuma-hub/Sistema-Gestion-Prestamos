@@ -1,8 +1,10 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SistemaPrestamos.API.Jobs;
 using SistemaPrestamos.Application.DTOs;
 using SistemaPrestamos.Application.Interfaces;
+using SistemaPrestamos.Application.Services;
 
 namespace SistemaPrestamos.API.Controllers;
 
@@ -142,5 +144,34 @@ public class ReglasNotificacionController : ControllerBase
         [FromQuery] int top = 50)
     {
         return Ok(await _reglaService.ObtenerEnviosAsync(top));
+    }
+
+    // GET: api/reglasnotificacion/diagnostico
+    [HttpGet("diagnostico")]
+    public async Task<ActionResult<object>> Diagnostico(
+        [FromServices] IProgramadorService programador)
+    {
+        var ahoraUtc = DateTime.UtcNow;
+        var lima = ProgramadorService.AhoraLima(ahoraUtc);
+
+        var reglas = (await _reglaService.ListarAsync()).ToList();
+
+        var tocan = reglas
+            .Where(r =>
+                r.Activa &&
+                ProgramadorService.TocaHoy(
+                    new() { DiasSemana = r.DiasSemana }, lima) &&
+                r.Hora == lima.ToString("HH:mm"))
+            .Select(r => r.Nombre)
+            .ToList();
+
+        return Ok(new
+        {
+            horaUtc = ahoraUtc.ToString("HH:mm:ss"),
+            horaLima = lima.ToString("HH:mm:ss"),
+            ultimoTickUtc = ProgramadorJob.UltimoTickUtc?.ToString("HH:mm:ss"),
+            reglasActivas = reglas.Count(r => r.Activa),
+            tocanAhora = tocan
+        });
     }
 }

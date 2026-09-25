@@ -72,6 +72,10 @@
                 <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="HORA DE ENVÍO (LIMA)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Label
+                            x:Name="HoraLimaLabel"
+                            FontSize="13"
+                            TextColor="#1E3A8A" />
                         <TimePicker
                             x:Name="HoraPicker"
                             Format="HH:mm"
@@ -122,6 +126,20 @@
                     HeightRequest="52"
                     IsVisible="False"
                     Clicked="OnProbarClicked" />
+
+                <Border
+                    x:Name="DestinoCard"
+                    Padding="16"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    IsVisible="False">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="DESTINATARIO DE PRUEBA (WHATSAPP)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Picker x:Name="ClientePicker" Title="Selecciona el cliente" SelectedIndexChanged="OnClienteChanged" />
+                        <Picker x:Name="PrestamoPicker" Title="Selecciona el préstamo" />
+                    </VerticalStackLayout>
+                </Border>
 
                 <Button
                     x:Name="EliminarButton"

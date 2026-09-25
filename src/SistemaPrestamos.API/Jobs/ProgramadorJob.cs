@@ -1,4 +1,5 @@
 using SistemaPrestamos.Application.Interfaces;
+using SistemaPrestamos.Application.Services;
 
 namespace SistemaPrestamos.API.Jobs;
 
@@ -21,6 +22,8 @@ public class ProgramadorJob : BackgroundService
         _logger = logger;
     }
 
+    public static DateTime? UltimoTickUtc { get; private set; }
+
     protected override async Task ExecuteAsync(
         CancellationToken stoppingToken)
     {
@@ -28,12 +31,21 @@ public class ProgramadorJob : BackgroundService
 
         while (await temporizador.WaitForNextTickAsync(stoppingToken))
         {
+            UltimoTickUtc = DateTime.UtcNow;
+
             try
             {
                 using var alcance = _servicios.CreateScope();
 
                 var programador = alcance.ServiceProvider
                     .GetRequiredService<IProgramadorService>();
+
+                var lima = ProgramadorService.AhoraLima(DateTime.UtcNow);
+
+                _logger.LogInformation(
+                    "Tick programador {HoraLima:HH:mm:ss} dow {Dow}.",
+                    lima,
+                    lima.DayOfWeek);
 
                 var enviados = await programador.EjecutarPendientesAsync(
                     DateTime.UtcNow);
