@@ -58,6 +58,21 @@ public class ProgramadorService : IProgramadorService
         return (regla.DiasSemana & bit) != 0;
     }
 
+    /// <summary>
+    /// Minutos de gracia: si el tick no cayó en el minuto exacto
+    /// (reinicio, regla creada tarde), igual ejecuta dentro de la ventana.
+    /// </summary>
+    public const int VentanaToleranciaMinutos = 15;
+
+    public static bool TocaAhora(ReglaNotificacion regla, DateTime ahoraLima)
+    {
+        var horaHoy = ahoraLima.Date.Add(regla.Hora.ToTimeSpan());
+        var atraso = ahoraLima - horaHoy;
+
+        return atraso >= TimeSpan.Zero &&
+            atraso.TotalMinutes <= VentanaToleranciaMinutos;
+    }
+
     public async Task<int> EjecutarPendientesAsync(DateTime ahoraUtc)
     {
         var ahora = AhoraLima(ahoraUtc);
@@ -70,8 +85,7 @@ public class ProgramadorService : IProgramadorService
         foreach (var regla in reglas.Where(r =>
                      r.Activa &&
                      TocaHoy(r, ahora) &&
-                     r.Hora.Hour == ahora.Hour &&
-                     r.Hora.Minute == ahora.Minute &&
+                     TocaAhora(r, ahora) &&
                      (r.UltimaEjecucion is null ||
                       r.UltimaEjecucion.Value < hoy)))
         {

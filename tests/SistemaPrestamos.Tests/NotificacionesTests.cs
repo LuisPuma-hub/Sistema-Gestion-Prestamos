@@ -102,6 +102,24 @@ public class NotificacionesTests : IDisposable
     }
 
     [Fact]
+    public void TocaAhora_VentanaQuinceMinutos()
+    {
+        var regla = new ReglaNotificacion
+        {
+            Hora = new TimeOnly(8, 0)
+        };
+
+        Assert.True(ProgramadorService.TocaAhora(
+            regla, new DateTime(2026, 9, 24, 8, 0, 0)));
+        Assert.True(ProgramadorService.TocaAhora(
+            regla, new DateTime(2026, 9, 24, 8, 14, 0)));
+        Assert.False(ProgramadorService.TocaAhora(
+            regla, new DateTime(2026, 9, 24, 8, 16, 0)));
+        Assert.False(ProgramadorService.TocaAhora(
+            regla, new DateTime(2026, 9, 24, 7, 59, 0)));
+    }
+
+    [Fact]
     public void TocaHoy_BitmaskRespetaDia()
     {
         var regla = new ReglaNotificacion { DiasSemana = 1 }; // solo lunes
