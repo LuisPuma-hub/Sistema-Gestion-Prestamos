@@ -39,6 +39,17 @@ public class PagoRepository : IPagoRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Pago>> ObtenerPorFechaAsync(DateTime fecha)
+    {
+        var inicio = DateTime.SpecifyKind(fecha.Date, DateTimeKind.Utc);
+        var fin = inicio.AddDays(1);
+
+        return await _context.Pagos
+            .AsNoTracking()
+            .Where(x => x.FechaPago >= inicio && x.FechaPago < fin)
+            .ToListAsync();
+    }
+
     public async Task<Pago> CrearAsync(Pago pago)
     {
         await _context.Pagos.AddAsync(pago);

@@ -12,6 +12,7 @@ public class ProgramadorService : IProgramadorService
     private readonly IPrestamoRepository _prestamoRepository;
     private readonly IPeriodoInteresRepository _periodoRepository;
     private readonly IMorosidadRepository _morosidadRepository;
+    private readonly IPagoRepository _pagoRepository;
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IWhatsappService _whatsappService;
     private readonly INotificacionService _notificacionService;
@@ -22,6 +23,7 @@ public class ProgramadorService : IProgramadorService
         IPrestamoRepository prestamoRepository,
         IPeriodoInteresRepository periodoRepository,
         IMorosidadRepository morosidadRepository,
+        IPagoRepository pagoRepository,
         IUsuarioRepository usuarioRepository,
         IWhatsappService whatsappService,
         INotificacionService notificacionService,
@@ -33,6 +35,7 @@ public class ProgramadorService : IProgramadorService
         _prestamoRepository = prestamoRepository;
         _periodoRepository = periodoRepository;
         _morosidadRepository = morosidadRepository;
+        _pagoRepository = pagoRepository;
         _usuarioRepository = usuarioRepository;
         _whatsappService = whatsappService;
         _notificacionService = notificacionService;
@@ -118,8 +121,16 @@ public class ProgramadorService : IProgramadorService
                 await EnviarMorasAsync(regla, hoy, soloNuevas: true),
             EventosNotificacion.MoraPersistente =>
                 await EnviarMorasAsync(regla, hoy, soloNuevas: false),
-            EventosNotificacion.ResumenCobrador =>
+            EventosNotificacion.ResumenDiario =>
                 await EnviarResumenAsync(regla, hoy),
+            EventosNotificacion.MoraCobrador =>
+                await EnviarMoraCobradorAsync(regla, hoy),
+            EventosNotificacion.CobradoDia =>
+                await EnviarCobradoDiaAsync(regla, hoy),
+            EventosNotificacion.PrestamoPorAprobar =>
+                await EnviarPrestamosPorAprobarAsync(regla, hoy),
+            EventosNotificacion.ResumenVencimientos =>
+                await EnviarResumenVencimientosAsync(regla, hoy),
             _ => 0
         };
     }
@@ -222,25 +233,24 @@ public class ProgramadorService : IProgramadorService
         return enviados;
     }
 
-    private async Task<int> EnviarResumenAsync(
-        ReglaNotificacion regla,
-        DateTime hoy)
+    private async Task<List<Usuario>> ObtenerCobradoresAsync()
     {
-        var vencenHoy = (await _periodoRepository
-            .ObtenerConVencimientoAsync(hoy))
-            .Select(p => p.PrestamoId)
-            .Distinct()
-            .Count();
+        var usuarios = await _usuarioRepository.ObtenerTodosAsync();
 
-        var enMora = (await _morosidadRepository.ObtenerActivasAsync())
-            .Count();
-
-        var cobradores = (await _usuarioRepository.ObtenerTodosAsync())
+        return usuarios
             .Where(u =>
                 u.Activo &&
                 (u.Rol == "Administrador" || u.Rol == "Cobrador"))
             .ToList();
+    }
 
+    private async Task<int> EnviarPushCobradoresAsync(
+        ReglaNotificacion regla,
+        DateTime hoy,
+        string titulo,
+        string cuerpo)
+    {
+        var cobradores = await ObtenerCobradoresAsync();
         var enviados = 0;
 
         foreach (var usuario in cobradores)
@@ -253,9 +263,7 @@ public class ProgramadorService : IProgramadorService
             try
             {
                 var n = await _notificacionService.EnviarAUsuarioAsync(
-                    usuario.Id,
-                    "Resumen de cobranza",
-                    $"Hoy vencen {vencenHoy} y hay {enMora} en mora.");
+                    usuario.Id, titulo, cuerpo);
 
                 await RegistrarAsync(
                     regla, null, null, usuario.Id, usuario.Email,
@@ -276,6 +284,120 @@ public class ProgramadorService : IProgramadorService
         }
 
         return enviados;
+    }
+
+    private async Task<int> EnviarResumenAsync(
+        ReglaNotificacion regla,
+        DateTime hoy)
+    {
+        var vencenHoy = (await _periodoRepository
+            .ObtenerConVencimientoAsync(hoy))
+            .Select(p => p.PrestamoId)
+            .Distinct()
+            .Count();
+
+        var enMora = (await _morosidadRepository.ObtenerActivasAsync())
+            .Count();
+
+        return await EnviarPushCobradoresAsync(
+            regla,
+            hoy,
+            "Resumen de cobranza",
+            $"Hoy vencen {vencenHoy} y hay {enMora} en mora.");
+    }
+
+    private async Task<int> EnviarMoraCobradorAsync(
+        ReglaNotificacion regla,
+        DateTime hoy)
+    {
+        var nuevas = (await _morosidadRepository.ObtenerActivasAsync())
+            .Where(m => m.FechaInicio?.Date >= hoy)
+            .ToList();
+
+        if (nuevas.Count == 0)
+        {
+            return 0;
+        }
+
+        var nombres = string.Join(
+            ", ",
+            nuevas
+                .Take(3)
+                .Select(m => m.Prestamo.Cliente.Nombres));
+
+        var extra = nuevas.Count > 3
+            ? $" y {nuevas.Count - 3} más"
+            : string.Empty;
+
+        return await EnviarPushCobradoresAsync(
+            regla,
+            hoy,
+            "Nueva mora",
+            $"{nuevas.Count} entraron en mora hoy: {nombres}{extra}.");
+    }
+
+    private async Task<int> EnviarCobradoDiaAsync(
+        ReglaNotificacion regla,
+        DateTime hoy)
+    {
+        var pagos = await _pagoRepository.ObtenerPorFechaAsync(hoy);
+
+        var lista = pagos.ToList();
+
+        if (lista.Count == 0)
+        {
+            return 0;
+        }
+
+        var total = lista.Sum(p => p.Monto);
+
+        return await EnviarPushCobradoresAsync(
+            regla,
+            hoy,
+            "Cobrado del día",
+            $"Hoy se cobró S/ {total:N2} en {lista.Count} pago(s).");
+    }
+
+    private async Task<int> EnviarPrestamosPorAprobarAsync(
+        ReglaNotificacion regla,
+        DateTime hoy)
+    {
+        var pendientes = (await _prestamoRepository.ObtenerTodosAsync())
+            .Where(p => p.Estado == "Pendiente")
+            .ToList();
+
+        if (pendientes.Count == 0)
+        {
+            return 0;
+        }
+
+        return await EnviarPushCobradoresAsync(
+            regla,
+            hoy,
+            "Préstamos por aprobar",
+            $"Hay {pendientes.Count} préstamo(s) pendientes de aprobación.");
+    }
+
+    private async Task<int> EnviarResumenVencimientosAsync(
+        ReglaNotificacion regla,
+        DateTime hoy)
+    {
+        var vencenHoy = (await _periodoRepository
+            .ObtenerConVencimientoAsync(hoy))
+            .Select(p => p.PrestamoId)
+            .Distinct()
+            .Count();
+
+        if (vencenHoy == 0)
+        {
+            return 0;
+        }
+
+        return await EnviarPushCobradoresAsync(
+            regla,
+            hoy,
+            "Vencimientos de hoy",
+            $"Hoy vencen {vencenHoy} préstamo(s).");
     }
 
     private async Task<bool> YaEnviadoAsync(

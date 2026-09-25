@@ -600,6 +600,8 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 - `ProgramadorJob` minutal (`BackgroundService`): ejecuta reglas por hora de Lima, resuelve destinatarios (vencimientos, moras, resumen cobrador) y registra cada envío.
 - UI móvil: `NotificacionesPage` (lista + switches), `EditarReglaPage` (hora, días, canal, plantilla, destinatario de prueba, hora Lima actual) e `HistorialEnviosPage`; entrada en Más solo-admin.
 - 3 reglas semilla: Vencen hoy 08:00, Vencen mañana 16:00, Resumen cobrador 07:30.
+- Evento `ResumenCobrador` renombrado a `ResumenDiario` (+migración de datos) y 4 eventos push nuevos: `MoraCobrador`, `CobradoDia`, `PrestamoPorAprobar`, `ResumenVencimientos`.
+- Ventana de tolerancia de 15 min en el scheduler + endpoint `diagnostico` (hora Lima, último tick, reglas que tocan) visible en la app.
 
 ## Tests
 

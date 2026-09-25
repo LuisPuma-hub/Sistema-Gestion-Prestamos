@@ -245,10 +245,19 @@ public class ReglaNotificacionService : IReglaNotificacionService
         }
 
         if (canal == CanalesNotificacion.Push &&
-            evento != EventosNotificacion.ResumenCobrador)
+            !EventosNotificacion.EventosPush.Contains(evento))
         {
             throw new InvalidOperationException(
-                "El canal Push solo aplica al ResumenCobrador.");
+                "El canal Push solo aplica a eventos de resumen y avisos al cobrador: " +
+                string.Join(", ", EventosNotificacion.EventosPush) + ".");
+        }
+
+        if (canal == CanalesNotificacion.Whatsapp &&
+            !EventosNotificacion.EventosWhatsapp.Contains(evento))
+        {
+            throw new InvalidOperationException(
+                "El canal WhatsApp solo aplica a eventos del cliente: " +
+                string.Join(", ", EventosNotificacion.EventosWhatsapp) + ".");
         }
 
         if (canal == CanalesNotificacion.Whatsapp &&

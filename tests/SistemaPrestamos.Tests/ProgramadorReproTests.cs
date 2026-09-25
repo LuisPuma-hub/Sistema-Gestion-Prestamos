@@ -39,7 +39,7 @@ public class ProgramadorReproTests : IDisposable
         var creada = await reglas.CrearAsync(new CrearReglaDto
         {
             Nombre = "R",
-            Evento = EventosNotificacion.ResumenCobrador,
+            Evento = EventosNotificacion.ResumenDiario,
             Canal = CanalesNotificacion.Push,
             Hora = lima.ToString("HH:mm")
         });
@@ -50,6 +50,7 @@ public class ProgramadorReproTests : IDisposable
             new PrestamoRepository(_contexto),
             new PeriodoInteresRepository(_contexto),
             new MorosidadRepository(_contexto),
+            new PagoRepository(_contexto),
             new UsuarioRepository(_contexto),
             null!,
             new FakePush());

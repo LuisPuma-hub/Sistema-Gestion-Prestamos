@@ -12,7 +12,11 @@ public partial class EditarReglaPage : ContentPage
         ("VenceManana", "Vence mañana"),
         ("MoraNueva", "Mora nueva"),
         ("MoraPersistente", "Mora persistente"),
-        ("ResumenCobrador", "Resumen cobrador")
+        ("ResumenDiario", "Resumen diario"),
+        ("MoraCobrador", "Mora al cobrador"),
+        ("CobradoDia", "Cobrado del día"),
+        ("PrestamoPorAprobar", "Préstamo por aprobar"),
+        ("ResumenVencimientos", "Vencen hoy (resumen)")
     ];
 
     private static readonly (string Clave, string Texto)[] Canales =

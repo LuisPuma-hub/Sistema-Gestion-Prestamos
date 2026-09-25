@@ -6,7 +6,28 @@ public static class EventosNotificacion
     public const string VenceManana = "VenceManana";
     public const string MoraNueva = "MoraNueva";
     public const string MoraPersistente = "MoraPersistente";
-    public const string ResumenCobrador = "ResumenCobrador";
+    public const string ResumenDiario = "ResumenDiario";
+    public const string MoraCobrador = "MoraCobrador";
+    public const string CobradoDia = "CobradoDia";
+    public const string PrestamoPorAprobar = "PrestamoPorAprobar";
+    public const string ResumenVencimientos = "ResumenVencimientos";
+
+    public static readonly IReadOnlyList<string> EventosWhatsapp =
+    [
+        VenceHoy,
+        VenceManana,
+        MoraNueva,
+        MoraPersistente
+    ];
+
+    public static readonly IReadOnlyList<string> EventosPush =
+    [
+        ResumenDiario,
+        MoraCobrador,
+        CobradoDia,
+        PrestamoPorAprobar,
+        ResumenVencimientos
+    ];
 
     public static readonly IReadOnlyList<string> Todos =
     [
@@ -14,7 +35,11 @@ public static class EventosNotificacion
         VenceManana,
         MoraNueva,
         MoraPersistente,
-        ResumenCobrador
+        ResumenDiario,
+        MoraCobrador,
+        CobradoDia,
+        PrestamoPorAprobar,
+        ResumenVencimientos
     ];
 }
 

@@ -36,6 +36,7 @@ public class NotificacionesTests : IDisposable
             new PrestamoRepository(_contexto),
             new PeriodoInteresRepository(_contexto),
             new MorosidadRepository(_contexto),
+            new PagoRepository(_contexto),
             new UsuarioRepository(_contexto),
             null!,
             null!);
@@ -120,6 +121,47 @@ public class NotificacionesTests : IDisposable
     }
 
     [Fact]
+    public async Task Crear_PushMoraCobrador_Valido()
+    {
+        var regla = await _reglas.CrearAsync(new CrearReglaDto
+        {
+            Nombre = "Mora al cobrador",
+            Evento = EventosNotificacion.MoraCobrador,
+            Canal = CanalesNotificacion.Push,
+            Hora = "08:00"
+        });
+
+        Assert.Equal(EventosNotificacion.MoraCobrador, regla.Evento);
+    }
+
+    [Fact]
+    public async Task Crear_WhatsappMoraCobrador_Rechazado()
+    {
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _reglas.CrearAsync(new CrearReglaDto
+            {
+                Nombre = "X",
+                Evento = EventosNotificacion.MoraCobrador,
+                Canal = CanalesNotificacion.Whatsapp,
+                Hora = "08:00"
+            }));
+    }
+
+    [Fact]
+    public async Task Crear_PushResumenDiario_Valido()
+    {
+        var regla = await _reglas.CrearAsync(new CrearReglaDto
+        {
+            Nombre = "Resumen diario",
+            Evento = EventosNotificacion.ResumenDiario,
+            Canal = CanalesNotificacion.Push,
+            Hora = "07:30"
+        });
+
+        Assert.Null(regla.Plantilla);
+    }
+
+    [Fact]
     public void TocaHoy_BitmaskRespetaDia()
     {
         var regla = new ReglaNotificacion { DiasSemana = 1 }; // solo lunes
@@ -149,7 +191,7 @@ public class NotificacionesTests : IDisposable
         await _reglas.CrearAsync(new CrearReglaDto
         {
             Nombre = "Resumen",
-            Evento = EventosNotificacion.ResumenCobrador,
+            Evento = EventosNotificacion.ResumenDiario,
             Canal = CanalesNotificacion.Push,
             Hora = lima.ToString("HH:mm")
         });
