@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using SistemaPrestamos.Application.Interfaces;
 using SistemaPrestamos.Domain.Entities;
 
@@ -5,6 +6,7 @@ namespace SistemaPrestamos.Application.Services;
 
 public class ProgramadorService : IProgramadorService
 {
+    private readonly ILogger<ProgramadorService>? _logger;
     private readonly IReglaNotificacionRepository _reglaRepository;
     private readonly IEnvioNotificacionRepository _envioRepository;
     private readonly IPrestamoRepository _prestamoRepository;
@@ -22,8 +24,10 @@ public class ProgramadorService : IProgramadorService
         IMorosidadRepository morosidadRepository,
         IUsuarioRepository usuarioRepository,
         IWhatsappService whatsappService,
-        INotificacionService notificacionService)
+        INotificacionService notificacionService,
+        ILogger<ProgramadorService>? logger = null)
     {
+        _logger = logger;
         _reglaRepository = reglaRepository;
         _envioRepository = envioRepository;
         _prestamoRepository = prestamoRepository;
@@ -128,11 +132,16 @@ public class ProgramadorService : IProgramadorService
         var periodos = await _periodoRepository
             .ObtenerConVencimientoAsync(fechaVencimiento);
 
+        _logger?.LogInformation(
+            "Regla {Regla}: fecha {Fecha:yyyy-MM-dd}, periodos {Total}.",
+            regla.Nombre,
+            fechaVencimiento.Date,
+            periodos.Count());
+
         var enviados = 0;
 
         foreach (var grupo in periodos.GroupBy(p => p.PrestamoId))
-        {
-            var prestamo = grupo.First().Prestamo;
+        {            var prestamo = grupo.First().Prestamo;
 
             if (await YaEnviadoAsync(regla, hoy, prestamo.ClienteId, prestamo.Id, null))
             {
