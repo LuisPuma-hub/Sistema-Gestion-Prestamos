@@ -41,7 +41,7 @@ public class PeriodoInteresRepository : IPeriodoInteresRepository
     public async Task<IEnumerable<PeriodoInteres>> ObtenerConVencimientoAsync(
         DateTime fecha)
     {
-        var dia = fecha.Date;
+        var dia = DateTime.SpecifyKind(fecha.Date, DateTimeKind.Utc);
 
         return await _context.PeriodosInteres
             .AsNoTracking()

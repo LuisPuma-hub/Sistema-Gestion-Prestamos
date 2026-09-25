@@ -30,7 +30,7 @@ public class EnvioNotificacionRepository : IEnvioNotificacionRepository
         Guid? usuarioId,
         DateTime hoy)
     {
-        var inicio = hoy.Date;
+        var inicio = DateTime.SpecifyKind(hoy.Date, DateTimeKind.Utc);
         var fin = inicio.AddDays(1);
 
         return await _context.EnviosNotificacion
