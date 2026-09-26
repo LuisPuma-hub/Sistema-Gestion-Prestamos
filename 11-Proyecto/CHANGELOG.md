@@ -606,3 +606,23 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 ## Tests
 
 - `dotnet test`: 40/40 pruebas correctas (8 nuevas del módulo).
+
+---
+
+# 16. Backend Pendiente y Correcciones - 2026-09-26
+
+## Added
+
+- `PagoConfiguration` y `GaranteConfiguration` (tablas `pagos`/`garantes` en snake_case, precisiones y longitudes) + migración aplicada.
+- `IAuditoriaService` + `AuditoriaRepository`: el controller ya no usa `DbContext` directo.
+- `Npgsql.EntityFrameworkCore.PostgreSQL` referenciado directo en API.
+- Documentación de secretos (`user-secrets`) y `RefreshExpirationDays` en README + ejemplo.
+
+## Changed
+
+- `UseHttpsRedirection` activo fuera de `Development`.
+
+## Fixed
+
+- Bug de medianoche en scheduler: rango de día Lima en UTC + comparación por fecha Lima (fallaba 19:00-00:00).
+- Release Android compila (sin AOT: el plugin Firebase no trae `.so` x64 para AOT, pendiente para tienda).
