@@ -164,10 +164,15 @@ public class ReglaNotificacionService : IReglaNotificacionService
                 return (false, "La prueba de WhatsApp requiere cliente y préstamo.");
             }
 
+            var plantilla = regla.Plantilla
+                ?? PlantillaPorDefecto(regla.Evento)
+                ?? throw new InvalidOperationException(
+                    "La regla no tiene plantilla de WhatsApp.");
+
             await _whatsappService.EnviarPlantillaCatalogoAsync(
                 clienteId.Value,
                 prestamoId,
-                regla.Plantilla ?? PlantillaPorDefecto(regla.Evento));
+                plantilla);
 
             await RegistrarEnvioAsync(
                 regla, clienteId, prestamoId, null, "Prueba", "Enviado", null);
