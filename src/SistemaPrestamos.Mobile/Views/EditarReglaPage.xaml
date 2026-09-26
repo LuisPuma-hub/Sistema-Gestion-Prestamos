@@ -65,7 +65,20 @@
                         <Label Text="EVENTO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                         <Picker x:Name="EventoPicker" Title="Selecciona el evento" />
                         <Label Text="CANAL" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
-                        <Picker x:Name="CanalPicker" Title="Selecciona el canal" SelectedIndexChanged="OnCanalChanged" />
+                        <HorizontalStackLayout Spacing="16">
+                            <RadioButton
+                                x:Name="RadioWhatsapp"
+                                Content="WhatsApp"
+                                GroupName="Canal"
+                                TextColor="#111827"
+                                CheckedChanged="OnCanalRadioChanged" />
+                            <RadioButton
+                                x:Name="RadioPush"
+                                Content="Notificación push"
+                                GroupName="Canal"
+                                TextColor="#111827"
+                                CheckedChanged="OnCanalRadioChanged" />
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>
 
@@ -115,31 +128,6 @@
                     CornerRadius="12"
                     HeightRequest="52"
                     Clicked="OnGuardarClicked" />
-
-                <Button
-                    x:Name="ProbarButton"
-                    Text="Probar ahora"
-                    BackgroundColor="#DBEAFE"
-                    TextColor="#1E3A8A"
-                    FontAttributes="Bold"
-                    CornerRadius="12"
-                    HeightRequest="52"
-                    IsVisible="False"
-                    Clicked="OnProbarClicked" />
-
-                <Border
-                    x:Name="DestinoCard"
-                    Padding="16"
-                    BackgroundColor="White"
-                    StrokeThickness="0"
-                    StrokeShape="RoundRectangle 16"
-                    IsVisible="False">
-                    <VerticalStackLayout Spacing="8">
-                        <Label Text="DESTINATARIO DE PRUEBA (WHATSAPP)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
-                        <Picker x:Name="ClientePicker" Title="Selecciona el cliente" SelectedIndexChanged="OnClienteChanged" />
-                        <Picker x:Name="PrestamoPicker" Title="Selecciona el préstamo" />
-                    </VerticalStackLayout>
-                </Border>
 
                 <Button
                     x:Name="EliminarButton"

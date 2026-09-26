@@ -1,4 +1,3 @@
-using SistemaPrestamos.Mobile.Models;
 using SistemaPrestamos.Mobile.Services;
 
 namespace SistemaPrestamos.Mobile.Views;
@@ -6,23 +5,21 @@ namespace SistemaPrestamos.Mobile.Views;
 [QueryProperty(nameof(ReglaId), "reglaId")]
 public partial class EditarReglaPage : ContentPage
 {
-    private static readonly (string Clave, string Texto)[] Eventos =
+    private static readonly (string Clave, string Texto)[] EventosWhatsapp =
     [
         ("VenceHoy", "Vence hoy"),
         ("VenceManana", "Vence mañana"),
         ("MoraNueva", "Mora nueva"),
-        ("MoraPersistente", "Mora persistente"),
+        ("MoraPersistente", "Mora persistente")
+    ];
+
+    private static readonly (string Clave, string Texto)[] EventosPush =
+    [
         ("ResumenDiario", "Resumen diario"),
         ("MoraCobrador", "Mora al cobrador"),
         ("CobradoDia", "Cobrado del día"),
         ("PrestamoPorAprobar", "Préstamo por aprobar"),
         ("ResumenVencimientos", "Vencen hoy (resumen)")
-    ];
-
-    private static readonly (string Clave, string Texto)[] Canales =
-    [
-        ("Whatsapp", "WhatsApp"),
-        ("Push", "Push (resumen)")
     ];
 
     private static readonly string[] Plantillas =
@@ -39,10 +36,6 @@ public partial class EditarReglaPage : ContentPage
     private static readonly Color TextoInactivo = Color.FromArgb("#374151");
 
     private readonly NotificacionesService _notificacionesService;
-    private readonly ClienteService _clienteService;
-    private readonly PrestamoService _prestamoService;
-    private List<ClienteDto> _clientes = new();
-    private List<PrestamoDto> _prestamos = new();
     private readonly bool[] _dias = [true, true, true, true, true, true, true];
     private Guid? _id;
 
@@ -58,31 +51,39 @@ public partial class EditarReglaPage : ContentPage
     }
 
     public EditarReglaPage(
-        NotificacionesService notificacionesService,
-        ClienteService clienteService,
-        PrestamoService prestamoService)
+        NotificacionesService notificacionesService)
     {
         InitializeComponent();
         _notificacionesService = notificacionesService;
-        _clienteService = clienteService;
-        _prestamoService = prestamoService;
-
-        foreach (var (_, texto) in Eventos)
-        {
-            EventoPicker.Items.Add(texto);
-        }
-
-        foreach (var (_, texto) in Canales)
-        {
-            CanalPicker.Items.Add(texto);
-        }
 
         foreach (var plantilla in Plantillas)
         {
             PlantillaPicker.Items.Add(plantilla);
         }
 
+        RadioWhatsapp.IsChecked = true;
+        CargarEventos(false);
+
         PintarDias();
+    }
+
+    private (string Clave, string Texto)[] EventosActuales()
+    {
+        return RadioPush.IsChecked ? EventosPush : EventosWhatsapp;
+    }
+
+    private void CargarEventos(bool esPush)
+    {
+        var lista = esPush ? EventosPush : EventosWhatsapp;
+
+        EventoPicker.Items.Clear();
+
+        foreach (var (_, texto) in lista)
+        {
+            EventoPicker.Items.Add(texto);
+        }
+
+        EventoPicker.SelectedIndex = -1;
     }
 
     protected override async void OnAppearing()
@@ -114,11 +115,7 @@ public partial class EditarReglaPage : ContentPage
         }
 
         TituloLabel.Text = "Editar regla";
-        ProbarButton.IsVisible = true;
-        DestinoCard.IsVisible = true;
         EliminarButton.IsVisible = true;
-
-        await CargarDestinatariosAsync();
 
         var regla = await _notificacionesService.ObtenerReglaAsync(
             _id.Value);
@@ -130,8 +127,14 @@ public partial class EditarReglaPage : ContentPage
         }
 
         NombreEntry.Text = regla.Nombre;
-        EventoPicker.SelectedIndex = IndiceDe(Eventos, regla.Evento);
-        CanalPicker.SelectedIndex = IndiceDe(Canales, regla.Canal);
+
+        var esPush = regla.Canal == "Push";
+
+        RadioPush.IsChecked = esPush;
+        RadioWhatsapp.IsChecked = !esPush;
+
+        CargarEventos(esPush);
+        EventoPicker.SelectedIndex = IndiceDe(EventosActuales(), regla.Evento);
 
         var partes = regla.Hora.Split(':');
 
@@ -189,16 +192,15 @@ public partial class EditarReglaPage : ContentPage
         }
     }
 
-    private void OnCanalChanged(object? sender, EventArgs e)
+    private void OnCanalRadioChanged(object? sender, CheckedChangedEventArgs e)
     {
+        CargarEventos(RadioPush.IsChecked);
         ActualizarPlantilla();
     }
 
     private void ActualizarPlantilla()
     {
-        var esPush = CanalPicker.SelectedIndex == 1;
-
-        PlantillaCard.IsVisible = !esPush;
+        PlantillaCard.IsVisible = !RadioPush.IsChecked;
     }
 
     private async void OnGuardarClicked(object? sender, EventArgs e)
@@ -211,11 +213,17 @@ public partial class EditarReglaPage : ContentPage
             return;
         }
 
-        if (CanalPicker.SelectedIndex < 0)
+        var eventos = EventosActuales();
+
+        if (EventoPicker.SelectedIndex < 0 ||
+            EventoPicker.SelectedIndex >= eventos.Length)
         {
-            MostrarError("Selecciona el canal.");
+            MostrarError("Selecciona el evento.");
             return;
         }
+
+        var evento = eventos[EventoPicker.SelectedIndex].Clave;
+        var canal = RadioPush.IsChecked ? "Push" : "Whatsapp";
 
         var dias = 0;
 
@@ -233,8 +241,6 @@ public partial class EditarReglaPage : ContentPage
             return;
         }
 
-        var evento = Eventos[EventoPicker.SelectedIndex].Clave;
-        var canal = Canales[CanalPicker.SelectedIndex].Clave;
         var tiempo = HoraPicker.Time ?? TimeSpan.Zero;
         var hora = $"{tiempo.Hours:00}:{tiempo.Minutes:00}";
         var plantilla = PlantillaCard.IsVisible &&
@@ -274,80 +280,6 @@ public partial class EditarReglaPage : ContentPage
         }
 
         await Shell.Current.GoToAsync("..");
-    }
-
-    private async Task CargarDestinatariosAsync()
-    {
-        _clientes = await _clienteService.ObtenerTodosAsync();
-
-        ClientePicker.Items.Clear();
-
-        foreach (var c in _clientes)
-        {
-            ClientePicker.Items.Add($"{c.Nombres} {c.Apellidos}");
-        }
-    }
-
-    private async void OnClienteChanged(object? sender, EventArgs e)
-    {
-        PrestamoPicker.Items.Clear();
-        _prestamos.Clear();
-
-        if (ClientePicker.SelectedIndex < 0 ||
-            ClientePicker.SelectedIndex >= _clientes.Count)
-        {
-            return;
-        }
-
-        var clienteId = _clientes[ClientePicker.SelectedIndex].Id;
-
-        _prestamos = await _prestamoService.ObtenerPorClienteAsync(clienteId);
-
-        foreach (var p in _prestamos)
-        {
-            PrestamoPicker.Items.Add(
-                $"S/ {p.CapitalPendiente:N2} - {p.Estado}");
-        }
-
-        if (_prestamos.Count > 0)
-        {
-            PrestamoPicker.SelectedIndex = 0;
-        }
-    }
-
-    private async void OnProbarClicked(object? sender, EventArgs e)
-    {
-        if (!_id.HasValue)
-        {
-            return;
-        }
-
-        ErrorLabel.IsVisible = false;
-
-        Guid? clienteId = null;
-        Guid? prestamoId = null;
-
-        if (ClientePicker.SelectedIndex >= 0 &&
-            ClientePicker.SelectedIndex < _clientes.Count)
-        {
-            clienteId = _clientes[ClientePicker.SelectedIndex].Id;
-        }
-
-        if (PrestamoPicker.SelectedIndex >= 0 &&
-            PrestamoPicker.SelectedIndex < _prestamos.Count)
-        {
-            prestamoId = _prestamos[PrestamoPicker.SelectedIndex].Id;
-        }
-
-        var (exito, mensaje) = await _notificacionesService.ProbarReglaAsync(
-            _id.Value,
-            clienteId,
-            prestamoId);
-
-        await DisplayAlertAsync(
-            exito ? "Prueba correcta" : "Prueba fallida",
-            mensaje,
-            "OK");
     }
 
     private async void OnEliminarClicked(object? sender, EventArgs e)
