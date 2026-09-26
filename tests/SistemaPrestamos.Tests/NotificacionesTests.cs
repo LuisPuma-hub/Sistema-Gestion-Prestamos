@@ -207,6 +207,45 @@ public class NotificacionesTests : IDisposable
     }
 
     [Fact]
+    public async Task ExisteHoy_DeNocheLima_CuentaInstanteUtc()
+    {
+        var regla = await _reglas.CrearAsync(new CrearReglaDto
+        {
+            Nombre = "Nocturna",
+            Evento = EventosNotificacion.VenceHoy,
+            Canal = CanalesNotificacion.Whatsapp,
+            Hora = "21:30"
+        });
+
+        var repo = new EnvioNotificacionRepository(_contexto);
+        var clienteId = Guid.NewGuid();
+        var prestamoId = Guid.NewGuid();
+
+        // 21:30 en Lima = 02:30 UTC del día siguiente.
+        var hoyLima = new DateTime(2026, 9, 25);
+
+        await repo.CrearAsync(new EnvioNotificacion
+        {
+            Id = Guid.NewGuid(),
+            ReglaId = regla.Id,
+            Evento = regla.Evento,
+            Canal = regla.Canal,
+            ClienteId = clienteId,
+            PrestamoId = prestamoId,
+            Destinatario = "Test",
+            Estado = "Enviado",
+            FechaCreacion = new DateTime(
+                2026, 9, 26, 2, 30, 0, DateTimeKind.Utc)
+        });
+
+        await repo.GuardarCambiosAsync();
+
+        Assert.True(await repo.ExisteHoyAsync(
+            regla.Id, regla.Evento, regla.Canal,
+            clienteId, prestamoId, null, hoyLima));
+    }
+
+    [Fact]
     public async Task ExisteHoy_EvitaDuplicados()
     {
         var regla = await _reglas.CrearAsync(new CrearReglaDto

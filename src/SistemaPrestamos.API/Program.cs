@@ -63,6 +63,7 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddHttpClient<IWhatsappService, WhatsappService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 builder.Services.AddScoped<IReglaNotificacionService, ReglaNotificacionService>();
 builder.Services.AddScoped<IProgramadorService, ProgramadorService>();
 builder.Services.AddHostedService<ProgramadorJob>();
@@ -76,6 +77,7 @@ builder.Services.AddScoped<IMorosidadRepository, MorosidadRepository>();
 builder.Services.AddScoped<IGaranteRepository, GaranteRepository>();
 builder.Services.AddScoped<IDispositivoRepository, DispositivoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();
 builder.Services.AddScoped<IReglaNotificacionRepository, ReglaNotificacionRepository>();
 builder.Services.AddScoped<IEnvioNotificacionRepository, EnvioNotificacionRepository>();
 
@@ -89,8 +91,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// HTTPS temporalmente desactivado para pruebas locales
-// app.UseHttpsRedirection();
+// HTTPS solo fuera de desarrollo (emulador usa HTTP local)
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

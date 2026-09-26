@@ -453,6 +453,31 @@ WhatsApp:
 
 Los valores reales deben mantenerse fuera del repositorio cuando contengan información sensible.
 
+### 12.1 Secretos locales (user-secrets)
+
+En desarrollo, `appsettings.json` trae valores vacíos a propósito. La API no arranca sin `Jwt:Key` (`InvalidOperationException`). Configura los secretos una vez con:
+
+```powershell
+dotnet user-secrets init # solo la primera vez (ya tiene UserSecretsId)
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=sistema_gestion_prestamos;Username=postgres;Password=TU_PASSWORD"
+dotnet user-secrets set "Jwt:Key" "TU_CLAVE_DE_AL_MENOS_32_CARACTERES"
+dotnet user-secrets set "Firebase:ServiceAccountPath" "C:\ruta\firebase-adminsdk.json"
+dotnet user-secrets set "Firebase:ProjectId" "tu-proyecto"
+dotnet user-secrets set "WhatsApp:PhoneNumberId" "TU_PHONE_NUMBER_ID"
+dotnet user-secrets set "WhatsApp:Token" "TU_TOKEN_META"
+```
+
+Referencia completa en `src/SistemaPrestamos.API/appsettings.example.json`.
+
+| Clave | Default si falta | Efecto |
+|---|---|---|
+| `Jwt:ExpirationMinutes` | 120 | Vigencia del access token. |
+| `Jwt:RefreshExpirationDays` | 7 | Vigencia del refresh token (no está en todos los `appsettings`; si falta, son 7 días). |
+
+### 12.2 HTTPS por entorno
+
+`UseHttpsRedirection` solo se activa fuera de `Development` (el emulador Android usa `http://10.0.2.2:5077`). En producción, servir siempre detrás de HTTPS: los JWT y contraseñas viajan en cada request.
+
 ---
 
 ## 13. Base de Datos

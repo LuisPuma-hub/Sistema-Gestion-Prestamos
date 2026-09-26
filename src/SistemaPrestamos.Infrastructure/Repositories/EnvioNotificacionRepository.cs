@@ -30,7 +30,8 @@ public class EnvioNotificacionRepository : IEnvioNotificacionRepository
         Guid? usuarioId,
         DateTime hoy)
     {
-        var inicio = DateTime.SpecifyKind(hoy.Date, DateTimeKind.Utc);
+        // Día Lima expresado en UTC (Lima = UTC-5 fijo, sin horario de verano).
+        var inicio = DateTime.SpecifyKind(hoy.Date.AddHours(5), DateTimeKind.Utc);
         var fin = inicio.AddDays(1);
 
         return await _context.EnviosNotificacion

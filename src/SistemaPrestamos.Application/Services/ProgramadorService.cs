@@ -94,7 +94,7 @@ public class ProgramadorService : IProgramadorService
                      TocaHoy(r, ahora) &&
                      TocaAhora(r, ahora) &&
                      (r.UltimaEjecucion is null ||
-                      r.UltimaEjecucion.Value < hoy)))
+                      AhoraLima(r.UltimaEjecucion.Value).Date < hoy)))
         {
             total += await EjecutarReglaAsync(regla, hoy);
 
