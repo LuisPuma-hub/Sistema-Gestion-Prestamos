@@ -10,17 +10,20 @@ public class PagoService : IPagoService
     private readonly IPrestamoRepository _prestamoRepository;
     private readonly IPeriodoInteresRepository _periodoInteresRepository;
     private readonly IPeriodoInteresService _periodoInteresService;
+    private readonly IWhatsappService? _whatsappService;
 
     public PagoService(
         IPagoRepository pagoRepository,
         IPrestamoRepository prestamoRepository,
         IPeriodoInteresRepository periodoInteresRepository,
-        IPeriodoInteresService periodoInteresService)
+        IPeriodoInteresService periodoInteresService,
+        IWhatsappService? whatsappService = null)
     {
         _pagoRepository = pagoRepository;
         _prestamoRepository = prestamoRepository;
         _periodoInteresRepository = periodoInteresRepository;
         _periodoInteresService = periodoInteresService;
+        _whatsappService = whatsappService;
     }
 
     public async Task<IEnumerable<PagoDto>> ObtenerTodosAsync()
@@ -268,6 +271,21 @@ public class PagoService : IPagoService
         {
             throw new InvalidOperationException(
                 "No se pudo recuperar el pago registrado.");
+        }
+
+        // Aviso automático al cliente (no bloquea el registro).
+        if (_whatsappService is not null)
+        {
+            try
+            {
+                await _whatsappService.EnviarPlantillaCatalogoAsync(
+                    pagoGuardado.Prestamo.ClienteId,
+                    pagoGuardado.PrestamoId,
+                    "confirmacion_pago");
+            }
+            catch
+            {
+            }
         }
 
         return await MapearDtoAsync(pagoGuardado);

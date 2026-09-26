@@ -12,17 +12,20 @@ public class PrestamoService : IPrestamoService
     private readonly IClienteRepository _clienteRepository;
     private readonly IPeriodoInteresRepository _periodoInteresRepository;
     private readonly IPagoRepository _pagoRepository;
+    private readonly IWhatsappService? _whatsappService;
 
     public PrestamoService(
         IPrestamoRepository prestamoRepository,
         IClienteRepository clienteRepository,
         IPeriodoInteresRepository periodoInteresRepository,
-        IPagoRepository pagoRepository)
+        IPagoRepository pagoRepository,
+        IWhatsappService? whatsappService = null)
     {
         _prestamoRepository = prestamoRepository;
         _clienteRepository = clienteRepository;
         _periodoInteresRepository = periodoInteresRepository;
         _pagoRepository = pagoRepository;
+        _whatsappService = whatsappService;
     }
 
     public async Task<IEnumerable<PrestamoDto>> ObtenerTodosAsync()
@@ -130,6 +133,21 @@ public class PrestamoService : IPrestamoService
             prestamo.FechaInicio);
 
         await _periodoInteresRepository.GuardarCambiosAsync();
+
+        // Aviso automático al cliente (no bloquea la aprobación).
+        if (_whatsappService is not null)
+        {
+            try
+            {
+                await _whatsappService.EnviarPlantillaCatalogoAsync(
+                    prestamo.ClienteId,
+                    prestamo.Id,
+                    "prestamo_aprobado");
+            }
+            catch
+            {
+            }
+        }
 
         return true;
     }
