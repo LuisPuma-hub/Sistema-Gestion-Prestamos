@@ -122,7 +122,7 @@ public partial class EditarReglaPage : ContentPage
 
         if (regla is null)
         {
-            MostrarError("La regla no existe.");
+            await DisplayAlertAsync("Aviso", "La regla no existe.", "OK");
             return;
         }
 
@@ -205,11 +205,9 @@ public partial class EditarReglaPage : ContentPage
 
     private async void OnGuardarClicked(object? sender, EventArgs e)
     {
-        ErrorLabel.IsVisible = false;
-
         if (EventoPicker.SelectedIndex < 0)
         {
-            MostrarError("Selecciona el evento.");
+            await DisplayAlertAsync("Aviso", "Selecciona el evento.", "OK");
             return;
         }
 
@@ -218,7 +216,7 @@ public partial class EditarReglaPage : ContentPage
         if (EventoPicker.SelectedIndex < 0 ||
             EventoPicker.SelectedIndex >= eventos.Length)
         {
-            MostrarError("Selecciona el evento.");
+            await DisplayAlertAsync("Aviso", "Selecciona el evento.", "OK");
             return;
         }
 
@@ -237,7 +235,7 @@ public partial class EditarReglaPage : ContentPage
 
         if (dias == 0)
         {
-            MostrarError("Selecciona al menos un día.");
+            await DisplayAlertAsync("Aviso", "Selecciona al menos un día.", "OK");
             return;
         }
 
@@ -275,7 +273,7 @@ public partial class EditarReglaPage : ContentPage
 
         if (!resultado.Exito)
         {
-            MostrarError(resultado.Error ?? "No se pudo guardar.");
+            await DisplayAlertAsync("Aviso", resultado.Error ?? "No se pudo guardar.", "OK");
             return;
         }
 
@@ -305,7 +303,7 @@ public partial class EditarReglaPage : ContentPage
 
         if (!exito)
         {
-            MostrarError(error ?? "No se pudo eliminar.");
+            await DisplayAlertAsync("Aviso", error ?? "No se pudo eliminar.", "OK");
             return;
         }
 
@@ -330,11 +328,5 @@ public partial class EditarReglaPage : ContentPage
         }
 
         return -1;
-    }
-
-    private void MostrarError(string mensaje)
-    {
-        ErrorLabel.Text = mensaje;
-        ErrorLabel.IsVisible = true;
     }
 }

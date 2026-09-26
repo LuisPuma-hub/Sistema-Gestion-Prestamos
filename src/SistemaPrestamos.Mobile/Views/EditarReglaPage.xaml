@@ -140,12 +140,6 @@
                     IsVisible="False"
                     Clicked="OnEliminarClicked" />
 
-                <Label
-                    x:Name="ErrorLabel"
-                    TextColor="#DC2626"
-                    IsVisible="False"
-                    HorizontalTextAlignment="Center" />
-
             </VerticalStackLayout>
         </ScrollView>
 
