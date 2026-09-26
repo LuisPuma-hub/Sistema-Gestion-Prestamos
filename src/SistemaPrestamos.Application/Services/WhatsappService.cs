@@ -226,15 +226,19 @@ public class WhatsappService : IWhatsappService
             clienteId,
             prestamoId.Value);
 
-        var mora = await _morosidadService.EvaluarAsync(
-            prestamo.Id,
-            DateTime.UtcNow);
-
         var periodos = await _periodoRepository
             .ObtenerPorPrestamoAsync(prestamo.Id);
 
-        var pendiente = periodos.Sum(p => p.InteresPendiente);
+        var proximo = periodos
+            .Where(p => p.InteresPendiente > 0)
+            .OrderBy(p => p.FechaVencimiento)
+            .FirstOrDefault();
 
+        var semanal = prestamo.CapitalInicial * prestamo.TasaInteresSemanal;
+
+        // La plantilla aprobada es:
+        // "Hola {{1}}, te recordamos que tu pago semanal de S/ {{2}}
+        //  vence el {{3}}. Realízalo a tiempo y evita recargos. Gracias."
         return await EnviarPlantillaAsync(
             clienteId,
             prestamo.Id,
@@ -244,8 +248,9 @@ public class WhatsappService : IWhatsappService
             "es_PE",
             [
                 cliente.Nombres,
-                (mora?.PagosInteresVencidos ?? 0).ToString(),
-                pendiente.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)
+                semanal.ToString("N2", System.Globalization.CultureInfo.InvariantCulture),
+                (proximo?.FechaVencimiento ?? prestamo.FechaInicio.AddDays(7))
+                    .ToString("dd/MM/yyyy")
             ]);
     }
 
