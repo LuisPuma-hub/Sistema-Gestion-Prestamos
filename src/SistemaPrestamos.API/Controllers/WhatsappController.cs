@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SistemaPrestamos.Application.DTOs;
 using SistemaPrestamos.Application.Interfaces;
 using SistemaPrestamos.Domain.Entities;
 
@@ -107,7 +108,7 @@ public class WhatsappController : ControllerBase
 
     // POST: api/whatsapp/recordatorio
     [HttpPost("recordatorio")]
-    public async Task<ActionResult<MensajeWhatsapp>> Recordatorio(
+    public async Task<ActionResult<MensajeWhatsappDto>> Recordatorio(
         [FromBody] RecordatorioDto dto)
     {
         try
@@ -116,7 +117,7 @@ public class WhatsappController : ControllerBase
                 dto.ClienteId,
                 dto.PrestamoId);
 
-            return Ok(mensaje);
+            return Ok(Mapear(mensaje));
         }
         catch (InvalidOperationException ex)
         {
@@ -142,7 +143,7 @@ public class WhatsappController : ControllerBase
 
     // POST: api/whatsapp/enviar-plantilla
     [HttpPost("enviar-plantilla")]
-    public async Task<ActionResult<MensajeWhatsapp>> EnviarPlantilla(
+    public async Task<ActionResult<MensajeWhatsappDto>> EnviarPlantilla(
         [FromBody] EnviarPlantillaDto dto)
     {
         try
@@ -152,7 +153,7 @@ public class WhatsappController : ControllerBase
                 dto.PrestamoId,
                 dto.Plantilla);
 
-            return Ok(mensaje);
+            return Ok(Mapear(mensaje));
         }
         catch (InvalidOperationException ex)
         {
@@ -165,12 +166,29 @@ public class WhatsappController : ControllerBase
 
     // GET: api/whatsapp/historial/cliente/{clienteId}
     [HttpGet("historial/cliente/{clienteId:guid}")]
-    public async Task<ActionResult<IEnumerable<MensajeWhatsapp>>> Historial(
+    public async Task<ActionResult<IEnumerable<MensajeWhatsappDto>>> Historial(
         Guid clienteId)
     {
         var historial = await _whatsappService
             .ObtenerHistorialAsync(clienteId);
 
-        return Ok(historial);
+        return Ok(historial.Select(Mapear));
+    }
+
+    private static MensajeWhatsappDto Mapear(MensajeWhatsapp mensaje)
+    {
+        return new MensajeWhatsappDto
+        {
+            Id = mensaje.Id,
+            ClienteId = mensaje.ClienteId,
+            PrestamoId = mensaje.PrestamoId,
+            TipoPlantilla = mensaje.TipoPlantilla,
+            NumeroDestino = mensaje.NumeroDestino,
+            Contenido = mensaje.Contenido,
+            Estado = mensaje.Estado,
+            IdentificadorExterno = mensaje.IdentificadorExterno,
+            FechaEnvio = mensaje.FechaEnvio,
+            FechaCreacion = mensaje.FechaCreacion
+        };
     }
 }
