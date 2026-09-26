@@ -39,19 +39,10 @@
                     TextColor="White"
                     HorizontalTextAlignment="Center"
                     VerticalOptions="Center" />
-                <Border
+                <BoxView
                     Grid.Column="2"
-                    BackgroundColor="#3B82F6"
-                    StrokeThickness="0"
-                    StrokeShape="RoundRectangle 22"
-                    HeightRequest="44"
                     WidthRequest="44"
-                    VerticalOptions="Center">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnNuevoUsuarioClicked" />
-                    </Border.GestureRecognizers>
-                    <Image Source="ic_plus_w.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
-                </Border>
+                    BackgroundColor="Transparent" />
             </Grid>
         </Border>
 
