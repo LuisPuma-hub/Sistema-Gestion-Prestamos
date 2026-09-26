@@ -62,8 +62,6 @@
 
                 <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="EVENTO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
-                        <Picker x:Name="EventoPicker" Title="Selecciona el evento" />
                         <Label Text="CANAL" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                         <HorizontalStackLayout Spacing="16">
                             <RadioButton
@@ -79,6 +77,8 @@
                                 TextColor="#111827"
                                 CheckedChanged="OnCanalRadioChanged" />
                         </HorizontalStackLayout>
+                        <Label Text="EVENTO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Picker x:Name="EventoPicker" Title="Selecciona el evento" />
                     </VerticalStackLayout>
                 </Border>
 
