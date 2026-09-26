@@ -19,7 +19,7 @@ public partial class EditarReglaPage : ContentPage
         ("MoraCobrador", "Mora al cobrador"),
         ("CobradoDia", "Cobrado del día"),
         ("PrestamoPorAprobar", "Préstamo por aprobar"),
-        ("ResumenVencimientos", "Vencen hoy (resumen)")
+        ("ResumenVencimientos", "Vencen hoy")
     ];
 
     private static readonly string[] Plantillas =
