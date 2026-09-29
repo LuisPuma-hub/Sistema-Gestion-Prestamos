@@ -20,6 +20,15 @@ public class PagoDto
 
     public string? Observaciones { get; set; }
 
+    public string Estado { get; set; } = "Registrado";
+
+    public string? MotivoAnulacion { get; set; }
+
+    public string? Detalle { get; set; }
+
+    public bool Anulado => string.Equals(
+        Estado, "Anulado", StringComparison.OrdinalIgnoreCase);
+
     public DateTime FechaRegistro { get; set; }
 
     public string PrestamoNombre { get; set; } = string.Empty;

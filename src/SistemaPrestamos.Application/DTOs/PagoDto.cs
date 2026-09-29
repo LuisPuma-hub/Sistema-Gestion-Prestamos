@@ -11,5 +11,8 @@ public class PagoDto
     public DateTime FechaPago { get; set; }
     public string? Comprobante { get; set; }
     public string? Observaciones { get; set; }
+    public string Estado { get; set; } = "Registrado";
+    public string? MotivoAnulacion { get; set; }
+    public string? Detalle { get; set; }
     public DateTime FechaRegistro { get; set; }
 }

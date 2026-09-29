@@ -558,6 +558,7 @@ Dentro de la sección **Más** se encuentran:
 - Usuarios (solo Administrador).
 - Notificaciones (solo Administrador).
 - Importar préstamos (solo Administrador).
+- Reportes (cobranza, cartera, ingresos + exportar CSV).
 
 ---
 
@@ -615,7 +616,8 @@ APLICACIÓN
     │   ├── Mi perfil
     │   ├── Usuarios (solo Administrador)
     │   ├── Notificaciones (solo Administrador)
-    │   └── Importar préstamos (solo Administrador)
+    │   ├── Importar préstamos (solo Administrador)
+    │   └── Reportes
     │
     ├── Historial de WhatsApp
     │

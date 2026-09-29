@@ -15,4 +15,6 @@ public interface IUsuarioService
     Task ResetearClaveAsync(Guid id, string nueva);
 
     Task<bool> EliminarAsync(Guid id, Guid actorId);
+
+    Task<ResetTokenDto> GenerarTokenReseteoAsync(Guid id);
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using SistemaPrestamos.Application.DTOs;
 using SistemaPrestamos.Application.Interfaces;
 using SistemaPrestamos.Domain.Entities;
@@ -12,6 +13,7 @@ public class PagoService : IPagoService
     private readonly IPeriodoInteresService _periodoInteresService;
     private readonly IWhatsappService? _whatsappService;
     private readonly IMorosidadRepository? _morosidadRepository;
+    private readonly IMorosidadService? _morosidadService;
 
     public PagoService(
         IPagoRepository pagoRepository,
@@ -19,7 +21,8 @@ public class PagoService : IPagoService
         IPeriodoInteresRepository periodoInteresRepository,
         IPeriodoInteresService periodoInteresService,
         IWhatsappService? whatsappService = null,
-        IMorosidadRepository? morosidadRepository = null)
+        IMorosidadRepository? morosidadRepository = null,
+        IMorosidadService? morosidadService = null)
     {
         _pagoRepository = pagoRepository;
         _prestamoRepository = prestamoRepository;
@@ -27,6 +30,7 @@ public class PagoService : IPagoService
         _periodoInteresService = periodoInteresService;
         _whatsappService = whatsappService;
         _morosidadRepository = morosidadRepository;
+        _morosidadService = morosidadService;
     }
 
     public async Task<IEnumerable<PagoDto>> ObtenerTodosAsync()
@@ -181,6 +185,8 @@ public class PagoService : IPagoService
         decimal montoInteres = 0;
         decimal montoCapital = 0;
 
+        var aplicaciones = new List<(DateTime Venc, decimal Monto)>();
+
         // ============================================================
         // 11. APLICAR PRIMERO A INTERESES
         // ============================================================
@@ -193,6 +199,9 @@ public class PagoService : IPagoService
             var pagoInteres = Math.Min(
                 montoRestante,
                 periodo.InteresPendiente);
+
+            if (pagoInteres > 0)
+                aplicaciones.Add((periodo.FechaVencimiento, pagoInteres));
 
             periodo.InteresPagado += pagoInteres;
             periodo.InteresPendiente -= pagoInteres;
@@ -336,6 +345,8 @@ public class PagoService : IPagoService
             FechaPago = fechaPago,
             Comprobante = dto.Comprobante,
             Observaciones = dto.Observaciones,
+            Estado = "Registrado",
+            Detalle = ConstruirDetalle(aplicaciones, montoCapital),
             FechaRegistro = DateTime.UtcNow
         };
 
@@ -405,6 +416,119 @@ public class PagoService : IPagoService
         }
     }
 
+    public async Task<bool> AnularAsync(
+        Guid pagoId,
+        string motivo,
+        Guid? anuladoPor)
+    {
+        if (string.IsNullOrWhiteSpace(motivo) ||
+            motivo.Trim().Length < 10 ||
+            motivo.Trim().Length > 200)
+            throw new InvalidOperationException(
+                "El motivo es obligatorio (10 a 200 caracteres).");
+
+        var pago = await _pagoRepository.ObtenerPorIdAsync(pagoId);
+
+        if (pago is null)
+            return false;
+
+        if (string.Equals(
+                pago.Estado,
+                "Anulado",
+                StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                "El pago ya está anulado.");
+
+        var prestamo = await _prestamoRepository.ObtenerPorIdAsync(
+            pago.PrestamoId);
+
+        if (prestamo is null)
+            throw new InvalidOperationException(
+                "El préstamo no existe.");
+
+        // Sin borrado físico (RN-PAG-011): se revierte la
+        // distribución. El capital se devuelve primero (se
+        // aplicó al último) y los intereses en LIFO.
+        prestamo.CapitalPendiente += pago.MontoCapital;
+
+        var restante = pago.MontoInteres;
+
+        var periodos = (await _periodoInteresRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id))
+            .Where(x => x.InteresPagado > 0)
+            .OrderByDescending(x => x.FechaVencimiento)
+            .ThenByDescending(x => x.FechaInicio)
+            .ToList();
+
+        foreach (var periodo in periodos)
+        {
+            if (restante <= 0)
+                break;
+
+            var quita = Math.Min(restante, periodo.InteresPagado);
+
+            periodo.InteresPagado -= quita;
+            periodo.InteresPendiente += quita;
+            restante -= quita;
+
+            if (periodo.InteresPendiente == periodo.InteresGenerado)
+            {
+                periodo.Estado = "Pendiente";
+                periodo.FechaPagoCompleto = null;
+            }
+            else if (periodo.InteresPendiente <= 0)
+            {
+                periodo.InteresPendiente = 0;
+                periodo.Estado = "Pagado";
+            }
+            else
+            {
+                periodo.Estado = "Parcial";
+                periodo.FechaPagoCompleto = null;
+            }
+        }
+
+        pago.Estado = "Anulado";
+        pago.MotivoAnulacion = motivo.Trim();
+        pago.FechaAnulacion = DateTime.UtcNow;
+        pago.AnuladoPor = anuladoPor;
+
+        if (string.Equals(
+                prestamo.Estado,
+                "Cancelado",
+                StringComparison.OrdinalIgnoreCase))
+            prestamo.Estado = "Activo";
+
+        await _prestamoRepository.ActualizarAsync(prestamo);
+        await _pagoRepository.GuardarCambiosAsync();
+
+        // Reevaluar mora con el nuevo saldo (puede volver).
+        if (_morosidadService is not null)
+            await _morosidadService.EvaluarAsync(
+                prestamo.Id, DateTime.UtcNow);
+
+        return true;
+    }
+
+    private static string ConstruirDetalle(
+        List<(DateTime Venc, decimal Monto)> aplicaciones,
+        decimal montoCapital)
+    {
+        var partes = aplicaciones
+            .Select((a, i) =>
+                $"P{i + 1} {a.Venc:dd/MM}: " +
+                $"S/ {a.Monto.ToString(
+                    "N2", CultureInfo.InvariantCulture)} int.")
+            .ToList();
+
+        if (montoCapital > 0)
+            partes.Add(
+                $"Capital: S/ {montoCapital.ToString(
+                    "N2", CultureInfo.InvariantCulture)}");
+
+        return string.Join("; ", partes);
+    }
+
     private async Task<PagoDto> MapearDtoAsync(Pago pago)
     {
         var prestamo = await _prestamoRepository.ObtenerPorIdAsync(
@@ -421,6 +545,9 @@ public class PagoService : IPagoService
             FechaPago = pago.FechaPago,
             Comprobante = pago.Comprobante,
             Observaciones = pago.Observaciones,
+            Estado = pago.Estado,
+            MotivoAnulacion = pago.MotivoAnulacion,
+            Detalle = pago.Detalle,
             FechaRegistro = pago.FechaRegistro
         };
     }

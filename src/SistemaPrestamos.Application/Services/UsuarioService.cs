@@ -9,12 +9,15 @@ public class UsuarioService : IUsuarioService
 {
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly PasswordHasher<Usuario> _passwordHasher;
+    private readonly IPasswordResetRepository? _resetRepository;
 
     public UsuarioService(
-        IUsuarioRepository usuarioRepository)
+        IUsuarioRepository usuarioRepository,
+        IPasswordResetRepository? resetRepository = null)
     {
         _usuarioRepository = usuarioRepository;
         _passwordHasher = new PasswordHasher<Usuario>();
+        _resetRepository = resetRepository;
     }
 
     public async Task<IEnumerable<UsuarioDto>> ObtenerTodosAsync()
@@ -146,6 +149,43 @@ public class UsuarioService : IUsuarioService
         await _usuarioRepository.GuardarCambiosAsync();
 
         return true;
+    }
+
+    public async Task<ResetTokenDto> GenerarTokenReseteoAsync(Guid id)
+    {
+        if (_resetRepository is null)
+            throw new InvalidOperationException(
+                "Reseteo no disponible.");
+
+        var usuario = await _usuarioRepository.ObtenerPorIdAsync(id);
+
+        if (usuario is null)
+            throw new InvalidOperationException(
+                "El usuario no existe.");
+
+        if (!usuario.Activo)
+            throw new InvalidOperationException(
+                "El usuario está inactivo.");
+
+        var reset = new PasswordReset
+        {
+            Id = Guid.NewGuid(),
+            UsuarioId = usuario.Id,
+            Token = Guid.NewGuid().ToString("N") +
+                    Guid.NewGuid().ToString("N"),
+            ExpiraEn = DateTime.UtcNow.AddMinutes(30),
+            Usado = false,
+            FechaCreacion = DateTime.UtcNow
+        };
+
+        await _resetRepository.CrearAsync(reset);
+        await _resetRepository.GuardarCambiosAsync();
+
+        return new ResetTokenDto
+        {
+            Token = reset.Token,
+            ExpiraEn = reset.ExpiraEn
+        };
     }
 
     private async Task GuardarNuevaClaveAsync(

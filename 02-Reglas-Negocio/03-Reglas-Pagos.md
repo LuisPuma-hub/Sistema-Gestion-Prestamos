@@ -79,7 +79,9 @@ Los pagos no se editan ni se borran físicamente.
 
 - La corrección se hace por anulación: crea `Pago_Anulacion` que revierte la distribución y recalcula saldos en una transacción, con motivo obligatorio (10-200 chars) + auditoría (actor, fecha).
 
-> Alcance v1 implementado: el pago registra monto, `MontoInteres`, `MontoCapital`, `FechaPago`, comprobante y observaciones. Aún pendientes: `metodo` ENUM, `fecha_valor` con ventana de backdate, `idempotencia-key`, detalle `Pago_Detalle` por periodo y anulación con `Pago_Anulacion`. Solo se valida que la fecha no sea futura.
+> Implementado de forma equivalente en v1: el pago pasa a `Anulado` con motivo, fecha y actor (columnas en `pagos`, sin tabla separada); revierte capital e intereses en LIFO, reabre el préstamo si estaba Cancelado y reevalúa mora. Solo Administrador. Los reportes excluyen anulados.
+
+> Alcance v1 implementado: el pago registra monto, `MontoInteres`, `MontoCapital`, `FechaPago`, comprobante, observaciones, detalle por periodo (texto) y estado. Aún pendientes: `metodo` ENUM, `fecha_valor` con ventana de backdate, `idempotencia-key` y detalle `Pago_Detalle` por periodo. Solo se valida que la fecha no sea futura.
 
 ## RN-PAG-012
 

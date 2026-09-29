@@ -89,6 +89,28 @@ public class UsuariosController : ControllerBase
         }
     }
 
+    // POST: api/usuarios/{id}/reset-token (solo ADMIN: genera
+    // enlace de reseteo para compartir manualmente; sin email)
+    [HttpPost("{id:guid}/reset-token")]
+    public async Task<ActionResult<ResetTokenDto>> GenerarReset(
+        Guid id)
+    {
+        try
+        {
+            var reset = await _usuarioService
+                .GenerarTokenReseteoAsync(id);
+
+            return Ok(reset);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
     // DELETE: api/usuarios/{id} (solo ADMIN, no a sí mismo)
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Eliminar(Guid id)

@@ -131,6 +131,35 @@
                     <Label x:Name="ObservacionesLabel" Text="Sin observaciones." FontSize="14" TextColor="#111827" />
                 </Border>
 
+                <Label Text="DETALLE POR PERIODO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <Label x:Name="DetalleLabel" Text="-" FontSize="14" TextColor="#111827" />
+                </Border>
+
+                <Border
+                    x:Name="AnuladoCard"
+                    Padding="16"
+                    BackgroundColor="#FEE2E2"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    IsVisible="False">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Pago anulado" FontSize="15" FontAttributes="Bold" TextColor="#991B1B" />
+                        <Label x:Name="MotivoAnulacionLabel" FontSize="13" TextColor="#991B1B" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button
+                    x:Name="AnularButton"
+                    Text="Anular pago (solo admin)"
+                    BackgroundColor="#DC2626"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="54"
+                    IsVisible="False"
+                    Clicked="OnAnularClicked" />
+
                 <ActivityIndicator
                     x:Name="CargandoIndicator"
                     IsVisible="False"

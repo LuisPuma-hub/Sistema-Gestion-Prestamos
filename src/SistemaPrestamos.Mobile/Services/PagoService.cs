@@ -118,4 +118,26 @@ public class PagoService
             ? $"Error del servidor: {(int)response.StatusCode}"
             : error);
     }
+
+    public async Task<(bool Exito, string? Error)> AnularAsync(
+        Guid id,
+        string motivo)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(
+            $"api/Pagos/{id}/anular",
+            new { motivo });
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
 }

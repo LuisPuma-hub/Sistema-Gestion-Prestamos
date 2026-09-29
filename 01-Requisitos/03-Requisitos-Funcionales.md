@@ -123,3 +123,15 @@ El sistema deberá permitir al Administrador importar préstamos vía CSV en dos
 ## RF-022 - Actividad reciente
 
 El dashboard deberá mostrar el evento más reciente entre el último pago (ordenado por fecha de registro) y el último préstamo aprobado.
+
+## RF-023 - Anulación de pagos
+
+El Administrador deberá poder anular un pago con motivo (10 a 200 caracteres), revirtiendo su distribución y saldos sin borrado físico.
+
+## RF-024 - Reseteo de contraseña
+
+El Administrador deberá poder generar un enlace de reseteo (token de 30 minutos, un uso) para compartir manualmente; el usuario lo canjeará por una nueva contraseña sin necesidad de email.
+
+## RF-025 - Reportes
+
+El sistema deberá informar cobranza del día, cartera por cobrar e ingresos por día, con exportación CSV de cartera.

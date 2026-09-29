@@ -30,7 +30,7 @@ Regla determinista (sin discrecionalidad): el préstamo pasará a MOROSO si y so
 - Al cumplirse: cambia a MOROSO + inserta `Historial_Morosidad` + dispara notificación/WhatsApp de morosidad.
 - 1-2 periodos vencidos = ATRASADO, no MOROSO. Se elimina el término ambiguo "pago a destiempo" y "no necesariamente".
 
-> Implementado: la evaluación corre al consultar morosidad (endpoint `POST morosidades/prestamo/{id}/evaluar`, pantallas Mora/Detalle/Inicio). Al cumplirse, el préstamo pasa a MOROSO y el cliente a MOROSO (RN-MOR-009). Los avisos los envía después el `ProgramadorService`, no la evaluación. Al saldar (CANCELADO), la mora se cierra y el cliente se sincroniza.
+> Implementado: `MorosidadJob` evalúa los préstamos vigentes cada día a las 00:05 Lima, además de la evaluación al consultar. Al cumplirse, el préstamo pasa a MOROSO y el cliente a MOROSO (RN-MOR-009). Los avisos los envía después el `ProgramadorService`, no la evaluación. Al saldar (CANCELADO), la mora se cierra y el cliente se sincroniza.
 
 ## RN-MOR-006
 

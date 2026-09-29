@@ -44,4 +44,9 @@ public partial class MasPage : ContentPage
     {
         await Shell.Current.GoToAsync(nameof(ImportacionPage));
     }
+
+    private async void OnReportesClicked(object? sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(ReportesPage));
+    }
 }

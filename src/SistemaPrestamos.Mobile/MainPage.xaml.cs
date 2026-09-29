@@ -77,7 +77,7 @@ public partial class MainPage : ContentPage
 
             var hoy = DateTime.Today;
             var cobradosHoy = pagos
-                .Where(p => p.FechaPago.ToLocalTime().Date == hoy)
+                .Where(p => !p.Anulado && p.FechaPago.ToLocalTime().Date == hoy)
                 .ToList();
 
             PagosHoyValorLabel.Text =
@@ -97,8 +97,9 @@ public partial class MainPage : ContentPage
                 p => p.ClienteNombre);
 
             // Actividad reciente: el evento más nuevo entre el último
-            // pago registrado y el último préstamo aprobado.
+            // pago registrado (no anulado) y el último préstamo aprobado.
             var ultimoPago = pagos
+                .Where(p => !p.Anulado)
                 .OrderByDescending(p => p.FechaRegistro)
                 .FirstOrDefault();
 

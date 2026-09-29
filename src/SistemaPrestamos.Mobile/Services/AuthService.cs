@@ -79,6 +79,26 @@ public class AuthService
         return await SecureStorage.Default.GetAsync("auth_token");
     }
 
+    public async Task<(bool Exito, string? Error)> CanjearResetAsync(
+        string token,
+        string nueva)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/Auth/reset",
+            new { token, nueva });
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
+
     public async Task CerrarSesionAsync()
     {
         try

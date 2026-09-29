@@ -61,13 +61,15 @@ builder.Services.AddScoped<IDispositivoService, DispositivoService>();
 builder.Services.AddScoped<INotificacionService, NotificacionService>();
 builder.Services.AddScoped<IMensajeWhatsappRepository, MensajeWhatsappRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-builder.Services.AddHttpClient<IWhatsappService, WhatsappService>();
+builder.Services.AddScoped<IReporteService, ReporteService>();
+builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();builder.Services.AddHttpClient<IWhatsappService, WhatsappService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 builder.Services.AddScoped<IReglaNotificacionService, ReglaNotificacionService>();
 builder.Services.AddScoped<IProgramadorService, ProgramadorService>();
 builder.Services.AddHostedService<ProgramadorJob>();
+builder.Services.AddHostedService<MorosidadJob>();
 
 // Repositories
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();

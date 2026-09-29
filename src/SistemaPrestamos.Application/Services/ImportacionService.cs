@@ -185,6 +185,11 @@ public class ImportacionService : IImportacionService
                     FechaPago = corte,
                     Comprobante = null,
                     Observaciones = ObservacionAjuste,
+                    Estado = "Registrado",
+                    Detalle =
+                        $"Ajuste CARGA INICIAL: {periodos.Count} sem. " +
+                        $"S/ {fila.InteresesTotales:N2} int. + " +
+                        $"S/ {fila.CapitalInicial - fila.Saldo:N2} cap.",
                     FechaRegistro = ahora
                 };
 

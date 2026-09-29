@@ -107,9 +107,50 @@ public partial class LoginPage : ContentPage
 
     private async void OnOlvidoClicked(object? sender, TappedEventArgs e)
     {
-        await DisplayAlertAsync(
+        var token = await DisplayPromptAsync(
             "Recuperar contraseña",
-            "Contacta a tu administrador o llama al 01-234-5678 para restablecerla.",
-            "OK");
+            "Pide a tu administrador el código de reseteo e ingrésalo:",
+            "Continuar",
+            "Cancelar",
+            maxLength: 100);
+
+        if (string.IsNullOrWhiteSpace(token))
+            return;
+
+        var nueva = await DisplayPromptAsync(
+            "Nueva contraseña",
+            "Mínimo 8 caracteres:",
+            "Guardar",
+            "Cancelar",
+            maxLength: 100);
+
+        if (string.IsNullOrWhiteSpace(nueva))
+            return;
+
+        try
+        {
+            var (exito, error) = await _authService.CanjearResetAsync(
+                token.Trim(), nueva);
+
+            if (!exito)
+            {
+                MostrarError(TextoError.Limpiar(
+                    error, "Enlace inválido o vencido."));
+                return;
+            }
+
+            await DisplayAlertAsync(
+                "Contraseña actualizada",
+                "Ya puedes iniciar sesión.",
+                "OK");
+        }
+        catch (HttpRequestException)
+        {
+            MostrarError("No se pudo conectar con el servidor.");
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"Ocurrió un error: {ex.Message}");
+        }
     }
 }

@@ -13,4 +13,6 @@ public interface IMorosidadService
     Task<MorosidadDto> ReactivarAsync(
         Guid prestamoId,
         string? observaciones);
+
+    Task<int> EvaluarVigentesAsync(DateTime fechaReferencia);
 }

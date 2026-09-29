@@ -9,4 +9,6 @@ public interface IAuthService
     Task<LoginResponseDto> RefreshAsync(string refreshToken);
 
     Task RevocarAsync(string refreshToken);
+
+    Task CanjearResetAsync(string token, string nueva);
 }

@@ -96,6 +96,7 @@ public partial class DetallePrestamoPage : ContentPage
                 .ObtenerPorPrestamoAsync(_prestamo.Id);
 
             var listaPagos = pagos
+                .Where(p => !p.Anulado)
                 .OrderByDescending(p => p.FechaPago)
                 .ToList();
 

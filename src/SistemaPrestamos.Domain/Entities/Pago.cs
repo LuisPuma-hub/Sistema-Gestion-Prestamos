@@ -20,5 +20,15 @@ public class Pago
 
     public string? Observaciones { get; set; }
 
+    public string Estado { get; set; } = "Registrado";
+
+    public string? MotivoAnulacion { get; set; }
+
+    public DateTime? FechaAnulacion { get; set; }
+
+    public Guid? AnuladoPor { get; set; }
+
+    public string? Detalle { get; set; }
+
     public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 }

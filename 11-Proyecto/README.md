@@ -622,7 +622,7 @@ Documentación relacionada:
 - [Casos de Prueba](../10-Pruebas/02-Casos-Prueba.md)
 - [Pruebas de Reglas Financieras](../10-Pruebas/03-Pruebas-Reglas-Financieras.md)
 
-> Suite automatizada v1: 59/59 en verde (`tests/SistemaPrestamos.Tests`): reglas financieras 17, importación 7, estados de mora 6, auditoría 5, notificaciones 13, programador 1, dispositivos 3, clave 7.
+> Suite automatizada v1: 74/74 en verde (`tests/SistemaPrestamos.Tests`): reglas financieras 17, importación 7, estados de mora 11, operaciones 10, auditoría 5, notificaciones 13, programador 1, dispositivos 3, clave 7.
 
 ---
 

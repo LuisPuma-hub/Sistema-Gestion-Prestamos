@@ -8,6 +8,7 @@ public partial class DetallePagoPage : ContentPage
 {
     private readonly PagoService _pagoService;
     private readonly PrestamoService _prestamoService;
+    private PagoDto? _pago;
 
     public string IdTexto { get; set; } = string.Empty;
 
@@ -51,6 +52,8 @@ public partial class DetallePagoPage : ContentPage
                 return;
             }
 
+            _pago = pago;
+
             MontoLabel.Text = $"S/ {pago.Monto:N2}";
             FechaLabel.Text = pago.FechaPago.ToLocalTime().ToString(
                 "dd/MM/yyyy · h:mm tt",
@@ -67,6 +70,17 @@ public partial class DetallePagoPage : ContentPage
             ObservacionesLabel.Text = string.IsNullOrWhiteSpace(pago.Observaciones)
                 ? "Sin observaciones."
                 : pago.Observaciones;
+
+            DetalleLabel.Text = string.IsNullOrWhiteSpace(pago.Detalle)
+                ? "-"
+                : pago.Detalle;
+
+            AnuladoCard.IsVisible = pago.Anulado;
+
+            MotivoAnulacionLabel.Text = pago.MotivoAnulacion ?? string.Empty;
+
+            AnularButton.IsVisible =
+                !pago.Anulado && await EsAdminAsync();
 
             try
             {
@@ -111,6 +125,72 @@ public partial class DetallePagoPage : ContentPage
     private async void OnVolverClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");
+    }
+
+    private async void OnAnularClicked(object? sender, EventArgs e)
+    {
+        if (_pago is null)
+            return;
+
+        var motivo = await DisplayPromptAsync(
+            "Anular pago",
+            "Motivo (10 a 200 caracteres). Se revierte la distribución y los saldos:",
+            "Anular",
+            "Cancelar",
+            maxLength: 200);
+
+        if (string.IsNullOrWhiteSpace(motivo))
+            return;
+
+        var confirma = await DisplayAlertAsync(
+            "Confirmar anulación",
+            $"Se anulará el pago de S/ {_pago.Monto:N2}. Esta acción revierte saldos.",
+            "Sí, anular",
+            "Cancelar");
+
+        if (!confirma)
+            return;
+
+        try
+        {
+            MostrarCargando(true);
+
+            var (exito, error) = await _pagoService.AnularAsync(
+                _pago.Id, motivo.Trim());
+
+            if (!exito)
+            {
+                MostrarError(error ?? "No se pudo anular.");
+                return;
+            }
+
+            await DisplayAlertAsync(
+                "Pago anulado",
+                "La distribución fue revertida.",
+                "OK");
+
+            await CargarAsync(_pago.Id);
+        }
+        catch (HttpRequestException)
+        {
+            MostrarError("No se pudo conectar con el servidor.");
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"Ocurrió un error: {ex.Message}");
+        }
+        finally
+        {
+            MostrarCargando(false);
+        }
+    }
+
+    private static async Task<bool> EsAdminAsync()
+    {
+        var rol = await SecureStorage.Default.GetAsync("usuario_rol");
+
+        return string.Equals(
+            rol, "Administrador", StringComparison.OrdinalIgnoreCase);
     }
 
     private void MostrarCargando(bool cargando)

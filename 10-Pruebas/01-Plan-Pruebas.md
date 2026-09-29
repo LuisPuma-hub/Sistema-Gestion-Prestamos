@@ -1161,7 +1161,7 @@ La aplicación de pruebas unitarias, de integración, funcionales, de seguridad,
 
 ---
 
-## Cobertura automatizada v1 (59/59 en verde)
+## Cobertura automatizada v1 (74/74 en verde)
 
 Suite xUnit con base InMemory (`tests/SistemaPrestamos.Tests`):
 
@@ -1169,7 +1169,8 @@ Suite xUnit con base InMemory (`tests/SistemaPrestamos.Tests`):
 |---|---|---|
 | `ReglasFinancierasTests` | 17 | Interés 5%, FIFO interés→capital, cancelación, tope de deuda, duplicados, mora, eliminar/cascada, anulaciones |
 | `ImportacionTests` | 7 | Preview sin guardar, errores por línea, confirm con ajuste `CARGA INICIAL`, rollback total, reutilización de cliente |
-| `MorosidadEstadosTests` | 6 | Bloqueo 2.º préstamo vigente y cliente moroso (RN-CLI-008/RN-MOR-009), mora, reactivación, pago en mora, retorno a activo |
+| `MorosidadEstadosTests` | 11 | Bloqueos, mora, reactivación, mínimo en mora, observación, multi-préstamo activo |
+| `OperacionesTests` | 10 | Anulación con reversión, reset por token, job de mora, reportes |
 | `AuditoriaTests` | 5 | `ADDED`/`MODIFIED`/`DELETED`, enmascarado `***`, no auto-audita |
 | `NotificacionesTests` | 13 | Reglas, ventana 15 min, hora Lima, antiduplicados |
 | `ProgramadorReproTests` | 1 | Ejecución y `UltimaEjecucion` |

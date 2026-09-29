@@ -36,6 +36,21 @@ public class PagoConfiguration : IEntityTypeConfiguration<Pago>
         builder.Property(x => x.Observaciones)
             .HasMaxLength(500);
 
+        builder.Property(x => x.Estado)
+            .HasMaxLength(30)
+            .HasDefaultValue("Registrado")
+            .IsRequired();
+
+        builder.Property(x => x.MotivoAnulacion)
+            .HasMaxLength(200);
+
+        builder.Property(x => x.FechaAnulacion);
+
+        builder.Property(x => x.AnuladoPor);
+
+        builder.Property(x => x.Detalle)
+            .HasColumnType("TEXT");
+
         builder.Property(x => x.FechaRegistro)
             .IsRequired();
 

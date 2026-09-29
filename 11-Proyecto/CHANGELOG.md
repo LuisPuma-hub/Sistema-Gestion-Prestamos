@@ -643,6 +643,7 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 - Salida de mora → cliente a `En observación` (el pase a `Activo` es manual).
 - RN-PAG-013: pago mínimo en mora = intereses vencidos acumulados.
 - Pago que deja < 3 vencidos reactiva solo el préstamo (vía pago, RN-PRE-012) y lo saca de mora.
+- Detalle de mora sin reactivación manual en app: sección `SALIR DE MORA` con pago directo (el pago es el motivo).
 - `PagoService` acepta pagos en préstamos `Moroso` (solo así puede regularizar) y genera periodos para `Activo`/`Moroso`.
 
 ## Tests
@@ -658,3 +659,21 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 
 - Notas de implementación v1 en `01-Requisitos`, `02-Reglas-Negocio` (RN-PRE-015/016, RN-PAG-012, alcance real de RN-PAG-002/011 y RN-MOR-006/008), `03-Arquitectura` (rutas reales sin `/api/v1`, entidades y servicios reales, net10.0), `04-Base-Datos` (PK uuid, `NUMERIC(18,2)`, tablas reales, auditoría en C#), `05-API` (contratos reales: sin envelope, decimal, HS256 120 min / refresh 7 días), `06-UX-UI` (6 tabs, ImportacionPage, sin Configuración), `07-Notificaciones`, `08-WhatsApp` (catálogo de 4 plantillas), `09-Seguridad` (roles `Administrador|Cobrador`, solo-Admin por endpoint), `10-Pruebas` (cobertura 59/59).
 - `ROADMAP`: fases 2-9 a Completada + fila de extras (importación, auditoría, dispositivos, clave).
+
+---
+
+# 19. Anulación de pagos, job de mora, reseteo y reportes - 2026-09-28
+
+## Added
+
+- Anulación de pagos sin borrado físico (RN-PAG-011): revierte capital e intereses (LIFO), reabre Cancelado y reevalúa mora. Solo Administrador (`POST api/pagos/{id}/anular`).
+- Detalle por periodo como texto en cada pago (visible en detalle).
+- `MorosidadJob`: evalúa vigentes todos los días 00:05 Lima.
+- Reseteo de clave por token de 30 min: admin genera (`POST api/usuarios/{id}/reset-token`), anónimo canjea (`POST api/auth/reset`).
+- Reportes: cobranza del día, cartera por cobrar (+CSV), ingresos por día (`api/reportes`).
+- App: anular en detalle de pago (admin), enlace de reseteo en Usuarios, recuperar clave en Login, pantalla Reportes en Más.
+
+## Tests
+
+- `OperacionesTests`: 10 pruebas nuevas.
+- `dotnet test`: 74/74 pruebas correctas.

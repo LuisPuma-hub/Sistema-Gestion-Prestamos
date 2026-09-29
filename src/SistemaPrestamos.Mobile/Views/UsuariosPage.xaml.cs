@@ -87,11 +87,16 @@ public partial class UsuariosPage : ContentPage
             "Cancelar",
             null,
             "Resetear contraseña",
+            "Generar enlace de reseteo",
             "Eliminar usuario");
 
         if (accion == "Resetear contraseña")
         {
             await ResetearAsync(usuario);
+        }
+        else if (accion == "Generar enlace de reseteo")
+        {
+            await GenerarEnlaceAsync(usuario);
         }
         else if (accion == "Eliminar usuario")
         {
@@ -130,6 +135,27 @@ public partial class UsuariosPage : ContentPage
             "Contraseña reseteada",
             "Comunícale la nueva contraseña al usuario.",
             "OK");
+    }
+
+    private async Task GenerarEnlaceAsync(UsuarioDto usuario)
+    {
+        var (reset, error) = await _usuarioService
+            .GenerarResetAsync(usuario.Id);
+
+        if (reset is null)
+        {
+            await DisplayAlertAsync(
+                "No se pudo generar",
+                TextoError.Limpiar(error, "Inténtalo de nuevo."),
+                "OK");
+            return;
+        }
+
+        await Navigation.PushModalAsync(
+            new EnlaceReseteoPage(
+                usuario.Email,
+                reset.Token,
+                reset.ExpiraEn));
     }
 
     private async Task EliminarAsync(UsuarioDto usuario)

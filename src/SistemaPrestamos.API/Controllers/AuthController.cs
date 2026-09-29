@@ -75,6 +75,32 @@ public class AuthController : ControllerBase
         });
     }
 
+    // POST: api/auth/reset (anónimo: canjea token de reseteo)
+    [HttpPost("reset")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Reset(
+        [FromBody] CanjearResetDto dto)
+    {
+        try
+        {
+            await _authService.CanjearResetAsync(
+                dto.Token,
+                dto.Nueva);
+
+            return Ok(new
+            {
+                mensaje = "Contraseña actualizada. Inicie sesión."
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
     // POST: api/auth/cambiar-clave (usuario autenticado, exige actual)
     [HttpPost("cambiar-clave")]
     [Authorize]

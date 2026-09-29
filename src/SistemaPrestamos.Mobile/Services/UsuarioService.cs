@@ -135,6 +135,38 @@ public class UsuarioService
             : error);
     }
 
+    public async Task<(ResetTokenDto? Reset, string? Error)>
+        GenerarResetAsync(Guid id)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.PostAsync(
+            $"api/Usuarios/{id}/reset-token", null);
+
+        var contenido = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return (null, string.IsNullOrWhiteSpace(contenido)
+                ? $"Error del servidor: {(int)response.StatusCode}"
+                : contenido);
+        }
+
+        try
+        {
+            var reset = JsonSerializer.Deserialize<ResetTokenDto>(
+                contenido, _jsonOptions);
+
+            return reset is null
+                ? (null, "Respuesta vacía del servidor.")
+                : (reset, null);
+        }
+        catch (JsonException)
+        {
+            return (null, "Respuesta no válida del servidor.");
+        }
+    }
+
     public async Task<(bool Exito, string? Error)> CambiarMiClaveAsync(
         string actual,
         string nueva)

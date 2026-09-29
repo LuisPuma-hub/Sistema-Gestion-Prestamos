@@ -79,4 +79,35 @@ public class PagosController : ControllerBase
             });
         }
     }
+
+    // POST: api/pagos/{id}/anular (solo ADMIN, sin borrado físico)
+    [HttpPost("{id:guid}/anular")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> Anular(
+        Guid id,
+        [FromBody] AnularPagoDto dto)
+    {
+        try
+        {
+            var anulado = await _pagoService.AnularAsync(
+                id,
+                dto.Motivo,
+                null);
+
+            if (!anulado)
+                return NotFound(new
+                {
+                    mensaje = "Pago no encontrado."
+                });
+
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
 }

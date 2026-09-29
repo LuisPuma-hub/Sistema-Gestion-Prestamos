@@ -15,18 +15,21 @@ public class AuthService : IAuthService
 {
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IRefreshTokenRepository _refreshRepository;
+    private readonly IPasswordResetRepository _resetRepository;
     private readonly PasswordHasher<Usuario> _passwordHasher;
     private readonly IConfiguration _configuration;
 
     public AuthService(
         IUsuarioRepository usuarioRepository,
         IRefreshTokenRepository refreshRepository,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IPasswordResetRepository resetRepository)
     {
         _usuarioRepository = usuarioRepository;
         _refreshRepository = refreshRepository;
         _configuration = configuration;
         _passwordHasher = new PasswordHasher<Usuario>();
+        _resetRepository = resetRepository;
     }
 
     public async Task<LoginResponseDto> LoginAsync(
@@ -165,6 +168,41 @@ public class AuthService : IAuthService
 
         await _refreshRepository.ActualizarAsync(guardado);
         await _refreshRepository.GuardarCambiosAsync();
+    }
+
+    public async Task CanjearResetAsync(string token, string nueva)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            throw new InvalidOperationException(
+                "Enlace inválido o vencido.");
+
+        var reset = await _resetRepository
+            .ObtenerPorTokenAsync(token.Trim());
+
+        if (reset is null || !reset.Vigente)
+            throw new InvalidOperationException(
+                "Enlace inválido o vencido.");
+
+        var usuario = reset.Usuario ??
+            await _usuarioRepository.ObtenerPorIdAsync(
+                reset.UsuarioId);
+
+        if (usuario is null || !usuario.Activo)
+            throw new InvalidOperationException(
+                "Enlace inválido o vencido.");
+
+        if (string.IsNullOrWhiteSpace(nueva) || nueva.Length < 8)
+            throw new InvalidOperationException(
+                "La contraseña debe tener al menos 8 caracteres.");
+
+        usuario.PasswordHash = _passwordHasher.HashPassword(
+            usuario,
+            nueva);
+
+        reset.Usado = true;
+
+        await _usuarioRepository.ActualizarAsync(usuario);
+        await _usuarioRepository.GuardarCambiosAsync();
     }
 
     private async Task<RefreshToken> CrearRefreshTokenAsync(Guid usuarioId)

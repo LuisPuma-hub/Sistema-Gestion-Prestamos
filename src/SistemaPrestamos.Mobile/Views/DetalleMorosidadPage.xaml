@@ -79,22 +79,16 @@
 
                 <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="REACTIVAR PRÉSTAMO (SOLO ADMIN)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
-                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="12,4">
-                            <Editor
-                                x:Name="ObservacionesEditor"
-                                Placeholder="Motivo de reactivación..."
-                                AutoSize="TextChanges" />
-                        </Border>
+                        <Label Text="SALIR DE MORA" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Label Text="Registre el pago de las semanas vencidas. Al cubrirlas, el préstamo vuelve solo a Activo." FontSize="13" TextColor="#6B7280" />
                         <Button
-                            x:Name="ReactivarButton"
-                            Text="✓  Reactivar préstamo"
+                            Text="$  Pagar para salir de mora"
                             BackgroundColor="#16A34A"
                             TextColor="White"
                             FontAttributes="Bold"
                             CornerRadius="12"
                             HeightRequest="54"
-                            Clicked="OnReactivarClicked" />
+                            Clicked="OnPagarClicked" />
                     </VerticalStackLayout>
                 </Border>
 

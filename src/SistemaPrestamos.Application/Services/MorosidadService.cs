@@ -240,6 +240,27 @@ public class MorosidadService : IMorosidadService
         return MapearDto(morosidad);
     }
 
+    public async Task<int> EvaluarVigentesAsync(
+        DateTime fechaReferencia)
+    {
+        var activos = await _prestamoRepository.ObtenerActivosAsync();
+
+        var enMora = await _morosidadRepository.ObtenerActivasAsync();
+
+        var ids = activos
+            .Select(x => x.Id)
+            .Concat(enMora.Select(x => x.PrestamoId))
+            .Distinct()
+            .ToList();
+
+        foreach (var id in ids)
+        {
+            await EvaluarAsync(id, fechaReferencia);
+        }
+
+        return ids.Count;
+    }
+
     private async Task SincronizarClienteAsync(
         Cliente cliente,
         Guid? ignorarPrestamoId = null)

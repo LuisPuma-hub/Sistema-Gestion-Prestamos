@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SistemaPrestamos.Mobile.Views.EnlaceReseteoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title=""
+    BackgroundColor="#80000000">
+
+    <Grid Padding="24" VerticalOptions="Center">
+        <Border
+            Padding="20"
+            BackgroundColor="White"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 20">
+            <VerticalStackLayout Spacing="12">
+                <Label
+                    Text="Enlace de reseteo"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="#111827"
+                    HorizontalTextAlignment="Center" />
+                <Label
+                    x:Name="DescripcionLabel"
+                    FontSize="14"
+                    TextColor="#6B7280"
+                    HorizontalTextAlignment="Center" />
+                <Border
+                    Padding="12"
+                    BackgroundColor="#F3F4F6"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12">
+                    <Label
+                        x:Name="TokenLabel"
+                        FontSize="13"
+                        FontFamily="monospace"
+                        TextColor="#111827" />
+                </Border>
+                <Button
+                    Text="📋  Copiar código"
+                    BackgroundColor="#15307A"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="50"
+                    Clicked="OnCopiarClicked" />
+                <Button
+                    Text="Cerrar"
+                    BackgroundColor="#E5E7EB"
+                    TextColor="#111827"
+                    CornerRadius="12"
+                    HeightRequest="50"
+                    Clicked="OnCerrarClicked" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+
+</ContentPage>

@@ -8,4 +8,6 @@ public interface IPagoService
     Task<PagoDto?> ObtenerPorIdAsync(Guid id);
     Task<IEnumerable<PagoDto>> ObtenerPorPrestamoAsync(Guid prestamoId);
     Task<PagoDto> RegistrarAsync(CrearPagoDto dto);
+
+    Task<bool> AnularAsync(Guid pagoId, string motivo, Guid? anuladoPor);
 }

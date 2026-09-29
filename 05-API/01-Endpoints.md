@@ -74,8 +74,9 @@ La versión `v1` permitirá realizar futuras modificaciones importantes en la AP
 > - `api/morosidades`: `GET prestamo/{id}`, `POST prestamo/{id}/evaluar`, `PATCH prestamo/{id}/reactivar` (admin).
 > - `api/garantes`, `api/dispositivos`, `api/auditoria` (admin), `api/reglasnotificacion` (admin), `api/notificaciones/probar`, `api/whatsapp` (`probar|recordatorio|enviar-plantilla|plantillas|historial/cliente/{id}`).
 > - `api/importacion` (admin, `multipart/form-data`, 2 MB): `GET prestamos/plantilla`, `POST prestamos/preview`, `POST prestamos/confirm`.
+> - `api/pagos/{id}/anular` (admin), `api/usuarios/{id}/reset-token` (admin), `POST api/auth/reset` (anónimo), `api/reportes` (`cobranza`, `cartera`, `cartera/csv`, `ingresos`).
 >
-> No existen en v1: endpoints de cuotas, dashboard, roles, rechazar préstamo, anular pago, webhook de WhatsApp ni sesiones.
+> No existen en v1: endpoints de cuotas, dashboard, roles, rechazar préstamo, webhook de WhatsApp ni sesiones.
 
 ---
 
