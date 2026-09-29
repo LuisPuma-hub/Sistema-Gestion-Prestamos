@@ -9,6 +9,8 @@ namespace SistemaPrestamos.Application.Services;
 public class NotificacionService : INotificacionService
 {
     private readonly IDispositivoRepository _dispositivoRepository;
+    private readonly string? _ruta;
+    private readonly string? _proyecto;
     private readonly object _bloqueo = new();
     private bool _inicializado;
 
@@ -17,11 +19,13 @@ public class NotificacionService : INotificacionService
         IConfiguration configuration)
     {
         _dispositivoRepository = dispositivoRepository;
+        _ruta = configuration["Firebase:ServiceAccountPath"];
+        _proyecto = configuration["Firebase:ProjectId"];
+    }
 
-        var ruta = configuration["Firebase:ServiceAccountPath"];
-        var proyecto = configuration["Firebase:ProjectId"];
-
-        if (string.IsNullOrWhiteSpace(ruta) || !File.Exists(ruta))
+    private void AsegurarInicializado()
+    {
+        if (string.IsNullOrWhiteSpace(_ruta) || !File.Exists(_ruta))
         {
             throw new InvalidOperationException(
                 "Firebase:ServiceAccountPath no configurado o archivo inexistente.");
@@ -34,13 +38,13 @@ public class NotificacionService : INotificacionService
                 if (FirebaseApp.DefaultInstance is null)
                 {
                     var credential = CredentialFactory
-                        .FromFile<ServiceAccountCredential>(ruta)
+                        .FromFile<ServiceAccountCredential>(_ruta)
                         .ToGoogleCredential();
 
                     FirebaseApp.Create(new AppOptions
                     {
                         Credential = credential,
-                        ProjectId = proyecto
+                        ProjectId = _proyecto
                     });
                 }
 
@@ -54,6 +58,8 @@ public class NotificacionService : INotificacionService
         string titulo,
         string cuerpo)
     {
+        AsegurarInicializado();
+
         var dispositivos = await _dispositivoRepository
             .ObtenerPorUsuarioAsync(usuarioId);
 
