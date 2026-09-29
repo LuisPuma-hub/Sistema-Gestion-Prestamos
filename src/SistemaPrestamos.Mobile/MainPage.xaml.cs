@@ -88,59 +88,66 @@ public partial class MainPage : ContentPage
 
             var moras = await Task.WhenAll(morasTask);
 
-            MoraValorLabel.Text = moras
-                .Count(m => m is not null && m.Activa)
+            // Los ya Moroso no se evalúan arriba (filtro Activo),
+            // pero sí cuentan.
+            var morososDirectos = prestamos.Count(p =>
+                string.Equals(
+                    p.Estado, "Moroso",
+                    StringComparison.OrdinalIgnoreCase));
+
+            MoraValorLabel.Text = (morososDirectos + moras
+                .Count(m => m is not null && m.Activa))
                 .ToString();
 
             var nombresPrestamo = prestamos.ToDictionary(
                 p => p.Id,
                 p => p.ClienteNombre);
 
-            // Actividad reciente: el evento más nuevo entre el último
-            // pago registrado (no anulado) y el último préstamo aprobado.
-            var ultimoPago = pagos
-                .Where(p => !p.Anulado)
-                .OrderByDescending(p => p.FechaRegistro)
-                .FirstOrDefault();
+            // Actividad reciente: últimos 4 eventos entre pagos
+            // (por FechaRegistro) y aprobaciones.
+            var eventos = new List<(DateTime Fecha, ActividadItem Item)>();
 
-            var ultimoAprobado = prestamos
-                .Where(p => p.FechaAprobacion.HasValue)
-                .OrderByDescending(p => p.FechaAprobacion!.Value)
-                .FirstOrDefault();
-
-            var fechaPago = ultimoPago?.FechaRegistro
-                ?? DateTime.MinValue;
-            var fechaAprob = ultimoAprobado?.FechaAprobacion
-                ?? DateTime.MinValue;
-
-            if (ultimoPago is null && ultimoAprobado is null)
-            {
-                ActividadCard.IsVisible = false;
-            }
-            else if (fechaAprob > fechaPago && ultimoAprobado is not null)
-            {
-                MostrarActividad(
-                    ultimoAprobado.ClienteNombre,
-                    "Préstamo aprobado",
-                    ultimoAprobado.CapitalInicial,
-                    ultimoAprobado.FechaAprobacion!.Value);
-            }
-            else if (ultimoPago is not null)
+            foreach (var pago in pagos
+                         .Where(p => !p.Anulado)
+                         .OrderByDescending(p => p.FechaRegistro)
+                         .Take(4))
             {
                 var nombreCli = nombresPrestamo.TryGetValue(
-                    ultimoPago.PrestamoId,
+                    pago.PrestamoId,
                     out var n) ? n : "Cliente";
 
-                MostrarActividad(
-                    nombreCli,
-                    "Pago recibido",
-                    ultimoPago.Monto,
-                    ultimoPago.FechaRegistro);
+                eventos.Add((pago.FechaRegistro, new ActividadItem
+                {
+                    Inicial = InicialDe(nombreCli),
+                    Nombre = nombreCli,
+                    Detalle = "Pago recibido",
+                    ColorDetalle = "#16A34A",
+                    Monto = $"S/ {pago.Monto:N2}",
+                    Tiempo = TextoHace(pago.FechaRegistro)
+                }));
             }
-            else
+
+            foreach (var prestamo in prestamos
+                         .Where(p => p.FechaAprobacion.HasValue)
+                         .OrderByDescending(p => p.FechaAprobacion!.Value)
+                         .Take(4))
             {
-                ActividadCard.IsVisible = false;
+                eventos.Add((prestamo.FechaAprobacion!.Value, new ActividadItem
+                {
+                    Inicial = InicialDe(prestamo.ClienteNombre),
+                    Nombre = prestamo.ClienteNombre,
+                    Detalle = "Préstamo aprobado",
+                    ColorDetalle = "#15307A",
+                    Monto = $"S/ {prestamo.CapitalInicial:N2}",
+                    Tiempo = TextoHace(prestamo.FechaAprobacion.Value)
+                }));
             }
+
+            ActividadCollection.ItemsSource = eventos
+                .OrderByDescending(x => x.Fecha)
+                .Take(4)
+                .Select(x => x.Item)
+                .ToList();
         }
         catch (HttpRequestException)
         {
@@ -154,20 +161,21 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void MostrarActividad(
-        string nombre,
-        string detalle,
-        decimal monto,
-        DateTime fecha)
+    private sealed class ActividadItem
     {
-        ActividadNombreLabel.Text = nombre;
-        ActividadInicialLabel.Text = nombre.Length > 0
+        public string Inicial { get; set; } = "?";
+        public string Nombre { get; set; } = string.Empty;
+        public string Detalle { get; set; } = string.Empty;
+        public string ColorDetalle { get; set; } = "#16A34A";
+        public string Monto { get; set; } = string.Empty;
+        public string Tiempo { get; set; } = string.Empty;
+    }
+
+    private static string InicialDe(string nombre)
+    {
+        return nombre.Length > 0
             ? nombre.Substring(0, 1).ToUpperInvariant()
             : "?";
-        ActividadDetalleLabel.Text = detalle;
-        ActividadMontoLabel.Text = $"S/ {monto:N2}";
-        ActividadTiempoLabel.Text = TextoHace(fecha);
-        ActividadCard.IsVisible = true;
     }
 
     private static string TextoHace(DateTime fecha)
