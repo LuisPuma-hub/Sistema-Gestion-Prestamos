@@ -940,3 +940,9 @@ El backend ASP.NET Core constituye el principal punto de control de seguridad, m
 La información financiera, personal y de autenticación deberá recibir controles diferenciados de acuerdo con su nivel de sensibilidad.
 
 El objetivo final es garantizar la **confidencialidad, integridad y disponibilidad** de la información del Sistema de Gestión de Préstamos.
+
+---
+
+## Nota de implementación v1
+
+> Secretos reales por entorno: `Jwt:Key/Issuer/Audience`, `Jwt:ExpirationMinutes/RefreshExpirationDays`, `ConnectionStrings`, `Firebase:ServiceAccountPath/ProjectId`, `WhatsApp:PhoneNumberId/Token` (nunca en el código ni en la app). La auditoría enmascara `*Password*`/`*Token*` con `***`. Cuenta inactiva con `Activo=false` (sin estado BLOQUEADO).

@@ -82,8 +82,15 @@ public partial class DetallePrestamoPage : ContentPage
                 "Activo",
                 StringComparison.OrdinalIgnoreCase);
 
-            PagarButton.IsVisible = estaActivo;
-            MorosidadButton.IsVisible = estaActivo;
+            // En mora también se cobra: solo así regulariza.
+            var cobra = estaActivo ||
+                string.Equals(
+                    _prestamo.Estado,
+                    "Moroso",
+                    StringComparison.OrdinalIgnoreCase);
+
+            PagarButton.IsVisible = cobra;
+            MorosidadButton.IsVisible = cobra;
 
             var pagos = await _pagoService
                 .ObtenerPorPrestamoAsync(_prestamo.Id);

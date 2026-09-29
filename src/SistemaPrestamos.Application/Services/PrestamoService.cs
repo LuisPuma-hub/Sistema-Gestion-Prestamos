@@ -78,7 +78,13 @@ public class PrestamoService : IPrestamoService
 
         if (cliente.Estado != "Activo")
             throw new InvalidOperationException(
-                "Solo se pueden registrar préstamos para clientes activos.");
+                "Solo se pueden registrar préstamos para clientes " +
+                "activos. Un cliente en mora o en observación debe " +
+                "regularizar su situación primero.");
+
+        // RN-CLI-008: con cliente Activo se permiten varios
+        // préstamos vigentes; el freno es el estado (mora),
+        // no la cantidad.
 
         var fechaInicio = dto.FechaInicio == default
             ? DateTime.UtcNow
@@ -121,6 +127,19 @@ public class PrestamoService : IPrestamoService
         if (prestamo.Estado != "Pendiente")
             throw new InvalidOperationException(
                 "Solo se pueden aprobar préstamos pendientes.");
+
+        // Un cliente en mora (o inactivo) no puede activar
+        // otro préstamo hasta regularizar (RN-MOR-009).
+        var estadoCliente = prestamo.Cliente?.Estado ?? "Activo";
+
+        if (!string.Equals(
+                estadoCliente.Trim(),
+                "Activo",
+                StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                "El cliente no está activo " +
+                $"(estado: {estadoCliente}). Regularice su " +
+                "situación antes de aprobar.");
 
         prestamo.Estado = "Activo";
         prestamo.FechaAprobacion = DateTime.UtcNow;
@@ -208,9 +227,11 @@ public class PrestamoService : IPrestamoService
             throw new InvalidOperationException(
                 "El préstamo no existe.");
 
-        if (prestamo.Estado != "Activo")
+        if (prestamo.Estado != "Activo" &&
+            prestamo.Estado != "Moroso")
             throw new InvalidOperationException(
-                "Solo se pueden generar períodos para préstamos activos.");
+                "Solo se pueden generar períodos para préstamos " +
+                "activos o morosos.");
 
         var periodos =
             await _periodoInteresRepository

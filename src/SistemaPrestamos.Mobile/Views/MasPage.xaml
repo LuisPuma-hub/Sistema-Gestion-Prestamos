@@ -100,6 +100,32 @@
                     </HorizontalStackLayout>
                 </Border>
 
+                <Border
+                    x:Name="ImportacionCard"
+                    Padding="16,14"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    IsVisible="False">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnImportacionClicked" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12">
+                        <Border
+                            HeightRequest="44" WidthRequest="44"
+                            BackgroundColor="#DBEAFE"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 22"
+                            VerticalOptions="Center">
+                            <Image Source="ic_bell_d.png" WidthRequest="22" HeightRequest="22" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                            <Label Text="Importar préstamos" FontSize="16" FontAttributes="Bold" TextColor="#111827" />
+                            <Label Text="Carga masiva con CSV" FontSize="13" TextColor="#6B7280" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
             </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

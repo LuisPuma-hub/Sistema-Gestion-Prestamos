@@ -632,3 +632,9 @@ El siguiente wireframe será:
 `06-Wireframe-Registro-Prestamo.md`
 
 Este documento definirá el proceso completo para registrar un nuevo préstamo, incluyendo la selección del cliente, monto del préstamo, condiciones, cálculo del interés semanal, validación y confirmación del registro.
+
+---
+
+## Nota de implementación v1
+
+> Un cliente solo puede tener un préstamo vigente (Pendiente/Activo/Moroso) a la vez ni estar en mora: el registro se rechaza (RN-CLI-008). Aprobar y anular requieren Administrador. El interés es fijo 5% informativo.

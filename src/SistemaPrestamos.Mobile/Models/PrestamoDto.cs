@@ -23,4 +23,8 @@ public class PrestamoDto
     public string Estado { get; set; } = string.Empty;
 
     public decimal InteresSemanal => CapitalInicial * TasaInteresSemanal;
+
+    public string Etiqueta =>
+        $"{ClienteNombre} — S/ {CapitalInicial:N2} " +
+        $"({FechaInicio:dd/MM/yyyy})";
 }

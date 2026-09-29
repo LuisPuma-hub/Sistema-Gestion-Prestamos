@@ -1097,3 +1097,9 @@ El siguiente documento será:
 `06-Diseno-UX-UI/03-Pantallas/10-Pantalla-Morosidad.md`
 
 Este documento definirá la pantalla para controlar los préstamos con intereses atrasados, identificar clientes morosos y gestionar el seguimiento de cobranza.
+
+---
+
+## Nota de implementación v1
+
+> El registro pide monto, fecha, comprobante y observaciones (opcionales); sin método de pago. Acepta préstamos Activo y Moroso. El backend distribuye FIFO a intereses y el excedente a capital, y rechaza montos sobre la deuda.

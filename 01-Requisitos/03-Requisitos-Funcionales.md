@@ -50,6 +50,8 @@ El administrador deberá poder aprobar o rechazar una solicitud.
 
 Una solicitud aprobada deberá permitir crear un préstamo.
 
+> Excepto la importación masiva, que crea el préstamo directo en ACTIVO sin solicitud previa.
+
 ## RF-009 - Cálculo del interés
 
 El sistema deberá calcular el interés semanal equivalente al 5% del monto inicial.
@@ -61,6 +63,8 @@ El sistema deberá generar periodos semanales de interés.
 ## RF-011 - Registro de pagos
 
 El sistema deberá permitir registrar pagos asociados a un préstamo.
+
+> Incluye préstamos en estado MOROSO; rechaza Pendiente, Cancelado y Anulado.
 
 ## RF-012 - Aplicación de pagos
 
@@ -111,3 +115,11 @@ El sistema deberá conservar el historial de:
 - Pagos.
 - Notificaciones.
 - Mensajes de WhatsApp.
+
+## RF-021 - Importación masiva
+
+El sistema deberá permitir al Administrador importar préstamos vía CSV en dos pasos: previsualizar (valida cabecera, DNI de 8 dígitos, celular de 9 dígitos que empiece con 9, máximo 500 filas, duplicados y préstamo vigente) y confirmar con creación atómica de cliente, préstamo, periodos y pago de ajuste (`CARGA INICIAL`).
+
+## RF-022 - Actividad reciente
+
+El dashboard deberá mostrar el evento más reciente entre el último pago (ordenado por fecha de registro) y el último préstamo aprobado.

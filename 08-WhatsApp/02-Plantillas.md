@@ -1144,3 +1144,9 @@ El backend ASP.NET Core Web API será responsable de seleccionar la plantilla ad
 La aplicación móvil .NET MAUI funcionará como interfaz de gestión, mientras que las reglas financieras y la lógica crítica permanecerán centralizadas en el backend.
 
 De esta manera se garantiza una comunicación automatizada, trazable y coherente con las reglas de negocio del sistema.
+
+---
+
+## Nota de implementación v1
+
+> Catálogo vigente (único válido, validado en `ReglaNotificacionService`): `recordatorio_pago_v2` (VenceHoy/VenceManana), `aviso_mora` (MoraNueva/MoraPersistente), `confirmacion_pago`, `prestamo_aprobado`. Variables posicionales `{{1}}, {{2}}, {{3}}` (nombre, monto, fecha/saldo). Los nombres `wh_*_v1` quedan obsoletos.

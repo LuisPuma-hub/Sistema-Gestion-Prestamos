@@ -22,6 +22,7 @@ public partial class MasPage : ContentPage
 
         UsuariosCard.IsVisible = esAdmin;
         NotificacionesCard.IsVisible = esAdmin;
+        ImportacionCard.IsVisible = esAdmin;
     }
 
     private async void OnPerfilClicked(object? sender, TappedEventArgs e)
@@ -37,5 +38,10 @@ public partial class MasPage : ContentPage
     private async void OnNotificacionesClicked(object? sender, TappedEventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(NotificacionesPage));
+    }
+
+    private async void OnImportacionClicked(object? sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(ImportacionPage));
     }
 }

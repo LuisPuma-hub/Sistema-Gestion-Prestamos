@@ -20,6 +20,8 @@ El diccionario permite mantener una referencia técnica común para el desarroll
 
 Columna `Nulo?` usa `NOT NULL / NULL` (no `NO/SÍ`). Todo `NOT NULL` financiero lleva `DEFAULT 0.00` salvo PK/FK.
 
+> Nota de implementación v1: las PK reales son `uuid` GUID (`ValueGeneratedNever`), no `BIGINT`. Dinero usa `NUMERIC(18,2)` y la tasa se guarda en tanto por uno (`0.05`). Tablas reales (snake_case): `usuarios, clientes, garantes, prestamos, periodos_interes, pagos, morosidades, dispositivos, mensajes_whatsapp, refresh_tokens, auditoria, reglas_notificacion, envios_notificacion`. No existen en v1: `roles, usuario_roles` (el rol es columna `Rol` en `usuarios`: `Administrador|Cobrador`), `cuotas` (se usa `periodos_interes`), `pago_cuotas`, `moras` (se usa `morosidades`), `notificaciones` (se usa `envios_notificacion`), `solicitudes, documentos, plantillas_whatsapp`.
+
 ### Tipos de datos principales (PostgreSQL)
 
 | Tipo | Descripción |
@@ -178,6 +180,8 @@ Registra los pagos realizados por los clientes.
 | estado | VARCHAR(20) | — | NO | Estado del pago |
 | fecha_registro | DATETIME | — | NO | Fecha de registro |
 
+> Columnas reales en v1: `id uuid PK, prestamo_id FK, monto, monto_interes, monto_capital (NUMERIC 18,2), fecha_pago, comprobante, observaciones, fecha_registro`. Sin `metodo_pago, estado, referencia, id_usuario`.
+
 ---
 
 ## 10. Tabla: pago_cuotas
@@ -269,6 +273,27 @@ Registra los mensajes enviados mediante la integración con WhatsApp.
 | ultimo_uso | TIMESTAMPTZ | — | SÍ | Última actividad |
 | activo | BOOLEAN | — | NO | Default TRUE; FALSE si token inválido |
 
+> Campos reales en v1: `id, usuario_id, token, plataforma, fecha_registro, fecha_actualizacion`. Sin `device_id/app_version/activo`.
+
+## 13c. Tabla: auditoria
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| id | uuid PK | Identificador |
+| tabla | TEXT | Tabla afectada |
+| id_registro | TEXT | Clave del registro |
+| operacion | TEXT | `ADDED`, `MODIFIED` o `DELETED` |
+| diff | JSONB | `{antes, despues}` del cambio |
+| usuario_id | uuid NULL | Usuario del JWT (claim) |
+| fecha | TIMESTAMPTZ | Fecha UTC del cambio |
+
+Generada automáticamente en `SaveChangesAsync` para toda entidad (excepto `auditoria`); enmascara valores `*Password*`/`*Token*` con `***`.
+
+## 13d. Tablas de notificación programable
+
+- `reglas_notificacion`: `id, nombre, evento (VenceHoy|VenceManana|MoraNueva|MoraPersistente|ResumenDiario|MoraCobrador|CobradoDia|PrestamoPorAprobar|ResumenVencimientos), canal (Whatsapp|Push), hora, dias_semana (bitmask 1-127), plantilla, activa, ultima_ejecucion, fecha_creacion`.
+- `envios_notificacion`: `id, regla_id NULL, evento, canal, cliente_id NULL, prestamo_id NULL, usuario_id NULL, destinatario, estado (Enviado/Fallido), detalle NULL, fecha_creacion` (append-only, antispam).
+
 (Avales, solicitudes, documentos, plantillas y auditoría viven en `01-Diagrama-ER.puml`; se documentarán en diccionario en la próxima pasada.)
 
 ---
@@ -359,12 +384,16 @@ Se eliminan `PAGADO/VENCIDO` como estado de préstamo (son de cuota).
 
 Se eliminan `ENVIADA/LEIDA/ERROR/ENVIANDO/PROCESANDO` como sinónimos.
 
+> En v1 se persiste `Enviado`/`Fallido` (capitalizados) + `texto_libre` para mensajes sin plantilla.
+
 ---
 
 ## 16. Consideraciones
 
 1. Los identificadores principales utilizan `BIGINT` para permitir el crecimiento de la información.
 2. Los valores monetarios utilizan `DECIMAL(12,2)` para evitar errores de precisión propios de los tipos de punto flotante.
+
+> En v1: PK `uuid`, dinero `NUMERIC(18,2)`.
 3. Las contraseñas nunca deben almacenarse en texto plano.
 4. Los pagos deben conservar un registro histórico.
 5. La distribución de pagos se realiza mediante `pago_cuotas`.

@@ -140,6 +140,50 @@ public class MorosidadService : IMorosidadService
                 .CrearAsync(morosidad);
         }
 
+        // RN-MOR-005 + RN-MOR-009: el préstamo con 3 o más
+        // periodos vencidos pasa a MOROSO y arrastra al cliente.
+        // Sin esto el cliente seguía ACTIVO y podía recibir
+        // otro préstamo.
+        if (!EsTerminal(prestamo.Estado))
+        {
+            if (cantidadVencidos >= 3)
+            {
+                if (string.Equals(
+                        prestamo.Estado,
+                        "Activo",
+                        StringComparison.OrdinalIgnoreCase))
+                    prestamo.Estado = "Moroso";
+
+                if (prestamo.Cliente is not null &&
+                    !string.Equals(
+                        prestamo.Cliente.Estado,
+                        "Moroso",
+                        StringComparison.OrdinalIgnoreCase))
+                    prestamo.Cliente.Estado = "Moroso";
+            }
+            else if (prestamo.Cliente is not null)
+            {
+                // El préstamo solo vuelve a ACTIVO por vía manual
+                // (RN-PRE-012); aquí solo se sincroniza al cliente.
+                await SincronizarClienteAsync(prestamo.Cliente);
+            }
+        }
+        else
+        {
+            // Préstamo terminal: cerrar mora activa residual.
+            if (morosidad is not null && morosidad.Activa)
+            {
+                morosidad.Activa = false;
+                morosidad.FechaReactivacion = fechaReferencia;
+
+                await _morosidadRepository
+                    .ActualizarAsync(morosidad);
+            }
+
+            if (prestamo.Cliente is not null)
+                await SincronizarClienteAsync(prestamo.Cliente);
+        }
+
         await _morosidadRepository.GuardarCambiosAsync();
 
         return MapearDto(morosidad);
@@ -167,6 +211,13 @@ public class MorosidadService : IMorosidadService
             throw new InvalidOperationException(
                 "El préstamo ya se encuentra reactivado.");
 
+        // RN-PRE-012: el préstamo vuelve a ACTIVO por vía manual.
+        if (string.Equals(
+                prestamo.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase))
+            prestamo.Estado = "Activo";
+
         morosidad.Activa = false;
         morosidad.FechaReactivacion = DateTime.UtcNow;
 
@@ -178,10 +229,64 @@ public class MorosidadService : IMorosidadService
         await _morosidadRepository
             .ActualizarAsync(morosidad);
 
+        // RN-MOR-009: el cliente vuelve a ACTIVO solo si ya no
+        // tiene préstamos en MOROSO (este ya va a ACTIVO).
+        if (prestamo.Cliente is not null)
+            await SincronizarClienteAsync(prestamo.Cliente, prestamo.Id);
+
         await _morosidadRepository
             .GuardarCambiosAsync();
 
         return MapearDto(morosidad);
+    }
+
+    private async Task SincronizarClienteAsync(
+        Cliente cliente,
+        Guid? ignorarPrestamoId = null)
+    {
+        var prestamos = await _prestamoRepository
+            .ObtenerPorClienteAsync(cliente.Id);
+
+        // La lectura es sin seguimiento: el préstamo en transición
+        // aún figura con su estado anterior, por eso se excluye
+        // (ya se sabe su estado final).
+        var hayMorosos = prestamos.Any(x =>
+            (ignorarPrestamoId is null || x.Id != ignorarPrestamoId) &&
+            string.Equals(
+                x.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase));
+
+        if (hayMorosos &&
+            !string.Equals(
+                cliente.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            cliente.Estado = "Moroso";
+        }
+        else if (!hayMorosos &&
+            string.Equals(
+                cliente.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            // Sale de mora bajo observación: el pase a
+            // Activo lo hace el administrador manualmente.
+            cliente.Estado = "En observación";
+        }
+    }
+
+    private static bool EsTerminal(string estado)
+    {
+        return string.Equals(
+                estado,
+                "Cancelado",
+                StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(
+                estado,
+                "Anulado",
+                StringComparison.OrdinalIgnoreCase);
     }
 
     private static MorosidadDto MapearDto(

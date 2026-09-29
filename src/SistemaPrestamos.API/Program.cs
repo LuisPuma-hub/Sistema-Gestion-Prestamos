@@ -52,6 +52,7 @@ builder.Services.AddDbContext<PrestamosDbContext>(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IPrestamoService, PrestamoService>();
+builder.Services.AddScoped<IImportacionService, ImportacionService>();
 builder.Services.AddScoped<IPagoService, PagoService>();
 builder.Services.AddScoped<IPeriodoInteresService, PeriodoInteresService>();
 builder.Services.AddScoped<IMorosidadService, MorosidadService>();

@@ -24,6 +24,8 @@ Estas funciones serán realizadas por la misma persona.
 
 El sistema se diseñará de forma que posteriormente pueda incorporar diferentes usuarios y roles.
 
+> Implementado: existen los roles `Administrador` y `Cobrador`. Solo el Administrador puede aprobar/anular préstamos, reactivar moras, gestionar usuarios e importar préstamos masivos; el resto de operaciones están abiertas a usuarios autenticados.
+
 ## 4. Objetivo general
 
 Desarrollar una aplicación móvil que permita administrar de manera centralizada y organizada el ciclo de vida de los clientes, préstamos, intereses y pagos, reduciendo la dependencia de registros manuales.
@@ -43,6 +45,9 @@ Desarrollar una aplicación móvil que permita administrar de manera centralizad
 - Enviar notificaciones al administrador.
 - Enviar mensajes mediante WhatsApp.
 - Mantener un historial de operaciones.
+- Importar préstamos masivamente vía CSV (previsualizar y confirmar).
+- Bloquear nuevos préstamos a clientes en mora o con préstamo vigente.
+- Mostrar la actividad reciente (último pago o última aprobación).
 
 ## 6. Característica financiera principal
 

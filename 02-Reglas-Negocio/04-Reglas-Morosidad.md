@@ -30,9 +30,13 @@ Regla determinista (sin discrecionalidad): el préstamo pasará a MOROSO si y so
 - Al cumplirse: cambia a MOROSO + inserta `Historial_Morosidad` + dispara notificación/WhatsApp de morosidad.
 - 1-2 periodos vencidos = ATRASADO, no MOROSO. Se elimina el término ambiguo "pago a destiempo" y "no necesariamente".
 
+> Implementado: la evaluación corre al consultar morosidad (endpoint `POST morosidades/prestamo/{id}/evaluar`, pantallas Mora/Detalle/Inicio). Al cumplirse, el préstamo pasa a MOROSO y el cliente a MOROSO (RN-MOR-009). Los avisos los envía después el `ProgramadorService`, no la evaluación. Al saldar (CANCELADO), la mora se cierra y el cliente se sincroniza.
+
 ## RN-MOR-006
 
 El administrador podrá reactivar manualmente el préstamo MOROSO a ACTIVO solo si se paga al menos 1 periodo vencido o se registra motivo (10-200 chars) + actor + fecha. No resetea el contador de vencidos (ver RN-PRE-012).
+
+> Implementado: `ReactivarAsync` devuelve el préstamo a ACTIVO y sincroniza al cliente (a observación si no quedan morosos). Además, el pago que deja < 3 vencidos reactiva solo (vía pago, RN-PRE-012) y cierra la mora. Las observaciones son opcionales en v1: pendiente endurecer motivo obligatorio 10-200 o pago previo.
 
 ## RN-MOR-007
 
@@ -42,6 +46,8 @@ La reactivación no eliminará la deuda existente.
 
 La condición de morosidad deberá quedar registrada en `Historial_Morosidad(id, prestamo_id, fecha_evento, de_estado, a_estado, periodos_vencidos_count, actor, motivo)`.
 
+> Implementado de forma equivalente en v1: tabla `morosidades` (`PagosInteresVencidos`, `FechaInicio`, `FechaReactivacion`, `Activa`) + auditoría automática de cada cambio. Sin tabla `Historial_Morosidad` separada.
+
 ## RN-MOR-009
 
 Independencia parcial:
@@ -50,3 +56,5 @@ Independencia parcial:
 - Cliente MOROSO no cambia el estado de sus préstamos.
 - El cliente solo vuelve a ACTIVO cuando tiene 0 préstamos en MOROSO.
 - Esto permite filtrar cobranza por ambos estados sin inconsistencias (préstamo MOROSO + cliente ACTIVO queda prohibido).
+
+> Implementado: al salir de mora el cliente pasa a `En observación` (no directo a `Activo`); el pase a `Activo` lo hace el administrador manualmente. El cambio manual a `Activo` con préstamos en mora se rechaza.

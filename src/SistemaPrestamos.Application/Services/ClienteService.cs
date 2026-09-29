@@ -280,6 +280,30 @@ public class ClienteService : IClienteService
             return false;
         }
 
+        // RN-MOR-009: el cliente solo vuelve a ACTIVO cuando
+        // tiene 0 préstamos en MOROSO. El cambio manual no
+        // puede saltarse la reactivación de cada préstamo.
+        if (string.Equals(
+                estado?.Trim(),
+                "Activo",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            var prestamos = await _prestamoRepository
+                .ObtenerPorClienteAsync(id);
+
+            var enMora = prestamos.Count(x =>
+                string.Equals(
+                    x.Estado,
+                    "Moroso",
+                    StringComparison.OrdinalIgnoreCase));
+
+            if (enMora > 0)
+                throw new InvalidOperationException(
+                    $"El cliente tiene {enMora} préstamo(s) en mora. " +
+                    "Reactive cada préstamo moroso antes de " +
+                    "activarlo.");
+        }
+
         cliente.Estado = estado;
 
         await _clienteRepository.ActualizarAsync(cliente);

@@ -11,19 +11,22 @@ public class PagoService : IPagoService
     private readonly IPeriodoInteresRepository _periodoInteresRepository;
     private readonly IPeriodoInteresService _periodoInteresService;
     private readonly IWhatsappService? _whatsappService;
+    private readonly IMorosidadRepository? _morosidadRepository;
 
     public PagoService(
         IPagoRepository pagoRepository,
         IPrestamoRepository prestamoRepository,
         IPeriodoInteresRepository periodoInteresRepository,
         IPeriodoInteresService periodoInteresService,
-        IWhatsappService? whatsappService = null)
+        IWhatsappService? whatsappService = null,
+        IMorosidadRepository? morosidadRepository = null)
     {
         _pagoRepository = pagoRepository;
         _prestamoRepository = prestamoRepository;
         _periodoInteresRepository = periodoInteresRepository;
         _periodoInteresService = periodoInteresService;
         _whatsappService = whatsappService;
+        _morosidadRepository = morosidadRepository;
     }
 
     public async Task<IEnumerable<PagoDto>> ObtenerTodosAsync()
@@ -101,11 +104,14 @@ public class PagoService : IPagoService
                 "El préstamo no existe.");
         }
 
-        // 4. Validar estado
-        if (prestamo.Estado != "Activo")
+        // 4. Validar estado (un préstamo moroso también cobra:
+        //    solo así puede regularizar; RN-PRE-012 lo reactiva).
+        if (prestamo.Estado != "Activo" &&
+            prestamo.Estado != "Moroso")
         {
             throw new InvalidOperationException(
-                "Solo se pueden registrar pagos para préstamos activos.");
+                "Solo se pueden registrar pagos para préstamos " +
+                "activos o morosos.");
         }
 
         // 5. Fecha del pago (siempre UTC: el móvil envía
@@ -151,6 +157,24 @@ public class PagoService : IPagoService
             throw new InvalidOperationException(
                 $"El monto del pago ({dto.Monto:F2}) " +
                 $"supera la deuda disponible ({deudaTotal:F2}).");
+        }
+
+        // 10b. RN-PAG-013: en mora el pago debe cubrir todos
+        // los intereses vencidos acumulados (es lo que saca
+        // de mora). Ej.: 3 semanas x S/ 15 = mínimo S/ 45.
+        if (string.Equals(
+                prestamo.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            var interesVencido = periodosPendientes
+                .Where(x => x.FechaVencimiento < fechaPago)
+                .Sum(x => x.InteresPendiente);
+
+            if (dto.Monto < interesVencido)
+                throw new InvalidOperationException(
+                    "En mora el pago debe cubrir los intereses " +
+                    $"vencidos (mínimo S/ {interesVencido:N2}).");
         }
 
         decimal montoRestante = dto.Monto;
@@ -229,9 +253,73 @@ public class PagoService : IPagoService
         var interesesRestantes = periodosPendientes.Sum(
             x => x.InteresPendiente);
 
+        // RN-PRE-012 (vía pago): si estaba en mora y ya no
+        // cumple la condición (< 3 vencidos), vuelve solo a
+        // ACTIVO y el cliente pasa a observación. Sin pago
+        // que limpie, sigue en mora (solo sale por reactivar
+        // manual con motivo).
+        if (string.Equals(
+                prestamo.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            var vencidosRestantes = periodosPendientes.Count(
+                x => x.FechaVencimiento < fechaPago &&
+                     x.InteresPendiente > 0);
+
+            if (vencidosRestantes < 3)
+            {
+                prestamo.Estado = "Activo";
+
+                if (_morosidadRepository is not null)
+                {
+                    var moraActiva = await _morosidadRepository
+                        .ObtenerPorPrestamoAsync(prestamo.Id);
+
+                    if (moraActiva is not null && moraActiva.Activa)
+                    {
+                        moraActiva.Activa = false;
+                        moraActiva.FechaReactivacion = DateTime.UtcNow;
+
+                        await _morosidadRepository
+                            .ActualizarAsync(moraActiva);
+                    }
+                }
+
+                if (prestamo.Cliente is not null)
+                    await SincronizarClienteAsync(
+                        prestamo.Cliente, prestamo.Id);
+            }
+        }
+
         if (prestamo.CapitalPendiente == 0 && interesesRestantes == 0)
         {
             prestamo.Estado = "Cancelado";
+        }
+
+        if (prestamo.Estado == "Cancelado")
+        {
+            if (_morosidadRepository is not null)
+            {
+                var mora = await _morosidadRepository
+                    .ObtenerPorPrestamoAsync(prestamo.Id);
+
+                if (mora is not null && mora.Activa)
+                {
+                    mora.Activa = false;
+                    mora.FechaReactivacion = DateTime.UtcNow;
+
+                    await _morosidadRepository
+                        .ActualizarAsync(mora);
+                }
+            }
+
+            // RN-MOR-009: sin préstamos en MOROSO el cliente
+            // vuelve a ACTIVO y puede operar de nuevo (este
+            // préstamo ya va a CANCELADO).
+            if (prestamo.Cliente is not null)
+                await SincronizarClienteAsync(
+                    prestamo.Cliente, prestamo.Id);
         }
 
         // ============================================================
@@ -289,6 +377,32 @@ public class PagoService : IPagoService
         }
 
         return await MapearDtoAsync(pagoGuardado);
+    }
+
+    private async Task SincronizarClienteAsync(
+        Cliente cliente,
+        Guid? ignorarPrestamoId = null)
+    {
+        var prestamos = await _prestamoRepository
+            .ObtenerPorClienteAsync(cliente.Id);
+
+        var hayMorosos = prestamos.Any(x =>
+            (ignorarPrestamoId is null || x.Id != ignorarPrestamoId) &&
+            string.Equals(
+                x.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase));
+
+        if (!hayMorosos &&
+            string.Equals(
+                cliente.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            // Sale de mora bajo observación: el pase a
+            // Activo lo hace el administrador manualmente.
+            cliente.Estado = "En observación";
+        }
     }
 
     private async Task<PagoDto> MapearDtoAsync(Pago pago)

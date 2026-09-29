@@ -89,6 +89,9 @@ Entre sus principales responsabilidades estarán:
 - Gestionar plantillas de WhatsApp.
 - Enviar mensajes mediante WhatsApp.
 - Registrar operaciones importantes.
+- Importar préstamos masivamente vía CSV (previsualizar y confirmar).
+- Auditar automáticamente cada cambio (tabla `auditoria`).
+- Ejecutar reglas programadas de notificación (scheduler minutal).
 
 El backend será la fuente de verdad del sistema.
 
@@ -104,17 +107,16 @@ Entre los principales datos almacenados estarán:
 
 - Usuarios.
 - Dispositivos.
-- Configuración de notificaciones.
 - Clientes.
-- Avales.
-- Solicitudes de préstamos.
+- Garantes (avales).
 - Préstamos.
 - Periodos de interés.
 - Pagos.
-- Detalles de pagos.
-- Plantillas de WhatsApp.
-- Mensajes enviados.
-- Notificaciones.
+- Morosidades.
+- Mensajes de WhatsApp.
+- Tokens de refresco.
+- Auditoría.
+- Reglas y envíos de notificación.
 
 La aplicación móvil no realizará consultas directamente sobre la base de datos.
 
@@ -206,6 +208,8 @@ La aplicación móvil no se comunicará directamente con PostgreSQL ni con los s
 | GitHub | Control de versiones |
 | GitHub Copilot | Asistencia inline en el editor (autocompletado y chat en VS Code) |
 | Muse Spark vía OpenCode | Agente de ingeniería (revisión, edición multi-archivo y verificación por terminal) |
+| ImportacionService | Carga masiva CSV: previsualizar y confirmar (máx. 500 filas) |
+| ProgramadorJob | Servicio en segundo plano que ejecuta reglas cada minuto |
 
 ---
 
@@ -326,7 +330,7 @@ La relación será:
 
 Cliente → múltiples préstamos.
 
-En la versión inicial del sistema se podrá establecer como regla que un cliente tenga solamente un préstamo activo simultáneamente.
+En la versión inicial rige que un cliente tenga solamente un préstamo vigente (Pendiente, Activo o Moroso) simultáneamente: `CrearAsync` y la importación lo rechazan (RN-CLI-008).
 
 Sin embargo, el modelo estará preparado para permitir posteriormente varios préstamos activos para un mismo cliente.
 
@@ -338,7 +342,7 @@ Esto permitirá ampliar el sistema sin tener que modificar la relación principa
 
 El sistema deberá controlar el cumplimiento de los pagos de intereses.
 
-Un préstamo podrá pasar a un estado de morosidad cuando el cliente acumule más de dos pagos de interés fuera de plazo, de acuerdo con las reglas de negocio establecidas.
+Un préstamo pasará a estado MOROSO cuando acumule 3 o más periodos vencidos impagos (RN-MOR-005); el cliente pasará a MOROSO automáticamente y volverá a ACTIVO solo con 0 préstamos en MOROSO (RN-MOR-009).
 
 El sistema deberá conservar el historial de los periodos vencidos.
 

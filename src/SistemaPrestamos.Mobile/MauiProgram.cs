@@ -63,6 +63,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<MorosidadService>();
         builder.Services.AddSingleton<WhatsappMobileService>();
         builder.Services.AddSingleton<NotificacionesService>();
+        builder.Services.AddSingleton<ImportacionService>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<ClientesPage>();
@@ -83,6 +84,7 @@ public static class MauiProgram
         builder.Services.AddTransient<NotificacionesPage>();
         builder.Services.AddTransient<EditarReglaPage>();
         builder.Services.AddTransient<HistorialEnviosPage>();
+        builder.Services.AddTransient<ImportacionPage>();
         builder.Services.AddTransient<RegistrarUsuarioPage>();
         builder.Services.AddTransient<BloqueoPage>();
         builder.Services.AddTransient<ArranquePage>();

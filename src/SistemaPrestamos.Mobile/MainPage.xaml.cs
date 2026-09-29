@@ -77,7 +77,7 @@ public partial class MainPage : ContentPage
 
             var hoy = DateTime.Today;
             var cobradosHoy = pagos
-                .Where(p => p.FechaPago.Date == hoy)
+                .Where(p => p.FechaPago.ToLocalTime().Date == hoy)
                 .ToList();
 
             PagosHoyValorLabel.Text =
@@ -96,34 +96,45 @@ public partial class MainPage : ContentPage
                 p => p.Id,
                 p => p.ClienteNombre);
 
-            var ultimo = pagos
-                .OrderByDescending(p => p.FechaPago)
+            // Actividad reciente: el evento más nuevo entre el último
+            // pago registrado y el último préstamo aprobado.
+            var ultimoPago = pagos
+                .OrderByDescending(p => p.FechaRegistro)
                 .FirstOrDefault();
 
-            if (ultimo is not null)
+            var ultimoAprobado = prestamos
+                .Where(p => p.FechaAprobacion.HasValue)
+                .OrderByDescending(p => p.FechaAprobacion!.Value)
+                .FirstOrDefault();
+
+            var fechaPago = ultimoPago?.FechaRegistro
+                ?? DateTime.MinValue;
+            var fechaAprob = ultimoAprobado?.FechaAprobacion
+                ?? DateTime.MinValue;
+
+            if (ultimoPago is null && ultimoAprobado is null)
+            {
+                ActividadCard.IsVisible = false;
+            }
+            else if (fechaAprob > fechaPago && ultimoAprobado is not null)
+            {
+                MostrarActividad(
+                    ultimoAprobado.ClienteNombre,
+                    "Préstamo aprobado",
+                    ultimoAprobado.CapitalInicial,
+                    ultimoAprobado.FechaAprobacion!.Value);
+            }
+            else if (ultimoPago is not null)
             {
                 var nombreCli = nombresPrestamo.TryGetValue(
-                    ultimo.PrestamoId,
+                    ultimoPago.PrestamoId,
                     out var n) ? n : "Cliente";
 
-                ActividadNombreLabel.Text = nombreCli;
-                ActividadInicialLabel.Text = nombreCli.Length > 0
-                    ? nombreCli.Substring(0, 1).ToUpperInvariant()
-                    : "?";
-                ActividadDetalleLabel.Text = "Pago recibido";
-                ActividadMontoLabel.Text = $"S/ {ultimo.Monto:N2}";
-
-                var hace = DateTime.Now - ultimo.FechaPago.ToLocalTime();
-
-                ActividadTiempoLabel.Text = hace.TotalMinutes < 1
-                    ? "ahora mismo"
-                    : hace.TotalHours < 1
-                        ? $"hace {(int)hace.TotalMinutes} min"
-                        : hace.TotalDays < 1
-                            ? $"hace {(int)hace.TotalHours} h"
-                            : $"hace {(int)hace.TotalDays} días";
-
-                ActividadCard.IsVisible = true;
+                MostrarActividad(
+                    nombreCli,
+                    "Pago recibido",
+                    ultimoPago.Monto,
+                    ultimoPago.FechaRegistro);
             }
             else
             {
@@ -140,6 +151,38 @@ public partial class MainPage : ContentPage
             ErrorLabel.Text = $"No se pudo cargar: {ex.Message}";
             ErrorLabel.IsVisible = true;
         }
+    }
+
+    private void MostrarActividad(
+        string nombre,
+        string detalle,
+        decimal monto,
+        DateTime fecha)
+    {
+        ActividadNombreLabel.Text = nombre;
+        ActividadInicialLabel.Text = nombre.Length > 0
+            ? nombre.Substring(0, 1).ToUpperInvariant()
+            : "?";
+        ActividadDetalleLabel.Text = detalle;
+        ActividadMontoLabel.Text = $"S/ {monto:N2}";
+        ActividadTiempoLabel.Text = TextoHace(fecha);
+        ActividadCard.IsVisible = true;
+    }
+
+    private static string TextoHace(DateTime fecha)
+    {
+        var hace = DateTime.Now - fecha.ToLocalTime();
+
+        if (hace.TotalMinutes < 1)
+            return "ahora mismo";
+
+        if (hace.TotalHours < 1)
+            return $"hace {(int)hace.TotalMinutes} min";
+
+        if (hace.TotalDays < 1)
+            return $"hace {(int)hace.TotalHours} h";
+
+        return $"hace {(int)hace.TotalDays} días";
     }
 
     private async void OnRefrescarClicked(object? sender, TappedEventArgs e)

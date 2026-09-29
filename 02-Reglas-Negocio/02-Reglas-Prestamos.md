@@ -75,6 +75,7 @@ Si un pago intentara saldar capital dejando intereses pendientes, el sistema deb
 
 Estados del préstamo (catálogo único y cerrado):
 
+- PENDIENTE
 - ACTIVO
 - MOROSO
 - CANCELADO
@@ -85,6 +86,8 @@ Definiciones:
 - ANULADO = rechazo (`PENDIENTE→ANULADO`) o error de registro (`ACTIVO/MOROSO→ANULADO`, solo antes del primer pago). Ambos requieren motivo + actor, revierten periodos (soft-delete) y prohíben pagos posteriores (ver RN-PRE-012). Se distinguen por `de_estado` en `Historial_Estado`; no se crea estado ni campo nuevo.
 - CANCELADO = saldado según RN-PRE-010, automático por trigger, terminal.
 - Transiciones permitidas: PENDIENTE -> ACTIVO (aprobar, solo ADMIN), PENDIENTE -> ANULADO (rechazar, con motivo), ACTIVO -> MOROSO (automático, job), MOROSO -> ACTIVO (manual, RN-PRE-012), ACTIVO/MOROSO -> CANCELADO (automático al saldar), ACTIVO/MOROSO -> ANULADO (manual pre-primer-pago). Ninguna otra transición está permitida.
+
+> Nota de implementación v1: `AnularAsync` acepta préstamos en Pendiente o Activo sin pagos (no Moroso). La importación masiva crea el préstamo directo en ACTIVO con `FechaAprobacion` = ahora, sin solicitud previa (excepción a RN-PRE-002).
 
 ## RN-PRE-012
 
@@ -101,3 +104,11 @@ La reactivación no eliminará pagos, intereses ni historial.
 ## RN-PRE-014
 
 La base de datos permitirá múltiples préstamos históricos para un mismo cliente.
+
+## RN-PRE-015
+
+Se aceptarán pagos en préstamos ACTIVO y MOROSO. Solo así un préstamo en mora puede regularizar y luego reactivarse por RN-PRE-012.
+
+## RN-PRE-016
+
+La importación masiva generará los periodos semanales desde `fechaInicio` hasta el corte (uno cada 7 días). Si la fila trae `saldoCapitalActual` menor al capital, se marcarán los periodos como Pagado y se creará un pago único de ajuste `CARGA INICIAL` por `interesesTotales + (capital - saldo)`, sin disparar WhatsApp.

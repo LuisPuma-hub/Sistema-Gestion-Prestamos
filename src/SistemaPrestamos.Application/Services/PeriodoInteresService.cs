@@ -26,9 +26,11 @@ public class PeriodoInteresService : IPeriodoInteresService
         if (prestamo is null)
             throw new InvalidOperationException("El préstamo no existe.");
 
-        if (prestamo.Estado != "Activo")
+        if (prestamo.Estado != "Activo" &&
+            prestamo.Estado != "Moroso")
             throw new InvalidOperationException(
-                "Solo se pueden generar períodos para préstamos activos.");
+                "Solo se pueden generar períodos para préstamos " +
+                "activos o morosos.");
 
         var periodos =
             (await _periodoInteresRepository

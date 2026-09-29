@@ -622,6 +622,8 @@ Documentación relacionada:
 - [Casos de Prueba](../10-Pruebas/02-Casos-Prueba.md)
 - [Pruebas de Reglas Financieras](../10-Pruebas/03-Pruebas-Reglas-Financieras.md)
 
+> Suite automatizada v1: 59/59 en verde (`tests/SistemaPrestamos.Tests`): reglas financieras 17, importación 7, estados de mora 6, auditoría 5, notificaciones 13, programador 1, dispositivos 3, clave 7.
+
 ---
 
 ## 18. Control de Versiones
@@ -720,6 +722,8 @@ Proyecto                ███████░░░  En documentación
 ```
 
 > El estado indicado corresponde a la documentación del proyecto. No implica necesariamente que todas las funcionalidades hayan sido implementadas en código.
+
+> Estado de implementación (2026-09-27): auth, clientes, préstamos, pagos, morosidad (RN-MOR-009/RN-CLI-008), notificaciones programables + scheduler, WhatsApp, importación masiva, auditoría automática, dispositivos y clave están implementados con 59/59 tests en verde. Pendiente: integración general, pruebas integrales, optimización y versión 1.0.0.
 
 ---
 

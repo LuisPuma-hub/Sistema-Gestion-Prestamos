@@ -50,7 +50,7 @@ Diseño UX/UI       ██████████  Documentado
 Arquitectura       ██████████  Documentada
 Seguridad          ██████████  Documentada
 Pruebas            ██████████  Planificadas
-Desarrollo         ░░░░░░░░░░  Pendiente / En inicio
+Desarrollo         ░░░░░░░░░░  En curso (fases 2-9)
 Integración        ░░░░░░░░░░  Pendiente
 Producción         ░░░░░░░░░░  Pendiente
 ```
@@ -128,7 +128,7 @@ Contar con una base documental y técnica suficiente para iniciar el desarrollo.
 
 **Versión objetivo:** `0.2.0`
 
-**Estado:** Pendiente.
+**Estado:** Completada (código + tests, ver CHANGELOG).
 
 ## Objetivos
 
@@ -183,7 +183,7 @@ Contar con una estructura técnica funcional sobre la cual comenzar el desarroll
 
 **Versión objetivo:** `0.3.0`
 
-**Estado:** Pendiente.
+**Estado:** Completada (código + tests, ver CHANGELOG).
 
 ## Objetivos
 
@@ -233,7 +233,7 @@ Los usuarios autorizados podrán ingresar al sistema y acceder únicamente a las
 
 **Versión objetivo:** `0.4.0`
 
-**Estado:** Pendiente.
+**Estado:** Completada (código + tests, ver CHANGELOG).
 
 ## Objetivos
 
@@ -281,7 +281,7 @@ Contar con un módulo completo para administrar la información de los clientes.
 
 **Versión objetivo:** `0.5.0`
 
-**Estado:** Pendiente.
+**Estado:** Completada (código + tests, ver CHANGELOG).
 
 ## Objetivos
 
@@ -330,7 +330,7 @@ Contar con un módulo funcional para registrar y controlar préstamos.
 
 **Versión objetivo:** `0.6.0`
 
-**Estado:** Pendiente.
+**Estado:** Completada (código + tests, ver CHANGELOG).
 
 ## Objetivos
 
@@ -384,7 +384,7 @@ Contar con un sistema confiable para registrar y controlar los pagos.
 
 **Versión objetivo:** `0.7.0`
 
-**Estado:** Pendiente.
+**Estado:** Completada (código + tests, ver CHANGELOG).
 
 ## Objetivos
 
@@ -419,7 +419,7 @@ Contar con información actualizada sobre los clientes que presentan incumplimie
 
 **Versión objetivo:** `0.8.0`
 
-**Estado:** Pendiente.
+**Estado:** Completada (código + tests, ver CHANGELOG).
 
 ## Objetivos
 
@@ -454,7 +454,7 @@ Los usuarios recibirán información relevante sobre las operaciones de cobranza
 
 **Versión objetivo:** `0.9.0`
 
-**Estado:** Pendiente.
+**Estado:** Completada (código + tests, ver CHANGELOG).
 
 ## Objetivos
 
@@ -845,16 +845,17 @@ Y en `CHANGELOG.md`:
 | Versión | Etapa | Estado |
 |---|---|---|
 | 0.1.0 | Documentación y planificación | Actual |
-| 0.2.0 | Configuración técnica | Pendiente |
-| 0.3.0 | Autenticación y usuarios | Pendiente |
-| 0.4.0 | Gestión de clientes | Pendiente |
-| 0.5.0 | Gestión de préstamos | Pendiente |
-| 0.6.0 | Gestión de pagos | Pendiente |
-| 0.7.0 | Gestión de morosidad | Pendiente |
-| 0.8.0 | Notificaciones FCM | Pendiente |
-| 0.9.0 | Integración WhatsApp | Pendiente |
+| 0.2.0 | Configuración técnica | Completada |
+| 0.3.0 | Autenticación y usuarios | Completada |
+| 0.4.0 | Gestión de clientes | Completada |
+| 0.5.0 | Gestión de préstamos | Completada |
+| 0.6.0 | Gestión de pagos | Completada |
+| 0.7.0 | Gestión de morosidad | Completada |
+| 0.8.0 | Notificaciones FCM | Completada |
+| 0.9.0 | Integración WhatsApp | Completada |
 | 0.10.0 | Integración general | Pendiente |
 | 0.11.0 | Pruebas integrales | Pendiente |
+| Extras | Importacion masiva, auditoria, dispositivos, clave | Completada 2026-09-27 |
 | 0.12.0 | Optimización | Futuro |
 | 1.0.0 | Primera versión estable | Futuro |
 

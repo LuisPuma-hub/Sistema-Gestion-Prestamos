@@ -977,3 +977,9 @@ El siguiente wireframe será:
 `08-Wireframe-Morosidad.md`
 
 Este documento definirá la pantalla para controlar préstamos atrasados, clientes morosos, pagos pendientes y el proceso de reactivación según las reglas de negocio.
+
+---
+
+## Nota de implementación v1
+
+> El pago pide monto, fecha, comprobante y observaciones (opcionales); sin método de pago. Se aceptan pagos en préstamos Activo y Moroso. El backend distribuye FIFO a intereses y el excedente a capital.

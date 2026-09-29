@@ -1152,3 +1152,9 @@ El backend será responsable de:
 La aplicación .NET MAUI no tendrá acceso directo a las credenciales de Meta.
 
 La integración permitirá complementar las notificaciones push de Firebase Cloud Messaging con mensajes enviados directamente al WhatsApp del cliente.
+
+---
+
+## Nota de implementación v1
+
+> Configuración: `WhatsApp:PhoneNumberId` y `WhatsApp:Token`, Graph API `v22.0`, idioma `es_PE`. Normalización: celular de 9 dígitos que empiece con 9 → prefijo `51`; mínimo 8 dígitos. Estado persistido: `Enviado` (o `Fallido`). Sin webhook.

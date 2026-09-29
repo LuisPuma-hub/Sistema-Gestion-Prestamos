@@ -783,3 +783,9 @@ El usuario deberá poder identificar inmediatamente:
 - Qué clientes requieren atención por morosidad.
 
 Desde esta pantalla el usuario podrá acceder rápidamente a las principales operaciones del sistema de gestión de préstamos.
+
+---
+
+## Nota de implementación v1
+
+> Indicadores reales (5): Clientes, Préstamos (solo Activos), Capital pendiente (solo activos), Cobrado hoy y En mora. Accesos rápidos (4): Clientes, Préstamos, Pagos, Morosidad. Actividad reciente: una tarjeta con el último pago (por fecha de registro) o la última aprobación. Barra inferior de 6 pestañas: Inicio, Clientes, Préstamos, Pagos, Mora, Más.

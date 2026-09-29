@@ -933,3 +933,9 @@ El siguiente paso será desarrollar la documentación correspondiente a:
 ```
 
 donde se podrán definir con mayor detalle las pantallas finales, componentes, estados, navegación y comportamiento de la interfaz.
+
+---
+
+## Nota de implementación v1
+
+> No existe página de Configuración en la app (ni en `AppShell`, ni en DI). La configuración real vive en Más → Notificaciones (reglas programables, solo Administrador) y en variables de entorno del backend (`Jwt`, `Firebase`, `WhatsApp`). Este wireframe queda como propuesta no implementada.

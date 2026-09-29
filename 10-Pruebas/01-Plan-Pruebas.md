@@ -1158,3 +1158,20 @@ El presente plan establece una estrategia integral para validar la calidad del S
 La prioridad de las pruebas estará enfocada en las funcionalidades que puedan generar mayor impacto operativo, especialmente las relacionadas con **préstamos, intereses, pagos, saldos, morosidad, seguridad e integridad de información**.
 
 La aplicación de pruebas unitarias, de integración, funcionales, de seguridad, financieras y de aceptación permitirá reducir riesgos antes de la puesta en producción y proporcionar una base documentada para validar las futuras versiones del sistema.
+
+---
+
+## Cobertura automatizada v1 (59/59 en verde)
+
+Suite xUnit con base InMemory (`tests/SistemaPrestamos.Tests`):
+
+| Archivo | Casos | Cubre |
+|---|---|---|
+| `ReglasFinancierasTests` | 17 | Interés 5%, FIFO interés→capital, cancelación, tope de deuda, duplicados, mora, eliminar/cascada, anulaciones |
+| `ImportacionTests` | 7 | Preview sin guardar, errores por línea, confirm con ajuste `CARGA INICIAL`, rollback total, reutilización de cliente |
+| `MorosidadEstadosTests` | 6 | Bloqueo 2.º préstamo vigente y cliente moroso (RN-CLI-008/RN-MOR-009), mora, reactivación, pago en mora, retorno a activo |
+| `AuditoriaTests` | 5 | `ADDED`/`MODIFIED`/`DELETED`, enmascarado `***`, no auto-audita |
+| `NotificacionesTests` | 13 | Reglas, ventana 15 min, hora Lima, antiduplicados |
+| `ProgramadorReproTests` | 1 | Ejecución y `UltimaEjecucion` |
+| `DispositivosTests` | 3 | Tope 5 recientes, borrado propio/ajeno |
+| `ClaveTests` | 7 | Cambio, reset admin, eliminar (no auto-borrado) |

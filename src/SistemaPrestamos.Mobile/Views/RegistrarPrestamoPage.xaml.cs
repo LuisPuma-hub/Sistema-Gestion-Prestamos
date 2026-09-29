@@ -13,6 +13,8 @@ public partial class RegistrarPrestamoPage : ContentPage
     private readonly PrestamoService _prestamoService;
     private DateTime _fechaInicio = DateTime.Today;
 
+    private static readonly DateTime _fechaMinima = new(2020, 1, 1);
+
     public RegistrarPrestamoPage(
         ClienteService clienteService,
         GaranteService garanteService,
@@ -22,30 +24,41 @@ public partial class RegistrarPrestamoPage : ContentPage
         _clienteService = clienteService;
         _garanteService = garanteService;
         _prestamoService = prestamoService;
-        MostrarFecha();
+        FechaPicker.MinimumDate = _fechaMinima;
+        FechaPicker.MaximumDate = DateTime.Today;
+        FechaPicker.Date = _fechaInicio;
     }
 
-    private void MostrarFecha()
+    private void OnFechaElegida(object? sender, DateChangedEventArgs e)
     {
-        FechaEntry.Text = _fechaInicio.ToString("dd/MM/yyyy");
+        _fechaInicio = e.NewDate?.Date ?? _fechaInicio;
     }
 
     private void OnDiaMenosClicked(object? sender, EventArgs e)
     {
-        _fechaInicio = _fechaInicio.AddDays(-7);
-        MostrarFecha();
+        FijarFecha(_fechaInicio.AddDays(-7));
     }
 
     private void OnDiaMasClicked(object? sender, EventArgs e)
     {
-        _fechaInicio = _fechaInicio.AddDays(7);
-        MostrarFecha();
+        FijarFecha(_fechaInicio.AddDays(7));
     }
 
     private void OnUltimoVencimientoClicked(object? sender, EventArgs e)
     {
-        _fechaInicio = DateTime.Today;
-        MostrarFecha();
+        FijarFecha(DateTime.Today);
+    }
+
+    private void FijarFecha(DateTime fecha)
+    {
+        if (fecha < _fechaMinima)
+            fecha = _fechaMinima;
+
+        if (fecha > DateTime.Today)
+            fecha = DateTime.Today;
+
+        _fechaInicio = fecha.Date;
+        FechaPicker.Date = _fechaInicio;
     }
 
     private async void OnVolverClicked(object? sender, EventArgs e)

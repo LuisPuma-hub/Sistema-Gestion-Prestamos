@@ -23,7 +23,7 @@ No se utilizará Visual Studio 2026 ni ninguna edición de Visual Studio. Toda l
 
 Requisitos complementarios obligatorios en cada máquina de desarrollo:
 
-1. .NET SDK LTS vigente (versión exacta fijada en `global.json`, p. ej. .NET 8 LTS) con workload MAUI instalado (`dotnet workload install maui`).
+1. .NET SDK vigente con workload MAUI instalado (`dotnet workload install maui`). Versión en uso: .NET 10 (`net10.0`, SDK 10.0.400); móvil solo `net10.0-android`.
 2. Extensiones obligatorias de Visual Studio Code: `C# (ms-dotnettools.csharp)`, `C# Dev Kit (ms-dotnettools.csdevkit)`, `.NET MAUI (ms-dotnettools.dotnet-maui)`.
 3. Android SDK + JDK compatible con MAUI para compilar y depurar en Android (plataforma inicial).
 4. Git + cuenta de GitHub.
@@ -183,14 +183,14 @@ Se almacenarán, entre otros:
 
 - Usuarios.
 - Clientes.
-- Avales.
-- Solicitudes.
+- Garantes (avales).
 - Préstamos.
 - Periodos de interés.
 - Pagos.
-- Notificaciones.
-- Plantillas de WhatsApp.
-- Historial de mensajes.
+- Morosidades.
+- Historial de mensajes de WhatsApp.
+- Auditoría.
+- Reglas y envíos de notificación.
 
 ---
 
@@ -301,6 +301,9 @@ La herramienta específica podrá definirse durante la implementación.
 | Repositorio | GitHub |
 | IA de desarrollo | GitHub Copilot (inline) + Muse Spark vía OpenCode (agente) |
 | Diagramas | PlantUML |
+| Auditoría | Interceptor en `SaveChangesAsync` (tabla `auditoria`) |
+| Scheduler | `ProgramadorJob` (servicio en segundo plano, cada minuto) |
+| Importación | `ImportacionService` (CSV, 500 filas, 2 MB) |
 
 ---
 

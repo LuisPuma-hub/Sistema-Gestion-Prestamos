@@ -39,15 +39,19 @@ Estados iniciales:
 - INACTIVO
 - BLOQUEADO
 
+> Excepción implementada (RN-MOR-009): un préstamo que pasa a MOROSO pone al cliente en MOROSO automáticamente, y el cliente vuelve a ACTIVO solo cuando tiene 0 préstamos en MOROSO.
+
 ## RN-CLI-007
 
 Un cliente podrá tener historial de múltiples préstamos.
 
 ## RN-CLI-008
 
-Inicialmente solamente podrá tener un préstamo activo simultáneamente.
+Un cliente Activo podrá tener varios préstamos vigentes simultáneamente.
 
-Esta restricción podrá modificarse posteriormente.
+El freno es el estado, no la cantidad: con cliente en Mora (u otro estado no Activo) no se crea ni se aprueba ningún préstamo hasta regularizar.
+
+> Implementado y verificado: `CrearAsync`/`AprobarAsync` e importación exigen cliente Activo.
 
 ## RN-CLI-009
 

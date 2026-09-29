@@ -32,3 +32,7 @@ DNI `^\d{8}$`, CE `^[A-Z0-9]{9,12}$`, celular `^9\d{8}$` (+51), debounce duplica
 - DADO monto 0/-5/100.123 CUANDO envía ENTONCES 422 campo exacto.
 - DADO tasa cambia 5→6 CUANDO revisa préstamo viejo ENTONCES sigue 5% (snapshot).
 - DADO capital 1000 + pago que deja capital 0 + interés 20 ENTONCES sigue ACTIVO (con cuotas vencidas) o MOROSO si ≥3 vencidos; nunca CANCELADO (exige cap==0 AND int==0, RN-PRE-010). `FINALIZADO` prohibido.
+
+## 6. Nota de implementación v1
+
+> Sin código `PR-######`, sin `solicitudId`/`idempotenciaKey`, sin monto máximo ni rango de fechas ±30: el contrato real es `POST api/prestamos {clienteId, garanteId?, capitalInicial, fechaInicio}` → `201` con el préstamo en `Pendiente`. Los rechazos llegan como `400 {mensaje}` (sin `E-LOAN-ACTIVE` ni 409/422). Aval opcional máximo 1, sin validación de mora del aval.

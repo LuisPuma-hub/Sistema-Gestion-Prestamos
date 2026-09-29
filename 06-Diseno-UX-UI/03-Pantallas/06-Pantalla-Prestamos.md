@@ -1152,3 +1152,9 @@ El siguiente documento de esta sección será:
 `06-Diseno-UX-UI/03-Pantallas/07-Pantalla-Registro-Prestamo.md`
 
 Este documento definirá detalladamente la pantalla utilizada para registrar un nuevo préstamo.
+
+---
+
+## Nota de implementación v1
+
+> Un cliente solo puede tener un préstamo vigente (Pendiente/Activo/Moroso) a la vez ni estar en mora. Aprobar y anular requieren Administrador. Interés fijo 5%.

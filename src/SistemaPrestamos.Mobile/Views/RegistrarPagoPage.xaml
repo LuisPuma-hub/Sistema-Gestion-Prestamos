@@ -51,14 +51,14 @@
 
                 <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="PRÉSTAMO ACTIVO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Label x:Name="PrestamoTituloLabel" Text="PRÉSTAMO ACTIVO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                         <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="12,2">
                             <HorizontalStackLayout Spacing="8">
                                 <Image Source="ic_search.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" />
                                 <Picker
                                     x:Name="PrestamoPicker"
-                                    Title="María García Torres"
-                                    ItemDisplayBinding="{Binding ClienteNombre}"
+                                    Title="Seleccionar préstamo"
+                                    ItemDisplayBinding="{Binding Etiqueta}"
                                     SelectedIndexChanged="OnPrestamoChanged"
                                     HorizontalOptions="Fill" />
                             </HorizontalStackLayout>
@@ -103,6 +103,10 @@
                                 <Grid ColumnDefinitions="*,Auto">
                                     <Label Grid.Column="0" Text="Acumulado interés" FontSize="13" TextColor="#6B7280" />
                                     <Label Grid.Column="1" x:Name="DesgloseAcumuladoValor" Text="S/ 0.00" FontSize="14" FontAttributes="Bold" TextColor="#DC2626" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,Auto" x:Name="DesgloseMoraGrid" IsVisible="False">
+                                    <Label Grid.Column="0" Text="Para salir de mora" FontSize="13" FontAttributes="Bold" TextColor="#92400E" />
+                                    <Label Grid.Column="1" x:Name="DesgloseMoraValor" Text="S/ 0.00" FontSize="14" FontAttributes="Bold" TextColor="#15803D" />
                                 </Grid>
                             </VerticalStackLayout>
                         </Border>

@@ -1256,3 +1256,9 @@ La siguiente pantalla a documentar será:
 ```
 
 Esta pantalla documentará la gestión de mensajes, plantillas, historial y envío de comunicaciones mediante WhatsApp.
+
+---
+
+## Nota de implementación v1
+
+> La pantalla Notificaciones es el CRUD de reglas programables (hora, días, canal, plantilla, activa) + edición de regla e historial de envíos, solo Administrador. No es bandeja de entrada: sin `marcar como leída`.

@@ -903,3 +903,9 @@ ASP.NET Core Web API
 El backend será responsable de las reglas y decisiones de negocio, mientras que FCM será responsable de la entrega de los mensajes al dispositivo.
 
 La aplicación .NET MAUI será responsable de recibir y presentar las notificaciones al usuario.
+
+---
+
+## Nota de implementación v1
+
+> Reglas programables por el Administrador (hora + días bitmask 1-127 + canal + plantilla). Eventos: `VenceHoy, VenceManana, MoraNueva, MoraPersistente, ResumenDiario, MoraCobrador, CobradoDia, PrestamoPorAprobar, ResumenVencimientos`. Semillas: vencen hoy 08:00, vencen mañana 16:00, resumen cobrador 07:30. Job minutal con ventana de 15 min y log antispam en `envios_notificacion`. Canal Android `general`; token no registrado se elimina.

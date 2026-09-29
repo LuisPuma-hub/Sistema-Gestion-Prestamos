@@ -216,6 +216,8 @@ Usuario establece nueva contraseña
 
 Esta funcionalidad podrá implementarse posteriormente.
 
+> Implementado en v1: al ingresar se guardan `auth_token, refresh_token, usuario_id, usuario_nombre, usuario_rol, usuario_email` en `SecureStorage`; existe `BloqueoPage` (huella) y cambio de clave en Perfil. Sin recuperación de contraseña. Ruta real: `POST api/auth/login`.
+
 ---
 
 ## 8. Botón de Inicio de Sesión

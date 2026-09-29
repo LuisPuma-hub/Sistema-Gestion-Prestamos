@@ -965,3 +965,9 @@ El siguiente documento será:
 `06-Diseno-UX-UI/03-Pantallas/09-Pantalla-Pagos.md`
 
 Este documento definirá la pantalla utilizada para consultar y registrar los pagos de los préstamos.
+
+---
+
+## Nota de implementación v1
+
+> El detalle permite aprobar/anular (solo Administrador), ver periodos y pagos, y registrar pagos. Anular exige motivo 10-200 y cero pagos.

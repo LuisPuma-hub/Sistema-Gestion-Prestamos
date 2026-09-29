@@ -626,3 +626,35 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 
 - Bug de medianoche en scheduler: rango de día Lima en UTC + comparación por fecha Lima (fallaba 19:00-00:00).
 - Release Android compila (sin AOT: el plugin Firebase no trae `.so` x64 para AOT, pendiente para tienda).
+
+---
+
+# 17. Control de mora y bloqueo de préstamos - 2026-09-27
+
+## Added
+
+- `RN-MOR-009` implementada: `EvaluarAsync` pasa el préstamo a `Moroso` con 3+ periodos vencidos y pone al cliente en `Moroso`; el cliente vuelve a `Activo` solo con 0 préstamos en `Moroso` (reactivación, pago total o evaluación).
+- `ReactivarAsync` devuelve el préstamo `Moroso` a `Activo` (vía manual, RN-PRE-012) y sincroniza al cliente.
+- `CrearAsync` rechaza segundo préstamo vigente del mismo cliente (RN-CLI-008: Pendiente/Activo/Moroso).
+- `AprobarAsync` rechaza si el cliente no está Activo o si ya tiene otro préstamo vigente.
+- `CambiarEstadoAsync` rechaza volver a `Activo` con préstamos en `Moroso` (RN-MOR-009).
+- RN-CLI-008 relajada: varios vigentes con cliente Activo; el freno es la mora.
+- Mora como radar: filtro `En observación` con activación directa en `MorosidadPage`.
+- Salida de mora → cliente a `En observación` (el pase a `Activo` es manual).
+- RN-PAG-013: pago mínimo en mora = intereses vencidos acumulados.
+- Pago que deja < 3 vencidos reactiva solo el préstamo (vía pago, RN-PRE-012) y lo saca de mora.
+- `PagoService` acepta pagos en préstamos `Moroso` (solo así puede regularizar) y genera periodos para `Activo`/`Moroso`.
+
+## Tests
+
+- `MorosidadEstadosTests`: 11 pruebas (bloqueos de crear/aprobar/activar, transición a mora, reactivación a observación, mínimo en mora, retorno a observación).
+- `dotnet test`: 64/64 pruebas correctas.
+
+---
+
+# 18. Consolidado documentación vs código - 2026-09-27
+
+## Docs
+
+- Notas de implementación v1 en `01-Requisitos`, `02-Reglas-Negocio` (RN-PRE-015/016, RN-PAG-012, alcance real de RN-PAG-002/011 y RN-MOR-006/008), `03-Arquitectura` (rutas reales sin `/api/v1`, entidades y servicios reales, net10.0), `04-Base-Datos` (PK uuid, `NUMERIC(18,2)`, tablas reales, auditoría en C#), `05-API` (contratos reales: sin envelope, decimal, HS256 120 min / refresh 7 días), `06-UX-UI` (6 tabs, ImportacionPage, sin Configuración), `07-Notificaciones`, `08-WhatsApp` (catálogo de 4 plantillas), `09-Seguridad` (roles `Administrador|Cobrador`, solo-Admin por endpoint), `10-Pruebas` (cobertura 59/59).
+- `ROADMAP`: fases 2-9 a Completada + fila de extras (importación, auditoría, dispositivos, clave).

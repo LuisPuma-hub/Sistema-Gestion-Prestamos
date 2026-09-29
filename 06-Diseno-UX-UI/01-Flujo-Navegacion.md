@@ -15,16 +15,13 @@ La navegación deberá ser simple, clara y orientada a facilitar las operaciones
 Inicialmente, el sistema contará con los siguientes roles:
 
 - Administrador.
-- Prestamista.
 - Cobrador.
-
-Dependiendo de la configuración del sistema, un mismo usuario podrá tener más de un rol.
 
 El administrador tendrá acceso a las funciones de gestión y configuración.
 
-El prestamista podrá gestionar clientes y préstamos según los permisos asignados.
-
 El cobrador podrá consultar clientes, préstamos y registrar pagos según los permisos asignados.
+
+> No existe el rol Prestamista como tal.
 
 ---
 
@@ -112,17 +109,15 @@ Ejemplos de información:
 
 - Total de clientes.
 - Préstamos activos.
-- Préstamos pendientes.
-- Préstamos vencidos.
-- Capital prestado.
-- Capital recuperado.
-- Pagos recientes.
-- Clientes con retrasos.
+- Capital pendiente (solo activos).
+- Cobrado hoy.
+- Préstamos en mora.
+- Actividad reciente (una tarjeta: último pago por fecha de registro o última aprobación).
 
 El flujo será:
 
 ```text
-Dashboard
+Inicio
 │
 ├── Clientes
 │
@@ -130,11 +125,17 @@ Dashboard
 │
 ├── Pagos
 │
-├── Morosidad
+├── Mora
 │
-├── Notificaciones
-│
-└── Perfil / Configuración
+└── Más
+    │
+    ├── Mi perfil
+    │
+    ├── Usuarios (solo Administrador)
+    │
+    ├── Notificaciones (solo Administrador)
+    │
+    └── Importar préstamos (solo Administrador)
 ```
 
 Las opciones visibles dependerán de los permisos del usuario autenticado.
@@ -304,7 +305,7 @@ Seleccionar cliente
 Ingresar monto del préstamo
       │
       ▼
-Definir interés semanal
+Interés semanal fijo 5% (informativo, no editable)
       │
       ▼
 Definir fecha de desembolso
@@ -328,7 +329,7 @@ Aprobación
 Préstamo activo
 ```
 
-Un cliente podrá tener múltiples préstamos, siempre que las reglas de negocio lo permitan.
+Un cliente Activo podrá tener múltiples préstamos vigentes; con cliente en mora u observación el registro se rechaza hasta regularizar.
 
 ---
 
@@ -360,7 +361,7 @@ Pagos
         Ingresar monto
             │
             ▼
-        Seleccionar método de pago
+        Comprobante / observaciones (opcionales)
             │
             ▼
         Confirmar pago
@@ -509,55 +510,54 @@ Perfil
 
 ## 15. Flujo de Configuración
 
-Las opciones de configuración estarán disponibles principalmente para usuarios autorizados.
+No existe una pantalla de Configuración. La configuración real vive en Más → Notificaciones (reglas programables, solo Administrador) y en el backend (variables de entorno).
+
+## 15b. Flujo de Importación masiva
+
+Solo Administrador, desde Más → Importar préstamos:
 
 ```text
-Dashboard
+Importar préstamos
+    │
+    ├── Elegir CSV
+    │
+    ├── Plantilla (descarga ejemplo)
     │
     ▼
-Configuración
+Previsualizar (fila por fila, sin guardar)
     │
-    ├── Usuarios
+    ├── Con errores ──► Corregir archivo
     │
-    ├── Roles y permisos
-    │
-    ├── Notificaciones
-    │
-    ├── WhatsApp
-    │
-    └── Configuración general
+    └── Todo verde
+            │
+            ▼
+    Confirmar importación (todo o nada)
 ```
 
 ---
 
 ## 16. Navegación Principal Propuesta
 
-La aplicación podrá utilizar una navegación principal mediante una barra inferior o un menú lateral, dependiendo del diseño final.
-
-Una propuesta inicial es:
+La aplicación utiliza una barra inferior propia (`BarraTabs`, sin menú lateral) con 6 pestañas:
 
 ```text
-┌──────────────────────────────────────┐
-│              DASHBOARD               │
-├──────────────────────────────────────┤
-│                                      │
-│        Información principal         │
-│                                      │
-├──────────────────────────────────────┤
-│ Inicio │ Clientes │ Préstamos │ Más │
-└──────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│                     INICIO                      │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│             Información principal               │
+│                                                 │
+├─────────────────────────────────────────────────┤
+│ Inicio │ Clientes │ Préstamos │ Pagos │ Mora │ Más │
+└─────────────────────────────────────────────────┘
 ```
 
-Dentro de la sección **Más** podrían encontrarse:
+Dentro de la sección **Más** se encuentran:
 
-- Pagos.
-- Morosidad.
-- Notificaciones.
-- WhatsApp.
-- Perfil.
-- Configuración.
-
-La estructura definitiva podrá modificarse durante la etapa de wireframes.
+- Mi perfil.
+- Usuarios (solo Administrador).
+- Notificaciones (solo Administrador).
+- Importar préstamos (solo Administrador).
 
 ---
 
@@ -611,19 +611,14 @@ APLICACIÓN
     │   ├── Lista
     │   └── Detalle
     │
-    ├── Notificaciones
+    ├── Más
+    │   ├── Mi perfil
+    │   ├── Usuarios (solo Administrador)
+    │   ├── Notificaciones (solo Administrador)
+    │   └── Importar préstamos (solo Administrador)
     │
-    ├── WhatsApp
-    │   ├── Historial
-    │   └── Programar mensaje
+    ├── Historial de WhatsApp
     │
-    ├── Perfil
-    │
-    └── Configuración
-        ├── Usuarios
-        ├── Roles
-        ├── Notificaciones
-        └── WhatsApp
 ```
 
 ---

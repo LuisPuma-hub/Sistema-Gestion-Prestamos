@@ -1063,3 +1063,9 @@ La aplicación .NET MAUI será responsable de proporcionar la interfaz de autent
 La autenticación será complementada por un sistema de autorización que determinará qué funcionalidades puede utilizar cada usuario según su rol y permisos.
 
 La seguridad deberá mantenerse principalmente en el backend, evitando confiar en información enviada directamente desde la aplicación móvil.
+
+---
+
+## Nota de implementación v1
+
+> JWT HS256 (`Jwt:Key/Issuer/Audience`), access 120 min, refresh opaco 64 bytes de 7 días con rotación simple. Roles literales `Administrador`/`Cobrador`. Hash PBKDF2 (`PasswordHasher` Identity, mínimo 8). Rutas `api/auth/login|refresh|logout` + `cambiar-clave`. En móvil: `SecureStorage` (`auth_token, refresh_token, usuario_id, usuario_nombre, usuario_rol, usuario_email, biometria_activa`), `AuthRefreshHandler` ante 401, huella solo Android + `BloqueoPage`. Sin `logout-all`, sesiones, recuperación de contraseña, rate-limit ni MFA.

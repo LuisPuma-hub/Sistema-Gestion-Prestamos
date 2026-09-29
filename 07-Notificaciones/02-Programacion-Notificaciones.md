@@ -1123,3 +1123,9 @@ America/Lima
 ```
 
 Las reglas financieras continuarán siendo responsabilidad exclusiva del backend.
+
+---
+
+## Nota de implementación v1
+
+> Estados persistidos: `Enviado`/`Fallido` (capitalizados). Anti-duplicado por `ExisteHoyAsync` + `UltimaEjecucion` (fecha Lima) + rango de día Lima en UTC. El evento `ResumenCobrador` se renombró a `ResumenDiario`.

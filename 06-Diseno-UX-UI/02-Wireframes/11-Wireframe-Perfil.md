@@ -613,3 +613,9 @@ El siguiente y último wireframe será:
 `12-Wireframe-Configuracion.md`
 
 Este documento definirá la pantalla de configuración general del sistema, incluyendo opciones relacionadas con préstamos, pagos, notificaciones, WhatsApp y preferencias generales.
+
+---
+
+## Nota de implementación v1
+
+> Perfil muestra nombre/email/rol, switch de huella (solo Android, `BiometriaService`), cambio de clave (exige la actual) y cierre de sesión (revoca refresh y borra `SecureStorage`). El reseteo de clave ajena es solo Administrador. Sin sesiones activas ni Configuración general (ver nota en `12-Wireframe-Configuracion.md`).

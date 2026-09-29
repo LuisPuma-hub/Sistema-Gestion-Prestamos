@@ -1194,3 +1194,9 @@ La siguiente pantalla a documentar será:
 ```
 
 Esta pantalla documentará la consulta y gestión de las notificaciones de pagos, vencimientos y morosidad.
+
+---
+
+## Nota de implementación v1
+
+> Con 3+ periodos vencidos el préstamo pasa a Moroso y el cliente a Moroso; el cliente vuelve a Activo solo con 0 préstamos en Moroso. La reactivación es manual (solo Administrador, motivo opcional) y los pagos en Moroso están permitidos.

@@ -578,3 +578,9 @@ La pantalla de Login debe proporcionar un acceso simple, seguro y claro al siste
 El usuario deberá poder ingresar sus credenciales, recibir retroalimentación inmediata sobre posibles errores y acceder al Dashboard cuando la autenticación sea exitosa.
 
 La pantalla constituye el punto de entrada principal a la aplicación móvil y establece el contexto de seguridad para el resto de los módulos.
+
+---
+
+## Nota de implementación v1
+
+> Al ingresar se guardan `auth_token, refresh_token, usuario_id, usuario_nombre, usuario_rol, usuario_email` en `SecureStorage`. Existe `BloqueoPage` (huella, solo Android) y cambio de clave en Perfil. Sin recuperación de contraseña.

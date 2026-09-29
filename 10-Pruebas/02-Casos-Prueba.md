@@ -1604,3 +1604,15 @@ Los casos de prueba definidos en este documento proporcionan una base para valid
 Se dará especial prioridad a las pruebas relacionadas con **operaciones financieras, seguridad, integridad de datos y reglas de negocio**, debido a que cualquier error en estas áreas puede afectar directamente la información y operación del sistema.
 
 Los casos deberán mantenerse actualizados conforme se agreguen funcionalidades, cambien las reglas de negocio o se modifique la arquitectura del sistema.
+
+---
+
+## Casos automatizados v1 (cobertura real)
+
+- **CP-IMP (importación, 7 tests):** preview sin guardar, errores por línea, confirm con pago `CARGA INICIAL`, rollback total ante error, reutilización de cliente y rechazo de mismo DNI con otro nombre.
+- **CP-MOR-009 (estados de mora, 6 tests):** rechazo de 2.º préstamo vigente y de cliente moroso, préstamo+cliente a `Moroso` con 3+ vencidos, reactivación a `Activo`, pago en `Moroso` permitido, pago total → `Cancelado` + cliente a `Activo` + mora cerrada.
+- **CP-AUD (auditoría, 5 tests):** `ADDED`/`MODIFIED`/`DELETED` con diff, enmascarado `***`, sin auto-auditoría.
+- **CP-PROG (programador, 14 tests):** reglas, ventana de 15 min, hora Lima, antiduplicados, ejecución.
+- **CP-DISP/CLAVE (10 tests):** tope de 5 dispositivos, borrado propio/ajeno, cambio y reset de clave, sin auto-eliminación.
+
+> Nota: `CP-PRE-004` y casos de "múltiples préstamos" aplican a préstamos históricos, no vigentes (RN-CLI-008 bloquea el 2.º vigente). La auditoría es automática a nivel `DbContext`, no manual.

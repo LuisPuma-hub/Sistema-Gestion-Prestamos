@@ -50,18 +50,23 @@ Las Views representarán las pantallas de la aplicación.
 Entre las principales estarán:
 
 - Login.
-- Dashboard.
+- Dashboard (Inicio).
 - Clientes.
 - Registro de cliente.
 - Detalle de cliente.
-- Aval.
-- Solicitudes.
 - Préstamos.
+- Registro de préstamo.
 - Detalle del préstamo.
-- Registrar pago.
-- Cobranzas.
-- Notificaciones.
-- Configuración.
+- Pagos.
+- Registro de pago.
+- Detalle de pago.
+- Morosidad y detalle.
+- Más (perfil, usuarios, notificaciones, importación).
+- Importación masiva (solo Administrador).
+- Usuarios y registro de usuario (solo Administrador).
+- Notificaciones, edición de regla e historial de envíos (solo Administrador).
+- Historial de WhatsApp.
+- Perfil.
 
 Las Views deberán encargarse principalmente de la presentación de información y la interacción con el usuario.
 
@@ -110,14 +115,18 @@ Los Services serán responsables de la comunicación con el backend y otros comp
 
 Ejemplos:
 
-- AuthService.
+- AuthService (con renovación automática vía `AuthRefreshHandler`).
 - ClienteService.
-- AvalService.
-- SolicitudService.
+- GaranteService.
 - PrestamoService.
 - PagoService.
-- NotificacionService.
-- WhatsAppService.
+- MorosidadService.
+- UsuarioService.
+- NotificacionesService.
+- WhatsappMobileService.
+- ImportacionService (subida multipart del CSV).
+- NotificacionPushService.
+- BiometriaService.
 
 Estos servicios utilizarán la API Backend.
 
@@ -240,8 +249,7 @@ El usuario registrará:
 
 - Monto.
 - Fecha.
-- Método de pago.
-- Observaciones.
+- Comprobante y observaciones (opcionales).
 
 El backend determinará cómo se distribuye el pago.
 
@@ -271,15 +279,11 @@ Las notificaciones deberán funcionar aunque la aplicación esté cerrada.
 
 ## 15. Configuración
 
-El administrador podrá configurar determinadas preferencias desde la aplicación.
+No existe una pantalla de Configuración: la configuración real vive en Más → Notificaciones (reglas programables, solo Administrador) y en el backend (variables de entorno).
 
-Entre ellas:
+## 15b. Importación masiva
 
-- Horarios de notificación.
-- Preferencias de comunicación.
-- Configuración de mensajes.
-
-La configuración definitiva dependerá de los módulos implementados.
+El administrador podrá importar préstamos desde Más → Importar préstamos: elegir el CSV, descargar la plantilla, previsualizar fila por fila y confirmar. El botón de confirmar solo se habilita con 0 errores.
 
 ---
 
@@ -312,23 +316,24 @@ La aplicación deberá:
 
 ## 18. Navegación principal
 
+La barra inferior tiene 6 pestañas: Inicio, Clientes, Préstamos, Pagos, Mora y Más.
+
 El flujo general será:
 
 Login
 ↓
-Dashboard
+Inicio (dashboard)
 ↓
 Clientes
 ↓
 Detalle del cliente
 
-Desde el Dashboard también se podrá acceder a:
+Desde Más (con tarjetas solo-Administrador para Usuarios, Notificaciones e Importar préstamos) se accede a:
 
-- Solicitudes.
-- Préstamos.
-- Cobranzas.
-- Notificaciones.
-- Configuración.
+- Mi perfil.
+- Usuarios.
+- Notificaciones (reglas).
+- Importar préstamos.
 
 ---
 

@@ -2,6 +2,8 @@
 
 Contrato canónico. Fechas RFC3339 `America/Lima` (ej. `2026-09-15T08:00:00-05:00`). Dinero: `integer céntimos + currency PEN` en API (render `S/ 1,234.56 es-PE` solo en plantilla/UI). IDs `uuid v4`. Enum case `UPPER_SNAKE`.
 
+> Nota de implementación v1: sin envelope; el dinero viaja en `decimal` (no céntimos); la tasa viaja directa en tanto por uno (`0.05`); sin `dedupeKey`; eventos de notificación `VenceHoy|VenceManana|MoraNueva|MoraPersistente|ResumenDiario|MoraCobrador|CobradoDia|PrestamoPorAprobar|ResumenVencimientos`; estados WhatsApp `Enviado|Fallido`; `LoginResponse` real = `{token, usuarioId, nombres, apellidos, email, rol, expiraEn, refreshToken, refreshExpiraEn}`; JWT HS256 con access de 120 min y refresh de 7 días; `PagoCreate` = `{prestamoId, monto, fechaPago, comprobante?, observaciones?}` (sin método ni idempotencia); dispositivo = `{token, plataforma}`; importación = `ImportacionPreviewDto{totalFilas,validas,conError,fechaCorte,filas[]}` e `ImportacionResultadoDto{prestamosCreados,clientesCreados/Reutilizados,periodosGenerados,pagosAjuste,montoAjusteTotal}`.
+
 ## 1. Envelope
 
 ```json

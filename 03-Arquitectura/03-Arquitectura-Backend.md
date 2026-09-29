@@ -51,16 +51,21 @@ Será responsable de:
 
 Los Controllers estarán ubicados principalmente en esta capa.
 
-Ejemplos de recursos (prefijo normativo `/api/v1`, ver `05-API/01-Endpoints.md`):
+Ejemplos de recursos implementados (sin versionar, `api/[controller]`):
 
-- /api/v1/auth
-- /api/v1/clientes
-- /api/v1/avales
-- /api/v1/solicitudes
-- /api/v1/prestamos
-- /api/v1/pagos
-- /api/v1/notificaciones
-- /api/v1/whatsapp
+- api/auth
+- api/usuarios
+- api/clientes
+- api/garantes
+- api/prestamos
+- api/pagos
+- api/morosidades
+- api/dispositivos
+- api/notificaciones
+- api/reglasnotificacion
+- api/whatsapp
+- api/importacion
+- api/auditoria
 
 Los Controllers no deberán contener reglas financieras complejas.
 
@@ -86,6 +91,10 @@ Ejemplos:
 - Reactivar préstamo.
 - Programar notificación.
 - Enviar mensaje de WhatsApp.
+- Previsualizar importación masiva.
+- Confirmar importación masiva.
+- Evaluar morosidad.
+- Generar periodos.
 
 Esta capa coordinará las operaciones necesarias para ejecutar cada caso de uso.
 
@@ -97,12 +106,18 @@ La capa Domain contendrá las reglas fundamentales del negocio.
 
 Entre las principales entidades estarán:
 
+- Usuario (con rol).
 - Cliente.
-- Aval.
-- Solicitud.
+- Garante (aval).
 - Préstamo.
 - Periodo de interés.
-- Pago.
+- Pago (con `MontoInteres` y `MontoCapital`).
+- Morosidad.
+- Dispositivo.
+- Mensaje de WhatsApp.
+- Token de refresco.
+- Auditoría.
+- Regla y envío de notificación.
 
 También podrá contener:
 
@@ -142,9 +157,10 @@ No se generará interés sobre:
 
 El caso de uso de registro de pago deberá aplicar el pago siguiendo este orden normativo (RN-PAG-003):
 
-1. Mora pendiente.
-2. Intereses pendientes FIFO por fecha_vencimiento asc.
-3. Capital.
+1. Intereses pendientes FIFO por fecha_vencimiento asc.
+2. Capital.
+
+> En v1 la mora no genera recargo (`tasa_mora = 0`), por lo que no hay paso de mora separado.
 
 Ejemplo:
 
@@ -282,6 +298,8 @@ El backend deberá implementar:
 - Control de acceso.
 - Manejo seguro de tokens.
 - Auditoría de operaciones importantes.
+
+> Implementado: auditoría automática en `SaveChangesAsync` (tabla `auditoria` con diff antes/después, usuario y fecha; enmascara secretos).
 
 Las credenciales de servicios externos no deberán almacenarse directamente en el código fuente.
 

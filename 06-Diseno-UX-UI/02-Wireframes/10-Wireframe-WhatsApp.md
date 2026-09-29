@@ -852,3 +852,9 @@ El siguiente wireframe será:
 `11-Wireframe-Perfil.md`
 
 Este documento definirá la pantalla del perfil del usuario, incluyendo información personal, datos de la cuenta, seguridad y opciones relacionadas con la sesión.
+
+---
+
+## 30. Nota de implementación v1
+
+La app solo implementa `HistorialWhatsappPage` (historial por cliente); no hay pantalla de envío manual ni de configuración WhatsApp. Catálogo vigente: `recordatorio_pago_v2, aviso_mora, confirmacion_pago, prestamo_aprobado` (idioma `es_PE`, variables posicionales `{{1}}, {{2}}, {{3}}`). Estados persistidos: `Enviado`/`Fallido`.

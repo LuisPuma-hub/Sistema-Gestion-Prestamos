@@ -17,6 +17,8 @@ El sistema utilizará una arquitectura basada en:
 - Almacenamiento seguro de contraseñas mediante hash.
 - Comunicación segura mediante HTTPS en producción.
 
+> Nota de implementación v1: JWT HS256 simétrico (`Jwt:Key/Issuer/Audience`), claims con rol literal `Administrador`/`Cobrador`. Access de 120 min (`Jwt:ExpirationMinutes`), refresh opaco de 64 bytes con 7 días (`Jwt:RefreshExpirationDays`) y rotación simple (sin reuse-detection de familia). Rutas sin versionar: `POST api/auth/login|refresh|logout`, `POST api/auth/cambiar-clave`. Sin `GET me`, `logout-all`, `sesiones`, recuperación de contraseña ni rate-limit. Hash con `PasswordHasher` de Identity (PBKDF2), mínimo 8 caracteres. Cuenta inactiva (`Activo=false`) → 401. En el móvil, `AuthRefreshHandler` renueva solo ante 401 y guarda `auth_token`/`refresh_token` en `SecureStorage`.
+
 ---
 
 ## 2. Objetivos

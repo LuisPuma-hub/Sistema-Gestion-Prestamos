@@ -18,14 +18,13 @@ El Dashboard deberá permitir al usuario visualizar rápidamente información im
 
 - Clientes registrados.
 - Préstamos activos.
-- Préstamos pendientes.
-- Préstamos vencidos.
-- Capital prestado.
-- Capital recuperado.
-- Intereses generados.
-- Pagos recientes.
-- Clientes con retrasos.
+- Capital pendiente (solo activos).
+- Cobrado hoy.
+- Préstamos en mora.
+- Actividad reciente (una tarjeta).
 - Accesos rápidos a las funciones principales.
+
+> No existen como listas: pendientes, vencidos, capital prestado/recuperado, intereses generados, próximos pagos ni pagos vencidos.
 
 El diseño deberá priorizar la información que permita al usuario conocer rápidamente el estado general de los préstamos.
 
@@ -410,6 +409,8 @@ Inicialmente podrán mostrarse las últimas operaciones.
 
 El usuario podrá seleccionar una actividad para consultar más detalles.
 
+> Implementado en v1: una sola tarjeta con el evento más reciente entre el último pago (ordenado por fecha de registro) y la última aprobación (`Pago recibido` / `Préstamo aprobado`), con tiempo relativo (`ahora mismo`, `hace X min/h/días`).
+
 ---
 
 ## 12. Navegación Inferior
@@ -432,18 +433,11 @@ La navegación principal podría incluir:
 - Inicio.
 - Clientes.
 - Préstamos.
+- Pagos.
+- Mora.
 - Más.
 
-Dentro de la sección **Más** podrían encontrarse:
-
-- Pagos.
-- Morosidad.
-- Notificaciones.
-- WhatsApp.
-- Perfil.
-- Configuración.
-
-La estructura definitiva podrá ajustarse durante el desarrollo visual.
+> Implementado: barra propia `BarraTabs` con esas 6 pestañas (sin menú lateral). En **Más**: Mi perfil + Usuarios, Notificaciones e Importar préstamos (solo Administrador).
 
 ---
 

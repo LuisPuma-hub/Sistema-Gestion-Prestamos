@@ -4,6 +4,8 @@
 
 Todo pago deberá estar asociado a un préstamo.
 
+> Implementado: se aceptan pagos en préstamos ACTIVO y MOROSO (RN-PRE-015). La actividad reciente del dashboard ordena por `FechaRegistro`, no por `FechaPago`.
+
 ## RN-PAG-002
 
 Todo pago deberá registrar:
@@ -76,3 +78,13 @@ Los valores monetarios deberán manejarse con precisión decimal.
 Los pagos no se editan ni se borran físicamente.
 
 - La corrección se hace por anulación: crea `Pago_Anulacion` que revierte la distribución y recalcula saldos en una transacción, con motivo obligatorio (10-200 chars) + auditoría (actor, fecha).
+
+> Alcance v1 implementado: el pago registra monto, `MontoInteres`, `MontoCapital`, `FechaPago`, comprobante y observaciones. Aún pendientes: `metodo` ENUM, `fecha_valor` con ventana de backdate, `idempotencia-key`, detalle `Pago_Detalle` por periodo y anulación con `Pago_Anulacion`. Solo se valida que la fecha no sea futura.
+
+## RN-PAG-012
+
+El pago de ajuste de la importación masiva usará `Monto = interesesTotales + (capital - saldo)`, `MontoInteres = interesesTotales`, `MontoCapital = capital - saldo`, `FechaPago` = fecha de corte y observaciones `CARGA INICIAL - importación masiva sin historial`.
+
+## RN-PAG-013
+
+En un préstamo MOROSO solo se aceptará el pago que cubra todos los intereses vencidos acumulados (mínimo = suma de `InteresPendiente` de periodos con `FechaVencimiento` pasada). Ejemplo: 3 semanas x S/ 15 → mínimo S/ 45. Así el pago siempre saca de mora.

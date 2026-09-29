@@ -78,22 +78,26 @@ public partial class RegistrarPagoPage : ContentPage
 
             var prestamos = await _prestamoService.ObtenerTodosAsync();
 
-            var activos = prestamos
-                .Where(p => string.Equals(p.Estado, "Activo", StringComparison.OrdinalIgnoreCase))
+            // Activo y Moroso: en mora también se cobra para
+            // regularizar (RN-PRE-015).
+            var cobrables = prestamos
+                .Where(p =>
+                    string.Equals(p.Estado, "Activo", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(p.Estado, "Moroso", StringComparison.OrdinalIgnoreCase))
                 .OrderBy(p => p.ClienteNombre)
                 .ToList();
 
-            PrestamoPicker.ItemsSource = activos;
+            PrestamoPicker.ItemsSource = cobrables;
 
-            if (activos.Count == 0)
+            if (cobrables.Count == 0)
             {
-                MostrarError("No hay préstamos activos para registrar pagos.");
+                MostrarError("No hay préstamos activos o morosos para registrar pagos.");
                 return;
             }
 
             if (Guid.TryParse(PrestamoIdTexto, out var id))
             {
-                var match = activos.FirstOrDefault(p => p.Id == id);
+                var match = cobrables.FirstOrDefault(p => p.Id == id);
 
                 if (match is not null)
                 {
@@ -155,14 +159,34 @@ public partial class RegistrarPagoPage : ContentPage
 
             var acumulado = pendientes.Sum(p => p.InteresPendiente);
 
-            // Se prellena la semana más antigua por pagar (FIFO),
-            // no el acumulado total.
+            var esMoroso = string.Equals(
+                prestamo.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase);
+
+            PrestamoTituloLabel.Text =
+                esMoroso ? "PRÉSTAMO MOROSO" : "PRÉSTAMO ACTIVO";
+
+            // En mora se muestra lo necesario para salir
+            // (vencidos acumulados; la semana vigente es aparte)
+            // y se prellena ese mínimo.
+            var vencido = pendientes
+                .Where(p => p.FechaVencimiento.Date < DateTime.Today)
+                .Sum(p => p.InteresPendiente);
+
+            DesgloseMoraGrid.IsVisible = esMoroso && vencido > 0;
+            DesgloseMoraValor.Text = $"S/ {vencido:N2}";
+
+            // Se prellena el mínimo para salir de mora, o la
+            // semana más antigua por pagar (FIFO).
             var cuota = pendientes.FirstOrDefault()?.InteresPendiente
                 ?? semanal;
 
-            if (cuota > 0)
+            var sugerido = esMoroso && vencido > 0 ? vencido : cuota;
+
+            if (sugerido > 0)
             {
-                MontoEntry.Text = cuota.ToString(
+                MontoEntry.Text = sugerido.ToString(
                     "N2",
                     CultureInfo.CurrentCulture);
             }

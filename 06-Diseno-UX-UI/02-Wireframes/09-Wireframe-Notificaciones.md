@@ -771,3 +771,9 @@ El siguiente wireframe será:
 `10-Wireframe-WhatsApp.md`
 
 Este documento definirá la pantalla para gestionar la comunicación mediante WhatsApp, incluyendo el envío de recordatorios, mensajes personalizados, plantillas de Meta e historial de mensajería.
+
+---
+
+## 26. Nota de implementación v1
+
+La pantalla `NotificacionesPage` no es una bandeja de entrada: es el CRUD de reglas programables (hora, días bitmask 1-127, canal, plantilla, activa) + `EditarReglaPage` e `HistorialEnviosPage`, solo Administrador. Eventos reales: `VenceHoy, VenceManana, MoraNueva, MoraPersistente, ResumenDiario, MoraCobrador, CobradoDia, PrestamoPorAprobar, ResumenVencimientos`. Semillas: vencen hoy 08:00, vencen mañana 16:00, resumen cobrador 07:30. Sin `marcar como leída`.

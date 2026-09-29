@@ -54,3 +54,7 @@ La aplicación móvil deberá desarrollarse utilizando .NET MAUI para permitir u
 ## RNF-012 - Privacidad
 
 La información personal y financiera de los clientes deberá estar protegida y solamente ser accesible a usuarios autorizados.
+
+## RNF-013 - Importación
+
+El archivo CSV tendrá un máximo de 500 filas y 2 MB, se aceptará con separador coma o punto y coma (tolerando BOM) y se guardará en una sola transacción: si una fila falla, no se guarda nada. Las fechas se almacenan en UTC.

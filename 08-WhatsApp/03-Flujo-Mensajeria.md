@@ -1363,3 +1363,9 @@ El backend ASP.NET Core Web API evaluará las reglas de negocio, seleccionará l
 Posteriormente, el sistema registrará el resultado y procesará los estados recibidos para mantener un historial completo.
 
 La arquitectura garantiza que la lógica financiera permanezca centralizada en el backend y que WhatsApp funcione como un canal de comunicación desacoplado de las operaciones principales del sistema.
+
+---
+
+## Nota de implementación v1
+
+> El envío es best-effort: no bloquea la operación ni reintenta (errores silenciados). La importación masiva no dispara mensajes. Eventos reales que disparan envío: aprobación (`prestamo_aprobado`), pago (`confirmacion_pago`) y reglas programadas (recordatorios/avisos).

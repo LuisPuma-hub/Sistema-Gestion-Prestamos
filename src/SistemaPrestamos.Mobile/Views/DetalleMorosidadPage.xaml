@@ -66,12 +66,20 @@
                         <Label x:Name="InicioLabel" FontSize="14" TextColor="#6B7280" />
                         <Label x:Name="ReactivacionLabel" FontSize="14" TextColor="#6B7280" />
                         <Label x:Name="ObservacionesLabel" FontSize="14" TextColor="#111827" />
+                        <Button
+                            Text="Ver préstamo"
+                            BackgroundColor="#E5E7EB"
+                            TextColor="#111827"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="50"
+                            Clicked="OnVerPrestamoClicked" />
                     </VerticalStackLayout>
                 </Border>
 
                 <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="REACTIVAR CLIENTE (SOLO ADMIN)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Label Text="REACTIVAR PRÉSTAMO (SOLO ADMIN)" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                         <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="12,4">
                             <Editor
                                 x:Name="ObservacionesEditor"
@@ -80,7 +88,7 @@
                         </Border>
                         <Button
                             x:Name="ReactivarButton"
-                            Text="✓  Reactivar cliente"
+                            Text="✓  Reactivar préstamo"
                             BackgroundColor="#16A34A"
                             TextColor="White"
                             FontAttributes="Bold"

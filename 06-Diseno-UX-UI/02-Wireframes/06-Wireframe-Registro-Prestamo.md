@@ -695,3 +695,9 @@ El siguiente wireframe será:
 `07-Wireframe-Pagos.md`
 
 Este documento definirá la pantalla para consultar y registrar pagos, incluyendo la selección del préstamo, el cálculo de intereses pendientes, la aplicación del pago primero al interés y posteriormente al capital.
+
+---
+
+## Nota de implementación v1
+
+> El formulario pide cliente (existente), garante opcional, capital y fecha de inicio; el préstamo nace en Pendiente y se aprueba desde el detalle (solo Administrador). Interés fijo 5%.

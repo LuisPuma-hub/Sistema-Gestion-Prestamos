@@ -57,7 +57,7 @@
                                 <Image Source="ic_search.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" />
                                 <Picker
                                     x:Name="ClientePicker"
-                                    Title="María García Torres"
+                                    Title="Seleccionar cliente"
                                     ItemDisplayBinding="{Binding NombreCompleto}"
                                     SelectedIndexChanged="OnClienteChanged"
                                     HorizontalOptions="Fill" />
@@ -126,10 +126,16 @@
                             <Button Grid.Column="1" Text="Últ. vto" Clicked="OnUltimoVencimientoClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
                             <Button Grid.Column="2" Text="+7 días" Clicked="OnDiaMasClicked" BackgroundColor="#DBEAFE" TextColor="#15307A" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
                         </Grid>
-                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="14,10">
+                        <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="14,4">
                             <HorizontalStackLayout Spacing="10">
                                 <Image Source="ic_calendar.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
-                                <Label x:Name="FechaEntry" Text="" FontSize="16" TextColor="#111827" VerticalOptions="Center" />
+                                <DatePicker
+                                    x:Name="FechaPicker"
+                                    Format="dd/MM/yyyy"
+                                    FontSize="16"
+                                    TextColor="#111827"
+                                    HorizontalOptions="Fill"
+                                    DateSelected="OnFechaElegida" />
                             </HorizontalStackLayout>
                         </Border>
                     </VerticalStackLayout>

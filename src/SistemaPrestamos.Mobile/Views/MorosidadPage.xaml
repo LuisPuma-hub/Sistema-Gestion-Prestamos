@@ -62,6 +62,7 @@
                     <HorizontalStackLayout Spacing="8">
                         <Button x:Name="ChipMorosos" Text="Solo morosos" Clicked="OnFiltroChipClicked" />
                         <Button x:Name="ChipTodos" Text="Todos" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipObservacion" Text="En observación" Clicked="OnFiltroChipClicked" />
                     </HorizontalStackLayout>
                 </ScrollView>
             </VerticalStackLayout>
@@ -138,6 +139,50 @@
                 Color="#15307A"
                 HorizontalOptions="Center"
                 VerticalOptions="Center" />
+
+            <CollectionView
+                x:Name="ObservacionCollection"
+                SelectionMode="None"
+                IsVisible="False">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Padding="14,12"
+                            Margin="0,0,0,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <VerticalStackLayout Grid.Column="0" Spacing="1" VerticalOptions="Center">
+                                    <Label
+                                        Text="{Binding NombreCompleto}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="#111827" />
+                                    <Label
+                                        Text="{Binding DocumentoCompleto}"
+                                        FontSize="13"
+                                        TextColor="#6B7280" />
+                                    <Label
+                                        Text="{Binding Telefono}"
+                                        FontSize="13"
+                                        TextColor="#6B7280" />
+                                </VerticalStackLayout>
+                                <Button
+                                    Grid.Column="1"
+                                    Text="Activar"
+                                    BackgroundColor="#15803D"
+                                    TextColor="White"
+                                    FontAttributes="Bold"
+                                    CornerRadius="12"
+                                    VerticalOptions="Center"
+                                    Clicked="OnActivarClicked"
+                                    CommandParameter="{Binding Id}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
             <Label
                 x:Name="EstadoLabel"

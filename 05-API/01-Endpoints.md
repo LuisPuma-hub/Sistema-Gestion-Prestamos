@@ -64,6 +64,19 @@ La versión `v1` permitirá realizar futuras modificaciones importantes en la AP
 
 `400` = request malformada. `422` = bien formada pero viola regla (ej. monto > deuda, DNI duplicado). Matriz mínima por endpoint: `POST /auth/login: 200|400|401|429`, `POST /pagos: 201|400|401|403|404|409|422|429`.
 
+> Nota de implementación v1: la API expone rutas sin versionar (`api/[controller]`, ej. `api/Prestamos`, `api/Auth`) y sin envelope: `Ok(dto)`, `Ok({mensaje})`, `BadRequest({mensaje})`, `Unauthorized({mensaje})`, `NoContent`. Rutas reales:
+>
+> - `api/auth`: `POST login|refresh|logout`, `POST cambiar-clave`.
+> - `api/usuarios` (todo solo Administrador): `GET|GET {id}|POST|DELETE {id}`, `PATCH {id}/clave`.
+> - `api/clientes`: `GET|GET {id}|GET documento/{nro}|POST|PUT {id}`, `GET {id}/foto`, `POST {id}/foto`, `PATCH {id}/estado`, `DELETE {id}` y `DELETE {id}/cascada` (admin).
+> - `api/prestamos`: `GET|GET {id}|GET cliente/{id}|POST`, `PATCH {id}/aprobar|anular` (admin), `POST {id}/periodos`, `GET {id}/periodos`.
+> - `api/pagos`: `GET|GET {id}|GET prestamo/{id}|POST`.
+> - `api/morosidades`: `GET prestamo/{id}`, `POST prestamo/{id}/evaluar`, `PATCH prestamo/{id}/reactivar` (admin).
+> - `api/garantes`, `api/dispositivos`, `api/auditoria` (admin), `api/reglasnotificacion` (admin), `api/notificaciones/probar`, `api/whatsapp` (`probar|recordatorio|enviar-plantilla|plantillas|historial/cliente/{id}`).
+> - `api/importacion` (admin, `multipart/form-data`, 2 MB): `GET prestamos/plantilla`, `POST prestamos/preview`, `POST prestamos/confirm`.
+>
+> No existen en v1: endpoints de cuotas, dashboard, roles, rechazar préstamo, anular pago, webhook de WhatsApp ni sesiones.
+
 ---
 
 # 5. Endpoints de Autenticación

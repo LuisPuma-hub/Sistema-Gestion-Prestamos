@@ -8,6 +8,8 @@ Las restricciones tienen como objetivo garantizar la integridad, consistencia, v
 
 Estas restricciones complementan las reglas de negocio definidas para el sistema y deberán ser consideradas durante la implementación de la base de datos.
 
+> Nota de implementación v1: las restricciones se aplican con FluentApi (`IsRequired`, `HasMaxLength`, `HasPrecision(18,2)`, índices únicos) y validaciones en servicios, no con `CHECK`/`TRIGGER` SQL. El préstamo vigente único por cliente (RN-CLI-008) se valida en `CrearAsync`/importación. Los roles son la columna `Rol` (`Administrador|Cobrador`), sin tablas `roles/usuario_roles`. La auditoría es automática en C# (`SaveChangesAsync`), no por trigger. Contraseñas con `PasswordHasher` de Identity (PBKDF2).
+
 ---
 
 ## 2. Objetivos

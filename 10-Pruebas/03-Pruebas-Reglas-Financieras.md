@@ -1628,3 +1628,11 @@ El **ASP.NET Core Web API** será responsable de ejecutar y validar las reglas f
 La aplicación **.NET MAUI** actuará como cliente del sistema y no deberá considerarse una fuente de autoridad para los cálculos financieros.
 
 Todas las modificaciones futuras de las reglas financieras deberán acompañarse de nuevos casos de prueba y de pruebas de regresión para asegurar que los cambios no afecten las operaciones existentes.
+
+---
+
+## Cobertura financiera v1
+
+- FIFO intereses→capital, tope `monto <= deuda_total` (sin vuelto ni saldo a favor), cancelación solo con capital e intereses en cero.
+- RN-CLI-008: 2.º préstamo vigente rechazado; RN-MOR-009: mora, reactivación y retorno a activo.
+- Importación: saldo menor → pago de ajuste `CARGA INICIAL` + periodos en Pagado; sin saldo → todo Pendiente.

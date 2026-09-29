@@ -37,6 +37,8 @@ El sistema incluirá los siguientes componentes:
 - Consultar capital pendiente.
 - Consultar intereses pendientes.
 - Consultar historial.
+- Importación masiva CSV (solo Administrador): plantilla descargable, previsualización fila por fila sin guardar, confirmación atómica (todo o nada), máximo 500 filas y 2 MB. Columnas: `idFila,tipoDoc,nroDoc,nombres,apellidos,telefono,direccion,capitalInicial,fechaInicio,saldoCapitalActual`. Si el saldo es menor al capital, genera los periodos hasta el corte y un pago único de ajuste (`CARGA INICIAL`), sin disparar WhatsApp.
+- Bloqueos: no se crea ni se aprueba préstamo si el cliente no está Activo (mora u observación). Con cliente Activo se permiten varios vigentes.
 
 ### Gestión de pagos
 
@@ -45,6 +47,7 @@ El sistema incluirá los siguientes componentes:
 - Aplicar excedente a capital.
 - Consultar historial de pagos.
 - Consultar distribución de cada pago.
+- Se aceptan pagos en préstamos ACTIVO y MOROSO (solo así regulariza).
 
 ### Gestión de morosidad
 
@@ -52,6 +55,8 @@ El sistema incluirá los siguientes componentes:
 - Marcar préstamo como moroso automáticamente cuando COUNT(vencidos_impagos) >= 3 (RN-MOR-005).
 - Registrar historial de morosidad en `Historial_Morosidad`.
 - Permitir reactivación manual MOROSO -> ACTIVO solo con pago >=1 vencido o motivo + actor (no resetea contador).
+
+> Implementado: la evaluación corre al consultar morosidad; al cumplirse, el préstamo pasa a MOROSO y el cliente a MOROSO, y el cliente vuelve a ACTIVO solo con 0 préstamos en MOROSO (RN-MOR-009). El historial vive en la tabla `morosidades` + auditoría.
 
 ### Notificaciones
 

@@ -9,6 +9,7 @@ public partial class DetalleMorosidadPage : ContentPage
     private readonly PrestamoService _prestamoService;
     private readonly MorosidadService _morosidadService;
     private Guid _prestamoId = Guid.Empty;
+    private MorosidadDto? _ultimaMora;
 
     public string PrestamoIdTexto { get; set; } = string.Empty;
 
@@ -52,6 +53,8 @@ public partial class DetalleMorosidadPage : ContentPage
 
             var mora = await _morosidadService
                 .EvaluarAsync(_prestamoId);
+
+            _ultimaMora = mora;
 
             if (mora is null)
             {
@@ -127,12 +130,35 @@ public partial class DetalleMorosidadPage : ContentPage
                 return;
             }
 
-            await DisplayAlertAsync(
-                "Préstamo reactivado",
-                "La morosidad fue cerrada correctamente.",
-                "OK");
-
             await CargarAsync();
+
+            // Reactivar no borra la deuda: si aún tiene 3+
+            // semanas impagas, vuelve a mora de inmediato.
+            // Se informa la situación real en vez de un éxito.
+            if (_ultimaMora is not null && _ultimaMora.Activa)
+            {
+                var irAPagar = await DisplayAlertAsync(
+                    "Sigue en mora",
+                    $"Se registró la reactivación, pero el préstamo " +
+                    $"aún tiene {_ultimaMora.PagosInteresVencidos} " +
+                    $"semana(s) vencida(s) impaga(s) y volvió a mora. " +
+                    $"Pague lo vencido para salir.",
+                    "Ir a pagar",
+                    "OK");
+
+                if (irAPagar)
+                {
+                    await Shell.Current.GoToAsync(
+                        $"{nameof(RegistrarPagoPage)}?prestamoId={_prestamoId}");
+                }
+            }
+            else
+            {
+                await DisplayAlertAsync(
+                    "Préstamo reactivado",
+                    "La morosidad fue cerrada correctamente.",
+                    "OK");
+            }
         }
         catch (HttpRequestException)
         {
@@ -159,6 +185,12 @@ public partial class DetalleMorosidadPage : ContentPage
     private async void OnVolverClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");
+    }
+
+    private async void OnVerPrestamoClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            $"{nameof(DetallePrestamoPage)}?id={_prestamoId}");
     }
 
     private void MostrarCargando(bool cargando)

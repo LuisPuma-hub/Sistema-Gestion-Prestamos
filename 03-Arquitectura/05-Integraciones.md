@@ -54,12 +54,13 @@ Dispositivo móvil
 
 ### 3.4 Horarios
 
-El administrador podrá configurar los horarios de notificación.
+El administrador podrá configurar los horarios de notificación mediante reglas programables (hora + días de semana).
 
-Ejemplos:
+Semillas iniciales:
 
-- 08:00 a. m.
-- 04:00 p. m.
+- Vencen hoy 08:00 a. m.
+- Vencen mañana 04:00 p. m.
+- Resumen cobrador 07:30 a. m.
 
 Los horarios podrán modificarse posteriormente.
 
@@ -104,17 +105,14 @@ El sistema podrá utilizar WhatsApp para:
 
 ### 4.3 Plantillas
 
-Los mensajes automatizados podrán utilizar plantillas.
+Los mensajes automatizados utilizan plantillas del catálogo vigente:
 
-Las plantillas podrán contener variables.
+- `recordatorio_pago_v2` (vencen hoy / vencen mañana).
+- `aviso_mora` (mora nueva / persistente).
+- `confirmacion_pago` (al registrar un pago).
+- `prestamo_aprobado` (al aprobar un préstamo).
 
-Ejemplo conceptual:
-
-Hola {{nombre}}.
-
-Le recordamos que su pago de S/ {{monto}} correspondiente al préstamo {{prestamo}} tiene vencimiento el {{fecha}}.
-
-La administración y aprobación de las plantillas dependerá de las políticas de WhatsApp Business Platform.
+Idioma `es_PE`, con variables posicionales (nombre, monto, fecha/saldo). La administración y aprobación de las plantillas dependerá de las políticas de WhatsApp Business Platform.
 
 ---
 
@@ -136,7 +134,9 @@ WhatsApp
 ↓
 Cliente
 
-El backend deberá registrar el resultado del envío.
+El backend deberá registrar el resultado del envío (`Enviado`/`Fallido` + identificador externo de Meta cuando esté disponible).
+
+> La importación masiva de préstamos no dispara mensajes de WhatsApp.
 
 ---
 

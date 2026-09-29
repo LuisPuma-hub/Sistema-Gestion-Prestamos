@@ -1381,3 +1381,9 @@ Las operaciones financieras, configuraciones críticas, gestión de usuarios y p
 El sistema aplicará el principio de mínimo privilegio y deberá prevenir problemas como escalamiento de privilegios y acceso indebido a recursos.
 
 De esta manera, la autenticación permitirá determinar **quién es el usuario**, mientras que la autorización determinará **qué puede hacer dentro del sistema**.
+
+---
+
+## Nota de implementación v1
+
+> Autorización solo por `[Authorize(Roles="Administrador")]`, sin permisos granulares. Solo-Admin: aprobar/anular préstamos, eliminar clientes (simple/cascada), reactivar mora, importar, reglas de notificación, auditoría, usuarios y dispositivos (GET/DELETE). El resto (pagos, WhatsApp, crear/editar clientes) exige solo autenticación. En Más solo se muestran Usuarios/Notificaciones/Importar al Administrador. No existe el rol Prestamista.

@@ -802,3 +802,9 @@ El siguiente wireframe será:
 `09-Wireframe-Notificaciones.md`
 
 Este documento definirá la pantalla para gestionar las notificaciones del sistema, incluyendo recordatorios de pago, próximas fechas de vencimiento y la programación de notificaciones automáticas.
+
+---
+
+## Nota de implementación v1
+
+> Con 3+ periodos vencidos el préstamo pasa a Moroso y el cliente a Moroso (RN-MOR-009); el cliente vuelve a Activo solo con 0 préstamos en Moroso. La reactivación es manual y solo Administrador. Los pagos en Moroso están permitidos para regularizar.
