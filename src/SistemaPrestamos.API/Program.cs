@@ -89,17 +89,31 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Puerto de la nube (Render inyecta PORT); local usa launchSettings.
+var puertoNube = Environment.GetEnvironmentVariable("PORT");
+
+if (!string.IsNullOrWhiteSpace(puertoNube))
+{
+    app.Urls.Clear();
+    app.Urls.Add($"http://*:{puertoNube}");
+}
+
+// Aplica migraciones pendientes al arrancar (nube y local).
+using (var alcance = app.Services.CreateScope())
+{
+    var baseDatos = alcance.ServiceProvider
+        .GetRequiredService<PrestamosDbContext>();
+
+    baseDatos.Database.Migrate();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-// HTTPS solo fuera de desarrollo (emulador usa HTTP local)
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
-
+// Sin redirección HTTPS: Render termina TLS en su proxy y la
+// API solo recibe HTTP interno. La URL pública igual es https.
 app.UseAuthentication();
 app.UseAuthorization();
 

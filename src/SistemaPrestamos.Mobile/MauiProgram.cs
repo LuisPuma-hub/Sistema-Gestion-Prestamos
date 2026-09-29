@@ -12,6 +12,10 @@ public static class MauiProgram
     // "http://192.168.18.25:5077/".
     private const string ApiBaseUrl = "http://10.0.2.2:5077/";
 
+    // URL pública de la API en la nube (Render). Reemplazar
+    // cuando se cree el servicio. Solo se usa en Release.
+    private const string ApiBaseUrlNube = "https://tu-api.onrender.com/";
+
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -44,12 +48,17 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
+#if DEBUG
 #if ANDROID
         builder.Services.AddSingleton(sp =>
             CrearHttpClient(ApiBaseUrl));
 #else
         builder.Services.AddSingleton(sp =>
             CrearHttpClient("http://localhost:5077/"));
+#endif
+#else
+        builder.Services.AddSingleton(sp =>
+            CrearHttpClient(ApiBaseUrlNube));
 #endif
 
         builder.Services.AddSingleton<AuthService>();
