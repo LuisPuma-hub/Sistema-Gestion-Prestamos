@@ -39,7 +39,7 @@ Las notificaciones podrán informar:
 - Pagos registrados.
 - Situaciones importantes de cobranza.
 
-> Implementado: scheduler minutal (`ProgramadorJob`) que ejecuta reglas por hora de Lima con ventana de 15 min. Eventos: `VenceHoy`, `VenceManana`, `MoraNueva`, `MoraPersistente`, `ResumenDiario`, `MoraCobrador`, `CobradoDia`, `PrestamoPorAprobar`, `ResumenVencimientos`. Semillas: vencen hoy 08:00, vencen mañana 16:00, resumen cobrador 07:30. Log antispam en `EnvioNotificacion` + endpoint de diagnóstico. La importación masiva no dispara notificaciones.
+> Implementado: scheduler minutal (`ProgramadorJob`) que ejecuta reglas por hora de Lima con ventana de 15 min. Eventos: `VenceHoy`, `VenceManana`, `MoraNueva`, `MoraPersistente`, `ResumenDiario`, `MoraCobrador`, `CobradoDia`, `PrestamoPorAprobar`, `ResumenVencimientos`. `MoraPersistente` vale por WhatsApp (aviso por cliente) y por Push (resumen al equipo). Semillas: vencen hoy 08:00, vencen mañana 16:00, resumen cobrador 07:30. Log antispam en `EnvioNotificacion` + endpoint de diagnóstico. La importación masiva no dispara notificaciones.
 
 ## RN-NOT-007
 

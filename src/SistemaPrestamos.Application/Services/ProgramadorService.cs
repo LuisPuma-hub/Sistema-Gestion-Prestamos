@@ -188,6 +188,12 @@ public class ProgramadorService : IProgramadorService
         DateTime hoy,
         bool soloNuevas)
     {
+        // Por Push va un resumen al equipo (no un mensaje
+        // por cliente como en WhatsApp).
+        if (regla.Canal == CanalesNotificacion.Push)
+            return await EnviarResumenMorasPushAsync(
+                regla, hoy, soloNuevas);
+
         var morosidades = await _morosidadRepository.ObtenerActivasAsync();
 
         var enviados = 0;
@@ -231,6 +237,39 @@ public class ProgramadorService : IProgramadorService
         }
 
         return enviados;
+    }
+
+    private async Task<int> EnviarResumenMorasPushAsync(
+        ReglaNotificacion regla,
+        DateTime hoy,
+        bool soloNuevas)
+    {
+        var moras = await _morosidadRepository.ObtenerActivasAsync();
+
+        var lista = moras
+            .Where(m => !soloNuevas || m.FechaInicio?.Date >= hoy)
+            .ToList();
+
+        if (lista.Count == 0)
+            return 0;
+
+        var nombres = string.Join(
+            ", ",
+            lista
+                .Take(3)
+                .Select(m => m.Prestamo.Cliente.Nombres));
+
+        var extra = lista.Count > 3
+            ? $" y {lista.Count - 3} más"
+            : string.Empty;
+
+        var titulo = soloNuevas ? "Nueva mora" : "Moras activas";
+
+        return await EnviarPushCobradoresAsync(
+            regla,
+            hoy,
+            titulo,
+            $"{lista.Count} en mora: {nombres}{extra}.");
     }
 
     private async Task<List<Usuario>> ObtenerCobradoresAsync()

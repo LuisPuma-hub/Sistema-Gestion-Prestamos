@@ -24,6 +24,7 @@ public static class EventosNotificacion
     [
         ResumenDiario,
         MoraCobrador,
+        MoraPersistente,
         CobradoDia,
         PrestamoPorAprobar,
         ResumenVencimientos

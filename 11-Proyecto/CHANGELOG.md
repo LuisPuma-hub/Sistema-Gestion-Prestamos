@@ -672,6 +672,7 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 - Reseteo de clave por token de 30 min: admin genera (`POST api/usuarios/{id}/reset-token`), anónimo canjea (`POST api/auth/reset`).
 - Reportes: cobranza del día, cartera por cobrar (+CSV), ingresos por día (`api/reportes`).
 - App: anular en detalle de pago (admin), enlace de reseteo en Usuarios, recuperar clave en Login, pantalla Reportes en Más.
+- `MoraPersistente` disponible por Push (resumen de moras activas al equipo).
 
 ## Tests
 

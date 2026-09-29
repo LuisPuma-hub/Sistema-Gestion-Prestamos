@@ -284,4 +284,115 @@ public class NotificacionesTests : IDisposable
             regla.Id, regla.Evento, regla.Canal,
             Guid.NewGuid(), prestamoId, null, hoy));
     }
+
+    [Fact]
+    public async Task Crear_PushMoraPersistente_Valido()
+    {
+        var regla = await _reglas.CrearAsync(new CrearReglaDto
+        {
+            Nombre = "Moras activas",
+            Evento = EventosNotificacion.MoraPersistente,
+            Canal = CanalesNotificacion.Push,
+            Hora = "07:30"
+        });
+
+        Assert.Equal(EventosNotificacion.MoraPersistente, regla.Evento);
+    }
+
+    [Fact]
+    public async Task MoraPersistentePush_EnviaResumen()
+    {
+        _contexto.Usuarios.Add(new Usuario
+        {
+            Id = Guid.NewGuid(),
+            Nombres = "Cob",
+            Apellidos = "Rador",
+            Email = "cob@x.com",
+            PasswordHash = "x",
+            Rol = "Cobrador",
+            Activo = true,
+            FechaCreacion = DateTime.UtcNow
+        });
+
+        var clienteId = Guid.NewGuid();
+
+        _contexto.Clientes.Add(new Cliente
+        {
+            Id = clienteId,
+            TipoDocumento = "DNI",
+            NumeroDocumento = "91000001",
+            Nombres = "Mora",
+            Apellidos = "Vieja",
+            Telefono = "987654321",
+            Estado = "Moroso",
+            FechaRegistro = DateTime.UtcNow
+        });
+
+        var prestamoId = Guid.NewGuid();
+
+        _contexto.Prestamos.Add(new Prestamo
+        {
+            Id = prestamoId,
+            ClienteId = clienteId,
+            CapitalInicial = 100m,
+            TasaInteresSemanal = 0.05m,
+            CapitalPendiente = 100m,
+            FechaInicio = DateTime.UtcNow.AddDays(-60),
+            FechaAprobacion = DateTime.UtcNow.AddDays(-60),
+            Estado = "Moroso"
+        });
+
+        _contexto.Morosidades.Add(new Morosidad
+        {
+            Id = Guid.NewGuid(),
+            PrestamoId = prestamoId,
+            PagosInteresVencidos = 5,
+            FechaInicio = DateTime.UtcNow.AddDays(-20),
+            Activa = true
+        });
+
+        await _contexto.SaveChangesAsync();
+        _contexto.ChangeTracker.Clear();
+
+        var lima = ProgramadorService.AhoraLima(DateTime.UtcNow);
+
+        await _reglas.CrearAsync(new CrearReglaDto
+        {
+            Nombre = "Moras",
+            Evento = EventosNotificacion.MoraPersistente,
+            Canal = CanalesNotificacion.Push,
+            Hora = lima.ToString("HH:mm")
+        });
+
+        var programador = new ProgramadorService(
+            new ReglaNotificacionRepository(_contexto),
+            new EnvioNotificacionRepository(_contexto),
+            new PrestamoRepository(_contexto),
+            new PeriodoInteresRepository(_contexto),
+            new MorosidadRepository(_contexto),
+            new PagoRepository(_contexto),
+            new UsuarioRepository(_contexto),
+            null!,
+            new FakePush());
+
+        var enviados = await programador.EjecutarPendientesAsync(
+            DateTime.UtcNow);
+
+        Assert.True(enviados >= 1);
+    }
+
+    private class FakePush : SistemaPrestamos.Application.Interfaces.INotificacionService
+    {
+        public Task<int> EnviarAUsuarioAsync(
+            Guid usuarioId, string titulo, string cuerpo)
+        {
+            return Task.FromResult(1);
+        }
+
+        public Task EnviarATokenAsync(
+            string token, string titulo, string cuerpo)
+        {
+            return Task.CompletedTask;
+        }
+    }
 }

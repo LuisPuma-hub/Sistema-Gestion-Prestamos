@@ -17,6 +17,7 @@ public partial class EditarReglaPage : ContentPage
     [
         ("ResumenDiario", "Resumen diario"),
         ("MoraCobrador", "Mora al cobrador"),
+        ("MoraPersistente", "Moras activas"),
         ("CobradoDia", "Cobrado del día"),
         ("PrestamoPorAprobar", "Préstamo por aprobar"),
         ("ResumenVencimientos", "Vencen hoy")

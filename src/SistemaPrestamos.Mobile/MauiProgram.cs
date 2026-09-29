@@ -14,7 +14,7 @@ public static class MauiProgram
 
     // URL pública de la API en la nube (Render). Reemplazar
     // cuando se cree el servicio. Solo se usa en Release.
-    private const string ApiBaseUrlNube = "https://tu-api.onrender.com/";
+    private const string ApiBaseUrlNube = "https://sistema-gestion-prestamos-rjg2.onrender.com/";
 
     public static MauiApp CreateMauiApp()
     {
