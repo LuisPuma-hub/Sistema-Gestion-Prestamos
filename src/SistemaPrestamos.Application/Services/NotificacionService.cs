@@ -114,6 +114,10 @@ public class NotificacionService : INotificacionService
             },
             Android = new AndroidConfig
             {
+                // Alta prioridad: entra aunque el celular esté
+                // en Doze con la app cerrada hace horas.
+                Priority = Priority.High,
+                TimeToLive = TimeSpan.FromHours(23),
                 Notification = new AndroidNotification
                 {
                     ChannelId = "general"
