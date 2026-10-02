@@ -1403,4 +1403,4 @@ El siguiente paso de documentación será continuar con el siguiente módulo de 
 
 ## Nota de implementación v1
 
-> La app solo implementa el historial de WhatsApp por cliente (`HistorialWhatsappPage`); sin envío manual. Catálogo: `recordatorio_pago_v2, aviso_mora, confirmacion_pago, prestamo_aprobado`. Estados: `Enviado`/`Fallido`.
+> La app solo implementa el historial de WhatsApp por cliente (`HistorialWhatsappPage`); sin envío manual. Catálogo: `recordatorio_pago, aviso_mora, confirmacion_pago, prestamo_aprobado`. Estados: `Enviado`/`Fallido`.

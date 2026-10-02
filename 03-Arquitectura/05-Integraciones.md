@@ -107,7 +107,7 @@ El sistema podrá utilizar WhatsApp para:
 
 Los mensajes automatizados utilizan plantillas del catálogo vigente:
 
-- `recordatorio_pago_v2` (vencen hoy / vencen mañana).
+- `recordatorio_pago` (vencen hoy / vencen mañana).
 - `aviso_mora` (mora nueva / persistente).
 - `confirmacion_pago` (al registrar un pago).
 - `prestamo_aprobado` (al aprobar un préstamo).

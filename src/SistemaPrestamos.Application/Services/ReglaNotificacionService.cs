@@ -279,8 +279,8 @@ public class ReglaNotificacionService : IReglaNotificacionService
     {
         return evento switch
         {
-            EventosNotificacion.VenceHoy => "recordatorio_pago_v2",
-            EventosNotificacion.VenceManana => "recordatorio_pago_v2",
+            EventosNotificacion.VenceHoy => "recordatorio_pago",
+            EventosNotificacion.VenceManana => "recordatorio_pago",
             EventosNotificacion.MoraNueva => "aviso_mora",
             EventosNotificacion.MoraPersistente => "aviso_mora",
             _ => null

@@ -97,7 +97,7 @@ public class NotificacionesTests : IDisposable
             Hora = "08:00"
         });
 
-        Assert.Equal("recordatorio_pago_v2", regla.Plantilla);
+        Assert.Equal("recordatorio_pago", regla.Plantilla);
         Assert.True(regla.Activa);
         Assert.Equal(127, regla.DiasSemana);
     }

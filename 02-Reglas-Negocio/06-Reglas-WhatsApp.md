@@ -23,7 +23,7 @@ Se podrán utilizar plantillas para:
 - Información del préstamo.
 - Marketing.
 
-> Catálogo vigente en v1 (único válido): `recordatorio_pago_v2`, `aviso_mora`, `confirmacion_pago`, `prestamo_aprobado` (idioma `es_PE`). Se envían `prestamo_aprobado` al aprobar y `confirmacion_pago` al pagar; los recordatorios y avisos de mora los envía el `ProgramadorService`.
+> Catálogo vigente en v1 (único válido): `recordatorio_pago`, `aviso_mora`, `confirmacion_pago`, `prestamo_aprobado` (idioma `es_PE`). Se envían `prestamo_aprobado` al aprobar y `confirmacion_pago` al pagar; los recordatorios y avisos de mora los envía el `ProgramadorService`.
 
 ## RN-WHA-005
 

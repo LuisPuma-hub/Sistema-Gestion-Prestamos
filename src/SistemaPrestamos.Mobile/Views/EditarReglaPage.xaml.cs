@@ -25,7 +25,7 @@ public partial class EditarReglaPage : ContentPage
 
     private static readonly string[] Plantillas =
     [
-        "recordatorio_pago_v2",
+        "recordatorio_pago",
         "aviso_mora",
         "confirmacion_pago",
         "prestamo_aprobado"

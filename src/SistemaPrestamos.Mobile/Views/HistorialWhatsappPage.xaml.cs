@@ -85,7 +85,7 @@ public partial class HistorialWhatsappPage : ContentPage
 
     private static readonly Dictionary<string, string> _plantillas = new()
     {
-        ["Recordatorio de pago"] = "recordatorio_pago_v2",
+        ["Recordatorio de pago"] = "recordatorio_pago",
         ["Aviso de mora"] = "aviso_mora",
         ["Confirmación de pago"] = "confirmacion_pago",
         ["Préstamo aprobado"] = "prestamo_aprobado"
@@ -120,7 +120,7 @@ public partial class HistorialWhatsappPage : ContentPage
             ? p
             : null;
 
-        if ((plantilla is "recordatorio_pago_v2" or "aviso_mora"
+        if ((plantilla is "recordatorio_pago" or "aviso_mora"
                 or "prestamo_aprobado") && prestamoId is null)
         {
             await DisplayAlertAsync(

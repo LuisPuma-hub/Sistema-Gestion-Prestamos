@@ -131,7 +131,7 @@ public class WhatsappService : IWhatsappService
 
     public static IReadOnlyList<(string Nombre, string Descripcion)> PlantillasDisponibles { get; } =
     [
-        ("recordatorio_pago_v2", "Recordatorio de pago semanal"),
+        ("recordatorio_pago", "Recordatorio de pago semanal"),
         ("aviso_mora", "Aviso de morosidad"),
         ("confirmacion_pago", "Confirmación de pago recibido"),
         ("prestamo_aprobado", "Aviso de préstamo aprobado")
@@ -165,7 +165,7 @@ public class WhatsappService : IWhatsappService
             clienteId,
             prestamo.Id,
             cliente.Telefono,
-            "recordatorio_pago_v2",
+            "recordatorio_pago",
             $"Recordatorio a {cliente.Nombres}.",
             "es_PE",
             [
@@ -194,7 +194,7 @@ public class WhatsappService : IWhatsappService
                 "Plantilla no disponible.");
         }
 
-        if (nombre == "recordatorio_pago_v2")
+        if (nombre == "recordatorio_pago")
         {
             return await EnviarRecordatorioAsync(clienteId, prestamoId);
         }

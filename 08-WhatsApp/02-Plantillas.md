@@ -1149,4 +1149,4 @@ De esta manera se garantiza una comunicación automatizada, trazable y coherente
 
 ## Nota de implementación v1
 
-> Catálogo vigente (único válido, validado en `ReglaNotificacionService`): `recordatorio_pago_v2` (VenceHoy/VenceManana), `aviso_mora` (MoraNueva/MoraPersistente), `confirmacion_pago`, `prestamo_aprobado`. Variables posicionales `{{1}}, {{2}}, {{3}}` (nombre, monto, fecha/saldo). Los nombres `wh_*_v1` quedan obsoletos.
+> Catálogo vigente (único válido, validado en `ReglaNotificacionService`): `recordatorio_pago` (VenceHoy/VenceManana), `aviso_mora` (MoraNueva/MoraPersistente), `confirmacion_pago`, `prestamo_aprobado`. Variables posicionales `{{1}}, {{2}}, {{3}}` (nombre, monto, fecha/saldo). Los nombres `wh_*_v1` quedan obsoletos.
