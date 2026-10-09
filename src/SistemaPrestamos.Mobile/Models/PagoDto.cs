@@ -29,6 +29,9 @@ public class PagoDto
     public bool Anulado => string.Equals(
         Estado, "Anulado", StringComparison.OrdinalIgnoreCase);
 
+    public bool Cobrado => string.Equals(
+        Estado, "Registrado", StringComparison.OrdinalIgnoreCase);
+
     public DateTime FechaRegistro { get; set; }
 
     public string PrestamoNombre { get; set; } = string.Empty;

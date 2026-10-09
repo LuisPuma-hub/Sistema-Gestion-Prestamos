@@ -112,3 +112,7 @@ Se aceptarán pagos en préstamos ACTIVO y MOROSO. Solo así un préstamo en mor
 ## RN-PRE-016
 
 La importación masiva generará los periodos semanales desde `fechaInicio` hasta el corte (uno cada 7 días). Si la fila trae `saldoCapitalActual` menor al capital, se marcarán los periodos como Pagado y se creará un pago único de ajuste `CARGA INICIAL` por `interesesTotales + (capital - saldo)`, sin disparar WhatsApp.
+
+## RN-PRE-017
+
+El Administrador podrá ajustar el saldo de un préstamo Activo o Moroso con motivo obligatorio (10-200): reducir capital y/o perdonar intereses vencidos. Se registra como pago `Ajuste`/`Condonación` (no mueve dinero real ni suma a cobranza) y reevalúa mora. Anulable como cualquier pago.

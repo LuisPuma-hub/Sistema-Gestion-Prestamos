@@ -529,6 +529,175 @@ public class PagoService : IPagoService
         return string.Join("; ", partes);
     }
 
+    public async Task<PagoDto> AjustarAsync(
+        Guid prestamoId,
+        AjustarPrestamoDto dto,
+        Guid? actor)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Motivo) ||
+            dto.Motivo.Trim().Length < 10 ||
+            dto.Motivo.Trim().Length > 200)
+            throw new InvalidOperationException(
+                "El motivo es obligatorio (10 a 200 caracteres).");
+
+        var prestamo = await _prestamoRepository
+            .ObtenerPorIdAsync(prestamoId);
+
+        if (prestamo is null)
+            throw new InvalidOperationException(
+                "El préstamo no existe.");
+
+        if (!string.Equals(prestamo.Estado, "Activo",
+                StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(prestamo.Estado, "Moroso",
+                StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                "Solo se pueden ajustar préstamos activos o morosos.");
+
+        var ahora = DateTime.UtcNow;
+        var capitalAdj = 0m;
+        var perdonado = 0m;
+        var partes = new List<string>();
+
+        if (dto.NuevoCapital.HasValue)
+        {
+            var nuevo = Math.Round(dto.NuevoCapital.Value, 2);
+
+            if (nuevo < 0 || nuevo > prestamo.CapitalInicial)
+                throw new InvalidOperationException(
+                    "El nuevo capital debe estar entre 0 y el " +
+                    "capital inicial.");
+
+            var delta = prestamo.CapitalPendiente - nuevo;
+
+            if (delta < 0)
+                throw new InvalidOperationException(
+                    "El ajuste solo puede reducir capital. Para " +
+                    "aumentar, anule el pago o ajuste anterior.");
+
+            if (delta > 0)
+            {
+                capitalAdj = delta;
+                prestamo.CapitalPendiente = nuevo;
+
+                partes.Add(
+                    $"Capital {prestamo.CapitalPendiente + delta:N2} → " +
+                    $"S/ {nuevo:N2}");
+            }
+        }
+
+        if (dto.PerdonarIntereses)
+        {
+            var periodos = await _periodoInteresRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id);
+
+            var vencidos = periodos
+                .Where(x => x.InteresPendiente > 0 &&
+                            x.FechaVencimiento < ahora)
+                .OrderBy(x => x.FechaVencimiento)
+                .ToList();
+
+            foreach (var periodo in vencidos)
+            {
+                perdonado += periodo.InteresPendiente;
+                periodo.InteresPagado = periodo.InteresGenerado;
+                periodo.InteresPendiente = 0;
+                periodo.Estado = "Pagado";
+                periodo.FechaPagoCompleto = ahora;
+            }
+
+            if (vencidos.Count > 0)
+                partes.Add(
+                    $"CONDONACIÓN {vencidos.Count} sem.: " +
+                    $"S/ {perdonado:N2}");
+        }
+
+        if (capitalAdj == 0 && perdonado == 0)
+            throw new InvalidOperationException(
+                "El ajuste no produce cambios.");
+
+        var esCondonacion = perdonado > 0;
+
+        var pago = new Pago
+        {
+            Id = Guid.NewGuid(),
+            PrestamoId = prestamo.Id,
+            Monto = capitalAdj + perdonado,
+            MontoInteres = perdonado,
+            MontoCapital = capitalAdj,
+            FechaPago = ahora,
+            Comprobante = null,
+            Observaciones =
+                (esCondonacion ? "CONDONACIÓN - " : "AJUSTE - ") +
+                dto.Motivo.Trim(),
+            Estado = "Ajuste",
+            Detalle = string.Join("; ", partes),
+            FechaRegistro = ahora
+        };
+
+        await _pagoRepository.CrearAsync(pago);
+        await _prestamoRepository.ActualizarAsync(prestamo);
+
+        var restantes = (await _periodoInteresRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id))
+            .Sum(x => x.InteresPendiente);
+
+        if (prestamo.CapitalPendiente == 0 && restantes == 0)
+            prestamo.Estado = "Cancelado";
+        else
+            await ReconciliarMoraAsync(prestamo, ahora);
+
+        await _pagoRepository.GuardarCambiosAsync();
+
+        var guardado = await _pagoRepository.ObtenerPorIdAsync(
+            pago.Id);
+
+        if (guardado is null)
+            throw new InvalidOperationException(
+                "No se pudo recuperar el ajuste registrado.");
+
+        return await MapearDtoAsync(guardado);
+    }
+
+    private async Task ReconciliarMoraAsync(
+        Prestamo prestamo,
+        DateTime referencia)
+    {
+        if (!string.Equals(
+                prestamo.Estado,
+                "Moroso",
+                StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var vencidos = (await _periodoInteresRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id))
+            .Count(x => x.FechaVencimiento < referencia &&
+                        x.InteresPendiente > 0);
+
+        if (vencidos >= 3)
+            return;
+
+        prestamo.Estado = "Activo";
+
+        if (_morosidadRepository is not null)
+        {
+            var mora = await _morosidadRepository
+                .ObtenerPorPrestamoAsync(prestamo.Id);
+
+            if (mora is not null && mora.Activa)
+            {
+                mora.Activa = false;
+                mora.FechaReactivacion = referencia;
+
+                await _morosidadRepository.ActualizarAsync(mora);
+            }
+        }
+
+        if (prestamo.Cliente is not null)
+            await SincronizarClienteAsync(
+                prestamo.Cliente, prestamo.Id);
+    }
+
     private async Task<PagoDto> MapearDtoAsync(Pago pago)
     {
         var prestamo = await _prestamoRepository.ObtenerPorIdAsync(

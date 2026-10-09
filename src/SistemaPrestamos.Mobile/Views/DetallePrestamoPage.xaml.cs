@@ -111,11 +111,13 @@ public partial class DetallePrestamoPage : ContentPage
             PagarButton.IsVisible = cobra;
             MorosidadButton.IsVisible = cobra;
 
+            AjustarButton.IsVisible = cobra && await EsAdminAsync();
+
             var pagos = await _pagoService
                 .ObtenerPorPrestamoAsync(_prestamo.Id);
 
             var listaPagos = pagos
-                .Where(p => !p.Anulado)
+                .Where(p => p.Cobrado)
                 .OrderByDescending(p => p.FechaPago)
                 .ToList();
 
@@ -237,6 +239,106 @@ public partial class DetallePrestamoPage : ContentPage
             "Copiado",
             $"Teléfono {_telefono} copiado al portapapeles.",
             "OK");
+    }
+
+    private async void OnAjustarClicked(object? sender, EventArgs e)
+    {
+        if (_prestamo is null)
+            return;
+
+        var capitalTexto = await DisplayPromptAsync(
+            "Ajustar saldo",
+            $"Capital actual S/ {_prestamo.CapitalPendiente:N2}. " +
+            "Nuevo capital (vacío = sin cambio):",
+            "Continuar",
+            "Cancelar",
+            maxLength: 20,
+            keyboard: Keyboard.Numeric);
+
+        if (capitalTexto is null)
+            return;
+
+        decimal? nuevoCapital = null;
+
+        if (!string.IsNullOrWhiteSpace(capitalTexto))
+        {
+            if (!decimal.TryParse(
+                    capitalTexto.Trim(),
+                    System.Globalization.NumberStyles.Number,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    out var cap) || cap < 0)
+            {
+                await DisplayAlertAsync(
+                    "Monto inválido",
+                    "Ingrese un capital válido mayor o igual a cero.",
+                    "OK");
+                return;
+            }
+
+            nuevoCapital = cap;
+        }
+
+        var perdonar = await DisplayAlertAsync(
+            "Perdonar intereses",
+            "¿Perdonar las semanas vencidas impagas?",
+            "Sí, perdonar",
+            "No");
+
+        var motivo = await DisplayPromptAsync(
+            "Motivo del ajuste",
+            "Obligatorio (10 a 200 caracteres):",
+            "Guardar",
+            "Cancelar",
+            maxLength: 200);
+
+        if (string.IsNullOrWhiteSpace(motivo))
+            return;
+
+        var confirma = await DisplayAlertAsync(
+            "Confirmar ajuste",
+            "Se registrará como AJUSTE/CONDONACIÓN en el historial " +
+            "con su usuario y fecha. ¿Continuar?",
+            "Sí, ajustar",
+            "Cancelar");
+
+        if (!confirma)
+            return;
+
+        try
+        {
+            MostrarCargando(true);
+
+            var (exito, error) = await _pagoService.AjustarAsync(
+                _prestamo.Id,
+                nuevoCapital,
+                perdonar,
+                motivo.Trim());
+
+            if (!exito)
+            {
+                MostrarError(error ?? "No se pudo ajustar.");
+                return;
+            }
+
+            await DisplayAlertAsync(
+                "Ajuste registrado",
+                "El saldo fue actualizado.",
+                "OK");
+
+            await CargarAsync(_prestamo.Id);
+        }
+        catch (HttpRequestException)
+        {
+            MostrarError("No se pudo conectar con el servidor.");
+        }
+        catch (Exception ex)
+        {
+            MostrarError($"Ocurrió un error: {ex.Message}");
+        }
+        finally
+        {
+            MostrarCargando(false);
+        }
     }
 
     private async void OnPagarClicked(object? sender, EventArgs e)

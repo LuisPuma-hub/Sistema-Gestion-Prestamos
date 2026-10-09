@@ -77,7 +77,7 @@ public partial class MainPage : ContentPage
 
             var hoy = DateTime.Today;
             var cobradosHoy = pagos
-                .Where(p => !p.Anulado && p.FechaPago.ToLocalTime().Date == hoy)
+                .Where(p => p.Cobrado && p.FechaPago.ToLocalTime().Date == hoy)
                 .ToList();
 
             PagosHoyValorLabel.Text =
@@ -108,7 +108,7 @@ public partial class MainPage : ContentPage
             var eventos = new List<(DateTime Fecha, ActividadItem Item)>();
 
             foreach (var pago in pagos
-                         .Where(p => !p.Anulado)
+                         .Where(p => p.Cobrado)
                          .OrderByDescending(p => p.FechaRegistro)
                          .Take(4))
             {

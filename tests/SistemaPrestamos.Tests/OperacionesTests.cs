@@ -315,6 +315,120 @@ public class OperacionesTests : IDisposable
                 DateTime.UtcNow.AddDays(-1)));
     }
 
+    [Fact]
+    public async Task Ajustar_Capital_ReduceYCreaRegistro()
+    {
+        var cliente = await CrearClienteAsync("90000009");
+        var id = await CrearPrestamoActivoAsync(cliente, 1000m);
+
+        var ajuste = await _pagos.AjustarAsync(
+            id,
+            new AjustarPrestamoDto
+            {
+                NuevoCapital = 800m,
+                PerdonarIntereses = false,
+                Motivo = "Descuento pactado por pronto pago."
+            },
+            null);
+
+        Assert.Equal("Ajuste", ajuste.Estado);
+        Assert.Equal(200m, ajuste.Monto);
+        Assert.Equal(200m, ajuste.MontoCapital);
+
+        var prestamo = await _prestamos.ObtenerPorIdAsync(id);
+        Assert.NotNull(prestamo);
+        Assert.Equal(800m, prestamo.CapitalPendiente);
+
+        var cobranza = await _reportes.CobranzaDelDiaAsync(
+            DateTime.UtcNow);
+        Assert.Equal(0m, cobranza.Total);
+    }
+
+    [Fact]
+    public async Task Ajustar_SubirCapital_SeRechaza()
+    {
+        var cliente = await CrearClienteAsync("90000010");
+        var id = await CrearPrestamoActivoAsync(cliente, 1000m);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => _pagos.AjustarAsync(
+                id,
+                new AjustarPrestamoDto
+                {
+                    NuevoCapital = 1200m,
+                    PerdonarIntereses = false,
+                    Motivo = "Motivo válido de prueba."
+                },
+                null));
+    }
+
+    [Fact]
+    public async Task Ajustar_MotivoCorto_SeRechaza()
+    {
+        var cliente = await CrearClienteAsync("90000011");
+        var id = await CrearPrestamoActivoAsync(cliente, 1000m);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => _pagos.AjustarAsync(
+                id,
+                new AjustarPrestamoDto
+                {
+                    NuevoCapital = 900m,
+                    PerdonarIntereses = false,
+                    Motivo = "corto"
+                },
+                null));
+    }
+
+    [Fact]
+    public async Task Ajustar_Condona_SaleDeMora()
+    {
+        var cliente = await CrearClienteAsync("90000012");
+        var id = await CrearPrestamoActivoAsync(
+            cliente, 100m, DateTime.UtcNow.AddDays(-28));
+
+        await _morosidades.EvaluarAsync(id, DateTime.UtcNow);
+
+        var mora = await _pagos.AjustarAsync(
+            id,
+            new AjustarPrestamoDto
+            {
+                NuevoCapital = null,
+                PerdonarIntereses = true,
+                Motivo = "Condonación autorizada por gerencia."
+            },
+            null);
+
+        Assert.Equal("Ajuste", mora.Estado);
+        Assert.True(mora.Monto > 0);
+
+        var prestamo = await _prestamos.ObtenerPorIdAsync(id);
+        Assert.NotNull(prestamo);
+        Assert.Equal("Activo", prestamo.Estado);
+
+        var cli = await _clientes.ObtenerPorIdAsync(cliente);
+        Assert.NotNull(cli);
+        Assert.Equal("En observación", cli.Estado);
+    }
+
+    [Fact]
+    public async Task Ajustar_SinCambios_SeRechaza()
+    {
+        var cliente = await CrearClienteAsync("90000013");
+        var id = await CrearPrestamoActivoAsync(cliente, 1000m);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => _pagos.AjustarAsync(
+                id,
+                new AjustarPrestamoDto
+                {
+                    NuevoCapital = 1000m,
+                    PerdonarIntereses = false,
+                    Motivo = "Motivo válido de prueba."
+                },
+                null));
+    }
+
     private ReporteService CrearReportesConFondo()
     {
         return new ReporteService(

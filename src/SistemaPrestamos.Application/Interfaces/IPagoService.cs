@@ -10,4 +10,9 @@ public interface IPagoService
     Task<PagoDto> RegistrarAsync(CrearPagoDto dto);
 
     Task<bool> AnularAsync(Guid pagoId, string motivo, Guid? anuladoPor);
+
+    Task<PagoDto> AjustarAsync(
+        Guid prestamoId,
+        AjustarPrestamoDto dto,
+        Guid? actor);
 }

@@ -31,7 +31,7 @@ public class ReporteService : IReporteService
 
         var delDia = pagos
             .Where(x =>
-                !EsAnulado(x.Estado) &&
+                EsCobro(x.Estado) &&
                 x.FechaPago.Date == dia)
             .ToList();
 
@@ -106,7 +106,7 @@ public class ReporteService : IReporteService
 
         return pagos
             .Where(x =>
-                !EsAnulado(x.Estado) &&
+                EsCobro(x.Estado) &&
                 x.FechaPago.Date >= inicio &&
                 x.FechaPago.Date <= fin)
             .GroupBy(x => x.FechaPago.Date)
@@ -146,7 +146,7 @@ public class ReporteService : IReporteService
         var pagos = await _pagoRepository.ObtenerTodosAsync();
 
         var vigentes = pagos
-            .Where(x => !EsAnulado(x.Estado))
+            .Where(x => EsCobro(x.Estado))
             .ToList();
 
         return new CapitalDto
@@ -269,6 +269,14 @@ public class ReporteService : IReporteService
     {
         return string.Equals(
             estado, "Anulado", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool EsCobro(string estado)
+    {
+        // Solo Registrado mueve dinero real. Anulado y Ajuste
+        // se excluyen de cobranza, ingresos y recuperado.
+        return string.Equals(
+            estado, "Registrado", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool EsAporte(string tipo)

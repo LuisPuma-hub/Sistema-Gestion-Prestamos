@@ -140,4 +140,28 @@ public class PagoService
             ? $"Error del servidor: {(int)response.StatusCode}"
             : error);
     }
+
+    public async Task<(bool Exito, string? Error)> AjustarAsync(
+        Guid prestamoId,
+        decimal? nuevoCapital,
+        bool perdonarIntereses,
+        string motivo)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(
+            $"api/Prestamos/{prestamoId}/ajuste",
+            new { nuevoCapital, perdonarIntereses, motivo });
+
+        if (response.IsSuccessStatusCode)
+        {
+            return (true, null);
+        }
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
+    }
 }

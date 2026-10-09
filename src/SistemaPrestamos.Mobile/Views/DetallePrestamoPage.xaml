@@ -194,6 +194,17 @@
                     Clicked="OnPagarClicked" />
 
                 <Button
+                    x:Name="AjustarButton"
+                    Text="Ajustar saldo (solo admin)"
+                    BackgroundColor="#E5E7EB"
+                    TextColor="#111827"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="54"
+                    IsVisible="False"
+                    Clicked="OnAjustarClicked" />
+
+                <Button
                     x:Name="MorosidadButton"
                     Text="Ver morosidad"
                     BackgroundColor="#DBEAFE"

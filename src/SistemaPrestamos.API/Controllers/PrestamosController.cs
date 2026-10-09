@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using SistemaPrestamos.Application.DTOs;
 using SistemaPrestamos.Application.Interfaces;
@@ -12,13 +13,16 @@ public class PrestamosController : ControllerBase
 {
     private readonly IPrestamoService _prestamoService;
     private readonly IPeriodoInteresService _periodoInteresService;
+    private readonly IPagoService _pagoService;
 
     public PrestamosController(
         IPrestamoService prestamoService,
-        IPeriodoInteresService periodoInteresService)
+        IPeriodoInteresService periodoInteresService,
+        IPagoService pagoService)
     {
         _prestamoService = prestamoService;
         _periodoInteresService = periodoInteresService;
+        _pagoService = pagoService;
     }
 
     // GET: api/prestamos
@@ -184,6 +188,35 @@ public class PrestamosController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return NotFound(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
+    // POST: api/prestamos/{id}/ajuste (solo ADMIN)
+    [HttpPost("{id:guid}/ajuste")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<ActionResult<PagoDto>> Ajustar(
+        Guid id,
+        [FromBody] AjustarPrestamoDto dto)
+    {
+        try
+        {
+            var idTexto = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Guid.TryParse(idTexto, out var actorId);
+
+            var ajuste = await _pagoService.AjustarAsync(
+                id,
+                dto,
+                actorId == Guid.Empty ? null : actorId);
+
+            return Ok(ajuste);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
             {
                 mensaje = ex.Message
             });
