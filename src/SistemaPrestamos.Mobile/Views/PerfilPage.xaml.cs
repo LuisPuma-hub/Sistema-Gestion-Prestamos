@@ -245,6 +245,48 @@ public partial class PerfilPage : ContentPage
         }
     }
 
+    private async void OnBateriaClicked(object? sender, EventArgs e)
+    {
+#if ANDROID
+        try
+        {
+            var contexto = Platform.CurrentActivity ??
+                throw new InvalidOperationException("Sin actividad.");
+
+            var power = (Android.OS.PowerManager?)contexto.GetSystemService(
+                Android.Content.Context.PowerService);
+
+            if (power is not null &&
+                power.IsIgnoringBatteryOptimizations(contexto.PackageName))
+            {
+                await DisplayAlertAsync(
+                    "Avisos siempre activos",
+                    "Este celular ya permite los avisos con la app cerrada.",
+                    "OK");
+                return;
+            }
+
+            var intent = new Android.Content.Intent(
+                Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations,
+                Android.Net.Uri.Parse("package:" + contexto.PackageName));
+
+            contexto.StartActivity(intent);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync(
+                "No se pudo abrir",
+                $"Actívelo manual: Ajustes → Apps → CrediVnzl → Batería → Sin restricciones. ({ex.Message})",
+                "OK");
+        }
+#else
+        await DisplayAlertAsync(
+            "No aplica",
+            "Esta opción es solo para Android.",
+            "OK");
+#endif
+    }
+
     private async void OnVolverClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");

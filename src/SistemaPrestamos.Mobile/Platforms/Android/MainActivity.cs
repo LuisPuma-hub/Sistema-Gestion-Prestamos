@@ -26,9 +26,17 @@ public class MainActivity : MauiAppCompatActivity
         var manager = (NotificationManager?)GetSystemService(
             Context.NotificationService);
 
-        manager?.CreateNotificationChannel(new NotificationChannel(
+        var canal = new NotificationChannel(
             CanalNotificacionesId,
             "General",
-            NotificationImportance.Default));
+            NotificationImportance.High)
+        {
+            Description = "Avisos de cobranza y morosidad",
+            LockscreenVisibility = NotificationVisibility.Public
+        };
+
+        canal.EnableVibration(true);
+
+        manager?.CreateNotificationChannel(canal);
     }
 }

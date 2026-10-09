@@ -155,6 +155,18 @@
                     Clicked="OnCambiarClaveClicked" />
 
                 <Button
+                    x:Name="BateriaButton"
+                    Text="🔋  Permitir avisos siempre"
+                    BackgroundColor="White"
+                    TextColor="#15307A"
+                    FontAttributes="Bold"
+                    BorderColor="#15307A"
+                    BorderWidth="1.5"
+                    CornerRadius="12"
+                    HeightRequest="52"
+                    Clicked="OnBateriaClicked" />
+
+                <Button
                     x:Name="CerrarSesionButton"
                     Text="Cerrar sesión"
                     BackgroundColor="#FEE2E2"
