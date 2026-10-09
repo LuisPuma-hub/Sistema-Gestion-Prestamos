@@ -81,4 +81,61 @@ public class ReportesController : ControllerBase
             });
         }
     }
+
+    // GET: api/reportes/capital
+    [HttpGet("capital")]
+    public async Task<ActionResult<CapitalDto>> Capital()
+    {
+        var dto = await _reporteService.CapitalAsync();
+
+        return Ok(dto);
+    }
+
+    // GET: api/reportes/fondo
+    [HttpGet("fondo")]
+    public async Task<ActionResult<List<FondoMovimientoDto>>> Movimientos()
+    {
+        var lista = await _reporteService.MovimientosAsync();
+
+        return Ok(lista);
+    }
+
+    // POST: api/reportes/fondo (solo ADMIN)
+    [HttpPost("fondo")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<ActionResult<FondoMovimientoDto>> RegistrarMovimiento(
+        [FromBody] CrearFondoMovimientoDto dto)
+    {
+        try
+        {
+            var creado = await _reporteService
+                .RegistrarMovimientoAsync(dto);
+
+            return Ok(creado);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new
+            {
+                mensaje = ex.Message
+            });
+        }
+    }
+
+    // DELETE: api/reportes/fondo/{id} (solo ADMIN)
+    [HttpDelete("fondo/{id:guid}")]
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> EliminarMovimiento(Guid id)
+    {
+        var eliminado = await _reporteService
+            .EliminarMovimientoAsync(id);
+
+        if (!eliminado)
+            return NotFound(new
+            {
+                mensaje = "Movimiento no encontrado."
+            });
+
+        return NoContent();
+    }
 }

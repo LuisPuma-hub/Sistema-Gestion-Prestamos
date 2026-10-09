@@ -674,6 +674,21 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 - App: anular en detalle de pago (admin), enlace de reseteo en Usuarios, recuperar clave en Login, pantalla Reportes en Más.
 - `MoraPersistente` disponible por Push (resumen de moras activas al equipo).
 
+---
+
+# 20. Módulo Capital - 2026-10-09 (develop)
+
+## Added
+
+- Fondo con aportes/retiros (`fondo_movimientos`, solo Administrador).
+- Resumen: base efectiva, colocado, intereses ganados, capital recuperado, disponible y ROI (`api/reportes/capital|fondo`).
+- Sección Capital en Reportes con registro de aportes/retiros.
+
+## Tests
+
+- 3 pruebas nuevas de capital.
+- `dotnet test`: 79/79 pruebas correctas.
+
 ## Tests
 
 - `OperacionesTests`: 10 pruebas nuevas.

@@ -314,4 +314,83 @@ public class OperacionesTests : IDisposable
                 DateTime.UtcNow,
                 DateTime.UtcNow.AddDays(-1)));
     }
+
+    private ReporteService CrearReportesConFondo()
+    {
+        return new ReporteService(
+            new PagoRepository(_contexto),
+            new PrestamoRepository(_contexto),
+            new PeriodoInteresRepository(_contexto),
+            new FondoRepository(_contexto));
+    }
+
+    [Fact]
+    public async Task Capital_Resumen_Calcula()
+    {
+        var reportes = CrearReportesConFondo();
+        var cliente = await CrearClienteAsync("90000008");
+
+        await reportes.RegistrarMovimientoAsync(new CrearFondoMovimientoDto
+        {
+            Tipo = "Aporte",
+            Monto = 10000m,
+            Fecha = DateTime.UtcNow,
+            Motivo = "Fondo inicial"
+        });
+
+        var prestamo = await CrearPrestamoActivoAsync(cliente, 1000m);
+
+        await _pagos.RegistrarAsync(new CrearPagoDto
+        {
+            PrestamoId = prestamo,
+            Monto = 200m,
+            FechaPago = DateTime.UtcNow
+        });
+
+        var capital = await reportes.CapitalAsync();
+
+        Assert.Equal(10000m, capital.Aportes);
+        Assert.Equal(0m, capital.Retiros);
+        Assert.Equal(10000m, capital.BaseEfectiva);
+        Assert.Equal(850m, capital.Colocado);
+        Assert.Equal(50m, capital.GanadoIntereses);
+        Assert.Equal(150m, capital.CapitalRecuperado);
+        Assert.Equal(9150m, capital.Disponible);
+        Assert.Equal(0.5m, capital.Roi);
+    }
+
+    [Fact]
+    public async Task Movimiento_TipoInvalido_SeRechaza()
+    {
+        var reportes = CrearReportesConFondo();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => reportes.RegistrarMovimientoAsync(
+                new CrearFondoMovimientoDto
+                {
+                    Tipo = "Prestamo",
+                    Monto = 100m,
+                    Fecha = DateTime.UtcNow
+                }));
+    }
+
+    [Fact]
+    public async Task Movimiento_Eliminar_Ok()
+    {
+        var reportes = CrearReportesConFondo();
+
+        var creado = await reportes.RegistrarMovimientoAsync(
+            new CrearFondoMovimientoDto
+            {
+                Tipo = "Retiro",
+                Monto = 500m,
+                Fecha = DateTime.UtcNow
+            });
+
+        Assert.True(await reportes.EliminarMovimientoAsync(creado.Id));
+        Assert.False(await reportes.EliminarMovimientoAsync(Guid.NewGuid()));
+
+        var capital = await reportes.CapitalAsync();
+        Assert.Equal(0m, capital.Retiros);
+    }
 }

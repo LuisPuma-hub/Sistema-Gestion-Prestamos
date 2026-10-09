@@ -71,6 +71,32 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <Border Padding="14,12" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="CAPITAL" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Label x:Name="DisponibleLabel" Text="S/ 0.00" FontSize="28" FontAttributes="Bold" TextColor="#15307A" />
+                        <Label x:Name="CapitalDetalleLabel" Text="" FontSize="13" TextColor="#6B7280" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button
+                                Grid.Column="0"
+                                Text="+ Aporte"
+                                BackgroundColor="#DCFCE7"
+                                TextColor="#166534"
+                                FontAttributes="Bold"
+                                CornerRadius="12"
+                                Clicked="OnAporteClicked" />
+                            <Button
+                                Grid.Column="1"
+                                Text="− Retiro"
+                                BackgroundColor="#FEE2E2"
+                                TextColor="#991B1B"
+                                FontAttributes="Bold"
+                                CornerRadius="12"
+                                Clicked="OnRetiroClicked" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
                 <Label Text="INGRESOS ÚLTIMOS 7 DÍAS" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
 
                 <CollectionView

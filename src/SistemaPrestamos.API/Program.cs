@@ -62,6 +62,7 @@ builder.Services.AddScoped<INotificacionService, NotificacionService>();
 builder.Services.AddScoped<IMensajeWhatsappRepository, MensajeWhatsappRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IReporteService, ReporteService>();
+builder.Services.AddScoped<IFondoRepository, FondoRepository>();
 builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();builder.Services.AddHttpClient<IWhatsappService, WhatsappService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAuthService, AuthService>();

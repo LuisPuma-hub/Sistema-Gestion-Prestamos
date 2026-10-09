@@ -29,6 +29,7 @@ public class PrestamosDbContext : DbContext
     public DbSet<MensajeWhatsapp> MensajesWhatsapp => Set<MensajeWhatsapp>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<PasswordReset> PasswordResets => Set<PasswordReset>();
+    public DbSet<FondoMovimiento> FondoMovimientos => Set<FondoMovimiento>();
     public DbSet<Auditoria> Auditorias => Set<Auditoria>();
     public DbSet<PeriodoInteres> PeriodosInteres => Set<PeriodoInteres>();
     public DbSet<ReglaNotificacion> ReglasNotificacion => Set<ReglaNotificacion>();

@@ -135,3 +135,7 @@ El Administrador deberá poder generar un enlace de reseteo (token de 30 minutos
 ## RF-025 - Reportes
 
 El sistema deberá informar cobranza del día, cartera por cobrar e ingresos por día, con exportación CSV de cartera.
+
+## RF-026 - Capital
+
+El sistema deberá mostrar base efectiva (aportes menos retiros), colocado, intereses ganados, capital recuperado, disponible para prestar y ROI, con registro de aportes/retiros (solo Administrador).

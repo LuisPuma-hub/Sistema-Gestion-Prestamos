@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
 using SistemaPrestamos.Mobile.Models;
 
@@ -66,6 +67,63 @@ public class ReporteService
         return JsonSerializer.Deserialize<List<IngresoDiaDto>>(
             await response.Content.ReadAsStringAsync(),
             _jsonOptions) ?? new List<IngresoDiaDto>();
+    }
+
+    public async Task<CapitalDto?> CapitalAsync()
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.GetAsync(
+            "api/Reportes/capital");
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        return JsonSerializer.Deserialize<CapitalDto>(
+            await response.Content.ReadAsStringAsync(),
+            _jsonOptions);
+    }
+
+    public async Task<List<FondoMovimientoDto>> MovimientosAsync()
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.GetAsync(
+            "api/Reportes/fondo");
+
+        if (!response.IsSuccessStatusCode)
+            return new List<FondoMovimientoDto>();
+
+        return JsonSerializer.Deserialize<List<FondoMovimientoDto>>(
+            await response.Content.ReadAsStringAsync(),
+            _jsonOptions) ?? new List<FondoMovimientoDto>();
+    }
+
+    public async Task<(bool Exito, string? Error)> RegistrarMovimientoAsync(
+        string tipo,
+        decimal monto,
+        string? motivo)
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/Reportes/fondo",
+            new
+            {
+                tipo,
+                monto,
+                fecha = DateTime.UtcNow,
+                motivo
+            });
+
+        if (response.IsSuccessStatusCode)
+            return (true, null);
+
+        var error = await response.Content.ReadAsStringAsync();
+
+        return (false, string.IsNullOrWhiteSpace(error)
+            ? $"Error del servidor: {(int)response.StatusCode}"
+            : error);
     }
 
     public async Task<string?> DescargarCarteraCsvAsync()

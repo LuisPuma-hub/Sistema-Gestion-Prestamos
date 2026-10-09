@@ -8,15 +8,18 @@ public class ReporteService : IReporteService
     private readonly IPagoRepository _pagoRepository;
     private readonly IPrestamoRepository _prestamoRepository;
     private readonly IPeriodoInteresRepository _periodoRepository;
+    private readonly IFondoRepository _fondoRepository;
 
     public ReporteService(
         IPagoRepository pagoRepository,
         IPrestamoRepository prestamoRepository,
-        IPeriodoInteresRepository periodoRepository)
+        IPeriodoInteresRepository periodoRepository,
+        IFondoRepository? fondoRepository = null)
     {
         _pagoRepository = pagoRepository;
         _prestamoRepository = prestamoRepository;
         _periodoRepository = periodoRepository;
+        _fondoRepository = fondoRepository!;
     }
 
     public async Task<CobranzaDto> CobranzaDelDiaAsync(
@@ -118,10 +121,160 @@ public class ReporteService : IReporteService
             .ToList();
     }
 
+    public async Task<CapitalDto> CapitalAsync()
+    {
+        if (_fondoRepository is null)
+            throw new InvalidOperationException(
+                "Fondo no disponible.");
+
+        var movimientos = await _fondoRepository.ObtenerTodosAsync();
+
+        var aportes = movimientos
+            .Where(x => EsAporte(x.Tipo))
+            .Sum(x => x.Monto);
+
+        var retiros = movimientos
+            .Where(x => !EsAporte(x.Tipo))
+            .Sum(x => x.Monto);
+
+        var prestamos = await _prestamoRepository.ObtenerTodosAsync();
+
+        var colocado = prestamos
+            .Where(EsVigente)
+            .Sum(x => x.CapitalPendiente);
+
+        var pagos = await _pagoRepository.ObtenerTodosAsync();
+
+        var vigentes = pagos
+            .Where(x => !EsAnulado(x.Estado))
+            .ToList();
+
+        return new CapitalDto
+        {
+            Aportes = aportes,
+            Retiros = retiros,
+            Colocado = colocado,
+            GanadoIntereses = vigentes.Sum(x => x.MontoInteres),
+            CapitalRecuperado = vigentes.Sum(x => x.MontoCapital)
+        };
+    }
+
+    public async Task<List<FondoMovimientoDto>> MovimientosAsync()
+    {
+        if (_fondoRepository is null)
+            throw new InvalidOperationException(
+                "Fondo no disponible.");
+
+        var movimientos = await _fondoRepository.ObtenerTodosAsync();
+
+        return movimientos.Select(MapearMovimiento).ToList();
+    }
+
+    public async Task<FondoMovimientoDto> RegistrarMovimientoAsync(
+        CrearFondoMovimientoDto dto)
+    {
+        if (_fondoRepository is null)
+            throw new InvalidOperationException(
+                "Fondo no disponible.");
+
+        var tipo = dto.Tipo?.Trim();
+
+        if (!string.Equals(tipo, "Aporte",
+                StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(tipo, "Retiro",
+                StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                "El tipo debe ser Aporte o Retiro.");
+
+        if (dto.Monto <= 0)
+            throw new InvalidOperationException(
+                "El monto debe ser mayor que cero.");
+
+        if (!string.IsNullOrWhiteSpace(dto.Motivo) &&
+            dto.Motivo.Trim().Length > 200)
+            throw new InvalidOperationException(
+                "El motivo supera 200 caracteres.");
+
+        var fecha = dto.Fecha == default
+            ? DateTime.UtcNow
+            : DateTime.SpecifyKind(dto.Fecha, DateTimeKind.Utc);
+
+        if (fecha.Date > DateTime.UtcNow.Date)
+            throw new InvalidOperationException(
+                "La fecha no puede ser futura.");
+
+        var movimiento = new Domain.Entities.FondoMovimiento
+        {
+            Id = Guid.NewGuid(),
+            Tipo = string.Equals(tipo, "Aporte",
+                StringComparison.OrdinalIgnoreCase)
+                    ? "Aporte"
+                    : "Retiro",
+            Monto = Math.Round(dto.Monto, 2),
+            Fecha = fecha,
+            Motivo = string.IsNullOrWhiteSpace(dto.Motivo)
+                ? null
+                : dto.Motivo.Trim(),
+            FechaRegistro = DateTime.UtcNow
+        };
+
+        await _fondoRepository.CrearAsync(movimiento);
+        await _fondoRepository.GuardarCambiosAsync();
+
+        return MapearMovimiento(movimiento);
+    }
+
+    public async Task<bool> EliminarMovimientoAsync(Guid id)
+    {
+        if (_fondoRepository is null)
+            throw new InvalidOperationException(
+                "Fondo no disponible.");
+
+        var movimiento = await _fondoRepository.ObtenerPorIdAsync(id);
+
+        if (movimiento is null)
+            return false;
+
+        await _fondoRepository.EliminarAsync(movimiento);
+        await _fondoRepository.GuardarCambiosAsync();
+
+        return true;
+    }
+
+    private static bool EsVigente(
+        Domain.Entities.Prestamo prestamo)
+    {
+        return string.Equals(
+                prestamo.Estado, "Activo",
+                StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(
+                prestamo.Estado, "Moroso",
+                StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static FondoMovimientoDto MapearMovimiento(
+        Domain.Entities.FondoMovimiento movimiento)
+    {
+        return new FondoMovimientoDto
+        {
+            Id = movimiento.Id,
+            Tipo = movimiento.Tipo,
+            Monto = movimiento.Monto,
+            Fecha = movimiento.Fecha,
+            Motivo = movimiento.Motivo
+        };
+    }
+
     private static bool EsAnulado(string estado)
     {
         return string.Equals(
             estado, "Anulado", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool EsAporte(string tipo)
+    {
+        return string.Equals(
+            tipo, "Aporte", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string NombreCliente(
