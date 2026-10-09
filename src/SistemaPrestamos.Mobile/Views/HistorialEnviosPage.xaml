@@ -90,7 +90,7 @@
                                             FontSize="13"
                                             TextColor="#6B7280" />
                                         <Label
-                                            Text="{Binding FechaCreacion, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                            Text="{Binding FechaLima, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
                                             FontSize="12"
                                             TextColor="#9CA3AF" />
                                     </VerticalStackLayout>

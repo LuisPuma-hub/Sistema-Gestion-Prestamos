@@ -103,7 +103,7 @@
                                         TextColor="#111827" />
                                     <HorizontalStackLayout Spacing="4" HorizontalOptions="End">
                                         <Label
-                                            Text="{Binding FechaCreacion, StringFormat='{0:HH:mm}'}"
+                                            Text="{Binding FechaLima, StringFormat='{0:HH:mm}'}"
                                             FontSize="11"
                                             TextColor="#6B7280"
                                             VerticalOptions="Center" />

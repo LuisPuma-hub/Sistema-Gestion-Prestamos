@@ -121,4 +121,40 @@ app.UseStaticFiles();
 
 app.MapControllers();
 
+// Ping liviano para cron-job.org / Render (2 bytes, sin auth ni DB).
+// Evita "salida demasiado grande" y sirve como keep-alive.
+app.MapGet("/ping", () => Results.Text("OK")).AllowAnonymous();
+
+// Ejecutor externo: cron-job.org lo llama cada 5 min aunque nadie
+// abra la app. Si Render dormía, al despertar ejecuta lo pendiente
+// dentro de la ventana de 15 min. Proteger con Cron:Secret.
+app.MapPost("/api/cron/ejecutar-pendientes", async (
+    HttpContext ctx,
+    IProgramadorService programador,
+    IConfiguration cfg) =>
+{
+    var secreto = cfg["Cron:Secret"];
+
+    if (!string.IsNullOrWhiteSpace(secreto))
+    {
+        var enviado = ctx.Request.Headers["X-Cron-Secret"].ToString();
+
+        if (enviado != secreto)
+        {
+            return Results.Unauthorized();
+        }
+    }
+
+    var ahoraUtc = DateTime.UtcNow;
+    var enviados = await programador.EjecutarPendientesAsync(ahoraUtc);
+    var lima = ProgramadorService.AhoraLima(ahoraUtc);
+
+    return Results.Ok(new
+    {
+        enviados,
+        horaLima = lima.ToString("HH:mm:ss"),
+        ultimoTickUtc = SistemaPrestamos.API.Jobs.ProgramadorJob.UltimoTickUtc?.ToString("HH:mm:ss")
+    });
+}).AllowAnonymous();
+
 app.Run();
