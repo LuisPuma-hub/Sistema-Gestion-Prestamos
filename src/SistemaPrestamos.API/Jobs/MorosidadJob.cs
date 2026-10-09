@@ -36,10 +36,15 @@ public class MorosidadJob : BackgroundService
                 var lima = ProgramadorService.AhoraLima(
                     DateTime.UtcNow);
 
-                if (lima.Hour != 0 || lima.Minute != 5)
-                    continue;
+                // Diaria 00:05 Lima, con puesta al día: si el
+                // servicio dormía a esa hora (plan Free), se
+                // ejecuta una vez al despertar pasada esa hora.
+                var pasadaLaHora =
+                    lima.Hour > 0 ||
+                    (lima.Hour == 0 && lima.Minute >= 5);
 
-                if (_ultimoDiaEjecutado == lima.Date)
+                if (!pasadaLaHora ||
+                    _ultimoDiaEjecutado == lima.Date)
                     continue;
 
                 _ultimoDiaEjecutado = lima.Date;
