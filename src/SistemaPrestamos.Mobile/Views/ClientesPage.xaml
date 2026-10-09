@@ -52,7 +52,7 @@
                     <HorizontalStackLayout Spacing="8">
                         <SearchBar
                             x:Name="BuscarBar"
-                            Placeholder="Buscar cliente, DNI..."
+                            Placeholder="Buscar cliente, DNI o teléfono..."
                             BackgroundColor="Transparent"
                             HorizontalOptions="Fill"
                             TextChanged="OnBuscarTextChanged" />

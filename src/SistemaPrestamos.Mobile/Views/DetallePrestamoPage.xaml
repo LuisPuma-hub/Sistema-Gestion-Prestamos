@@ -68,6 +68,20 @@
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                             <Label x:Name="ClienteLabel" FontSize="19" FontAttributes="Bold" TextColor="#111827" />
                             <Label x:Name="DocumentoLabel" FontSize="13" TextColor="#6B7280" />
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Label x:Name="TelefonoLabel" FontSize="13" TextColor="#6B7280" VerticalOptions="Center" />
+                                <Button
+                                    x:Name="CopiarTelefonoButton"
+                                    Text="📋"
+                                    FontSize="13"
+                                    Padding="8,2"
+                                    BackgroundColor="#E5E7EB"
+                                    TextColor="#111827"
+                                    CornerRadius="8"
+                                    VerticalOptions="Center"
+                                    IsVisible="False"
+                                    Clicked="OnCopiarTelefonoClicked" />
+                            </HorizontalStackLayout>
                                 <Border
                                     x:Name="EstadoPill"
                                     Padding="10,4"

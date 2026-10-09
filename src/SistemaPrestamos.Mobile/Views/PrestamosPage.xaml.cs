@@ -6,13 +6,18 @@ namespace SistemaPrestamos.Mobile.Views;
 public partial class PrestamosPage : ContentPage
 {
     private readonly PrestamoService _prestamoService;
+    private readonly ClienteService _clienteService;
     private List<PrestamoDto> _todos = new();
     private string _filtroEstado = "Todos";
+    private bool _omitirTap;
 
-    public PrestamosPage(PrestamoService prestamoService)
+    public PrestamosPage(
+        PrestamoService prestamoService,
+        ClienteService clienteService)
     {
         InitializeComponent();
         _prestamoService = prestamoService;
+        _clienteService = clienteService;
         ActualizarChips();
     }
 
@@ -166,10 +171,65 @@ public partial class PrestamosPage : ContentPage
 
     private async void OnPrestamoTapped(object? sender, TappedEventArgs e)
     {
+        // El botón copiar está dentro de la tarjeta: si se tocó,
+        // no navegar al detalle.
+        if (_omitirTap)
+        {
+            _omitirTap = false;
+            return;
+        }
+
         if (e.Parameter is Guid id)
         {
             await Shell.Current.GoToAsync(
                 $"{nameof(DetallePrestamoPage)}?id={id}");
+        }
+    }
+
+    private async void OnCopiarTelefonoClicked(object? sender, EventArgs e)
+    {
+        _omitirTap = true;
+
+        if (sender is not Button boton ||
+            boton.CommandParameter is not Guid clienteId)
+        {
+            return;
+        }
+
+        try
+        {
+            var cliente = await _clienteService
+                .ObtenerPorIdAsync(clienteId);
+
+            if (string.IsNullOrWhiteSpace(cliente?.Telefono))
+            {
+                await DisplayAlertAsync(
+                    "Sin teléfono",
+                    "El cliente no tiene teléfono registrado.",
+                    "OK");
+                return;
+            }
+
+            await Clipboard.Default.SetTextAsync(cliente.Telefono);
+
+            await DisplayAlertAsync(
+                "Copiado",
+                $"Teléfono {cliente.Telefono} copiado al portapapeles.",
+                "OK");
+        }
+        catch (HttpRequestException)
+        {
+            await DisplayAlertAsync(
+                "Sin conexión",
+                "Verifique su red.",
+                "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync(
+                "Ocurrió un error",
+                ex.Message,
+                "OK");
         }
     }
 

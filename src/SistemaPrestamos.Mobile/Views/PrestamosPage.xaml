@@ -118,6 +118,16 @@
                                 <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="4">
                                     <Label Text="◉" FontSize="12" TextColor="#D97706" VerticalOptions="Center" />
                                     <Label Text="{Binding InteresSemanal, StringFormat='Interés semanal 5%: S/ {0:N2}/sem.'}" FontSize="13" TextColor="#6B7280" VerticalOptions="Center" />
+                                    <Button
+                                        Text="📋"
+                                        FontSize="12"
+                                        Padding="8,2"
+                                        BackgroundColor="#E5E7EB"
+                                        TextColor="#111827"
+                                        CornerRadius="8"
+                                        VerticalOptions="Center"
+                                        Clicked="OnCopiarTelefonoClicked"
+                                        CommandParameter="{Binding ClienteId}" />
                                 </HorizontalStackLayout>
                             </Grid>
                         </Border>

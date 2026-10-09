@@ -8,17 +8,21 @@ public partial class DetallePrestamoPage : ContentPage
 {
     private readonly PrestamoService _prestamoService;
     private readonly PagoService _pagoService;
+    private readonly ClienteService _clienteService;
     private PrestamoDto? _prestamo;
+    private string _telefono = string.Empty;
 
     public string IdTexto { get; set; } = string.Empty;
 
     public DetallePrestamoPage(
         PrestamoService prestamoService,
-        PagoService pagoService)
+        PagoService pagoService,
+        ClienteService clienteService)
     {
         InitializeComponent();
         _prestamoService = prestamoService;
         _pagoService = pagoService;
+        _clienteService = clienteService;
     }
 
     protected override async void OnAppearing()
@@ -56,6 +60,21 @@ public partial class DetallePrestamoPage : ContentPage
             AvatarLabel.Text = _prestamo.ClienteNombre.Length > 0
                 ? _prestamo.ClienteNombre.Substring(0, 1).ToUpperInvariant()
                 : "?";
+
+            try
+            {
+                var cliente = await _clienteService
+                    .ObtenerPorIdAsync(_prestamo.ClienteId);
+
+                _telefono = cliente?.Telefono ?? string.Empty;
+                TelefonoLabel.Text = _telefono;
+                CopiarTelefonoButton.IsVisible =
+                    !string.IsNullOrWhiteSpace(_telefono);
+            }
+            catch
+            {
+                CopiarTelefonoButton.IsVisible = false;
+            }
             DocumentoLabel.Text = _prestamo.FechaAprobacion is null
                 ? "Sin aprobar"
                 : $"Aprobado {_prestamo.FechaAprobacion:dd/MM/yyyy}";
@@ -205,6 +224,19 @@ public partial class DetallePrestamoPage : ContentPage
         {
             MostrarCargando(false);
         }
+    }
+
+    private async void OnCopiarTelefonoClicked(object? sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(_telefono))
+            return;
+
+        await Clipboard.Default.SetTextAsync(_telefono);
+
+        await DisplayAlertAsync(
+            "Copiado",
+            $"Teléfono {_telefono} copiado al portapapeles.",
+            "OK");
     }
 
     private async void OnPagarClicked(object? sender, EventArgs e)
