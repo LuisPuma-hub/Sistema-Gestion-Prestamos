@@ -248,6 +248,17 @@ public partial class PerfilPage : ContentPage
     private async void OnBateriaClicked(object? sender, EventArgs e)
     {
 #if ANDROID
+        if (!OperatingSystem.IsAndroidVersionAtLeast(23))
+        {
+            await DisplayAlertAsync(
+                "No disponible",
+                "Su Android es anterior y no permite esta opción. " +
+                "Actívelo manual: Ajustes → Apps → CrediVnzl → " +
+                "Batería → Sin restricciones.",
+                "OK");
+            return;
+        }
+
         try
         {
             var contexto = Platform.CurrentActivity ??
