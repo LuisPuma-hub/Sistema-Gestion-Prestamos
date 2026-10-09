@@ -8,6 +8,7 @@ public partial class PrestamosPage : ContentPage
     private readonly PrestamoService _prestamoService;
     private readonly ClienteService _clienteService;
     private List<PrestamoDto> _todos = new();
+    private Dictionary<Guid, string> _telefonos = new();
     private string _filtroEstado = "Todos";
     private bool _omitirTap;
 
@@ -38,6 +39,19 @@ public partial class PrestamosPage : ContentPage
             ReintentarButton.IsVisible = false;
 
             _todos = await _prestamoService.ObtenerTodosAsync();
+
+            try
+            {
+                var clientes = await _clienteService.ObtenerTodosAsync();
+
+                _telefonos = clientes.ToDictionary(
+                    c => c.Id,
+                    c => c.Telefono ?? string.Empty);
+            }
+            catch
+            {
+                _telefonos = new Dictionary<Guid, string>();
+            }
 
             AplicarFiltros();
         }
@@ -71,7 +85,9 @@ public partial class PrestamosPage : ContentPage
         if (!string.IsNullOrWhiteSpace(texto))
         {
             filtrados = filtrados.Where(p =>
-                p.ClienteNombre.ToLowerInvariant().Contains(texto));
+                p.ClienteNombre.ToLowerInvariant().Contains(texto) ||
+                (_telefonos.TryGetValue(p.ClienteId, out var tel) &&
+                 tel.ToLowerInvariant().Contains(texto)));
         }
 
         var lista = filtrados.ToList();

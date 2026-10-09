@@ -7,15 +7,19 @@ public partial class PagosPage : ContentPage
 {
     private readonly PagoService _pagoService;
     private readonly PrestamoService _prestamoService;
+    private readonly ClienteService _clienteService;
     private List<PagoDto> _todos = new();
+    private Dictionary<Guid, string> _telefonos = new();
 
     public PagosPage(
         PagoService pagoService,
-        PrestamoService prestamoService)
+        PrestamoService prestamoService,
+        ClienteService clienteService)
     {
         InitializeComponent();
         _pagoService = pagoService;
         _prestamoService = prestamoService;
+        _clienteService = clienteService;
     }
 
     protected override async void OnAppearing()
@@ -33,13 +37,16 @@ public partial class PagosPage : ContentPage
             MostrarCargando(true);
             EstadoLabel.IsVisible = false;
             ReintentarButton.IsVisible = false;
-
             var pagos = await _pagoService.ObtenerTodosAsync();
             var prestamos = await _prestamoService.ObtenerTodosAsync();
 
             var nombres = prestamos.ToDictionary(
                 p => p.Id,
                 p => p.ClienteNombre);
+
+            var duenos = prestamos.ToDictionary(
+                p => p.Id,
+                p => p.ClienteId);
 
             foreach (var pago in pagos)
             {
@@ -48,6 +55,23 @@ public partial class PagosPage : ContentPage
                     out var nombre)
                         ? nombre
                         : "Préstamo";
+            }
+
+            try
+            {
+                var clientes = await _clienteService.ObtenerTodosAsync();
+
+                var tels = clientes.ToDictionary(
+                    c => c.Id,
+                    c => c.Telefono ?? string.Empty);
+
+                _telefonos = duenos
+                    .Where(kv => tels.ContainsKey(kv.Value))
+                    .ToDictionary(kv => kv.Key, kv => tels[kv.Value]);
+            }
+            catch
+            {
+                _telefonos = new Dictionary<Guid, string>();
             }
 
             _todos = pagos
@@ -79,7 +103,9 @@ public partial class PagosPage : ContentPage
         if (!string.IsNullOrWhiteSpace(texto))
         {
             filtrados = filtrados.Where(p =>
-                p.PrestamoNombre.ToLowerInvariant().Contains(texto));
+                p.PrestamoNombre.ToLowerInvariant().Contains(texto) ||
+                (_telefonos.TryGetValue(p.PrestamoId, out var tel) &&
+                 tel.ToLowerInvariant().Contains(texto)));
         }
 
         var lista = filtrados.ToList();
