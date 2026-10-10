@@ -81,7 +81,7 @@ public class EsquemaSaldoTests : IDisposable
     }
 
     [Fact]
-    public async Task Crear_DefectoEsFijo()
+    public async Task Crear_DefectoEsSaldo()
     {
         var cliente = await CrearClienteAsync("81000001");
 
@@ -92,7 +92,7 @@ public class EsquemaSaldoTests : IDisposable
             FechaInicio = DateTime.UtcNow
         });
 
-        Assert.Equal("Fijo", creado.EsquemaInteres);
+        Assert.Equal("Saldo", creado.EsquemaInteres);
     }
 
     [Fact]

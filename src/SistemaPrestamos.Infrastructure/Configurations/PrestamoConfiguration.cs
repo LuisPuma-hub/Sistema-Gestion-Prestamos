@@ -25,7 +25,7 @@ public class PrestamoConfiguration : IEntityTypeConfiguration<Prestamo>
 
         builder.Property(x => x.EsquemaInteres)
             .HasMaxLength(10)
-            .HasDefaultValue("Fijo")
+            .HasDefaultValue("Saldo")
             .IsRequired();
 
         builder.Property(x => x.CapitalPendiente)

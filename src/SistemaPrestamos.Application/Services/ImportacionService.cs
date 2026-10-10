@@ -119,6 +119,7 @@ public class ImportacionService : IImportacionService
                 ClienteId = cliente.Id,
                 CapitalInicial = fila.CapitalInicial,
                 TasaInteresSemanal = TasaInteresSemanal,
+                EsquemaInteres = "Saldo",
                 CapitalPendiente = fila.CapitalInicial,
                 FechaInicio = fila.FechaInicio,
                 FechaAprobacion = ahora,
@@ -131,7 +132,7 @@ public class ImportacionService : IImportacionService
             // Réplica de PrestamoService + PeriodoInteresService:
             // periodos semanales desde fechaInicio hasta el corte,
             // SIN avisos de WhatsApp durante la importación.
-            // La importación siempre crea esquema Fijo.
+            // La importación siempre crea esquema Saldo.
             var interesSemanal = Math.Round(
                 fila.CapitalInicial * TasaInteresSemanal,
                 2,

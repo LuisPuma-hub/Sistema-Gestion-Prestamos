@@ -110,7 +110,7 @@ public class PrestamoService
         Guid? garanteId,
         decimal capitalInicial,
         DateTime fechaInicio,
-        string esquemaInteres = "Fijo")
+        string esquemaInteres = "Saldo")
     {
         await AplicarTokenAsync();
 

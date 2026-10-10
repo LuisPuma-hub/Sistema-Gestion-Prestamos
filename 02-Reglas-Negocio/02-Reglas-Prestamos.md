@@ -21,15 +21,13 @@ La tasa de interés por defecto en v1 será 5% semanal fija (TASA_SEMANAL_DEFAUL
 
 ## RN-PRE-004
 
-El interés se calculará siempre sobre el monto inicial.
+El interés se calculará sobre la base del esquema del préstamo: monto inicial (esquema `Fijo`) o capital pendiente (esquema `Saldo`, default, RN-PRE-018).
 
-Ejemplo:
+Ejemplo (esquema `Fijo`):
 
 Monto inicial: S/ 100  
 Interés: 5%  
 Interés semanal: S/ 5
-
-> Rige para esquema `Fijo` (default). Con esquema `Saldo` (RN-PRE-018) la base es el capital pendiente al generarse cada semana.
 
 ## RN-PRE-005
 
@@ -123,4 +121,4 @@ El Administrador podrá ajustar el saldo de un préstamo Activo o Moroso con mot
 
 ## RN-PRE-018
 
-Esquema de interés por préstamo (`Fijo` o `Saldo`, default `Fijo`, 5% en ambos). Con `Saldo`, cada semana genera `ROUND(pendiente × tasa, 2, HALF_UP)` al momento de generarse (snapshot, no se reescribe). Pagos, mora, reportes e importación operan igual sobre los valores generados.
+Esquema de interés por préstamo (`Saldo` default / `Fijo` a elegir, 5% en ambos). Con `Saldo`, cada semana genera `ROUND(pendiente × tasa, 2, HALF_UP)` al momento de generarse (snapshot, no se reescribe). Pagos, mora, reportes e importación operan igual sobre los valores generados.

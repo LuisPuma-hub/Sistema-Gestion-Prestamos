@@ -10,5 +10,5 @@ public class CrearPrestamoDto
 
     public DateTime FechaInicio { get; set; }
 
-    public string EsquemaInteres { get; set; } = "Fijo";
+    public string EsquemaInteres { get; set; } = "Saldo";
 }

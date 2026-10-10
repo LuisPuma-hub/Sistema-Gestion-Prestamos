@@ -70,7 +70,7 @@ public class PrestamoService : IPrestamoService
                 "El capital inicial debe ser mayor que cero.");
 
         var esquema = string.IsNullOrWhiteSpace(dto.EsquemaInteres)
-            ? "Fijo"
+            ? "Saldo"
             : dto.EsquemaInteres.Trim();
 
         if (!string.Equals(
@@ -83,10 +83,10 @@ public class PrestamoService : IPrestamoService
                 "El esquema de interés debe ser Fijo o Saldo.");
 
         esquema = string.Equals(
-            esquema, "Saldo",
+            esquema, "Fijo",
             StringComparison.OrdinalIgnoreCase)
-                ? "Saldo"
-                : "Fijo";
+                ? "Fijo"
+                : "Saldo";
 
         var cliente =
             await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
