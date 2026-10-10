@@ -109,7 +109,8 @@ public class PrestamoService
         Guid clienteId,
         Guid? garanteId,
         decimal capitalInicial,
-        DateTime fechaInicio)
+        DateTime fechaInicio,
+        string esquemaInteres = "Fijo")
     {
         await AplicarTokenAsync();
 
@@ -118,7 +119,8 @@ public class PrestamoService
             clienteId,
             garanteId,
             capitalInicial,
-            fechaInicio
+            fechaInicio,
+            esquemaInteres
         };
 
         var response = await _httpClient.PostAsJsonAsync(

@@ -118,7 +118,7 @@
                                 </VerticalStackLayout>
                                 <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="4">
                                     <Label Text="◉" FontSize="12" TextColor="#D97706" VerticalOptions="Center" />
-                                    <Label Text="{Binding InteresSemanal, StringFormat='Interés semanal 5%: S/ {0:N2}/sem.'}" FontSize="13" TextColor="#6B7280" VerticalOptions="Center" />
+                                    <Label Text="{Binding TextoInteres}" FontSize="13" TextColor="#6B7280" VerticalOptions="Center" />
                                     <Button
                                         Text="📋 Copiar"
                                         FontSize="12"

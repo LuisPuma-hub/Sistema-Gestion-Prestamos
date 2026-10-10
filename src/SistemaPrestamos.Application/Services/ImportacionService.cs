@@ -131,8 +131,11 @@ public class ImportacionService : IImportacionService
             // Réplica de PrestamoService + PeriodoInteresService:
             // periodos semanales desde fechaInicio hasta el corte,
             // SIN avisos de WhatsApp durante la importación.
-            var interesSemanal =
-                fila.CapitalInicial * TasaInteresSemanal;
+            // La importación siempre crea esquema Fijo.
+            var interesSemanal = Math.Round(
+                fila.CapitalInicial * TasaInteresSemanal,
+                2,
+                MidpointRounding.AwayFromZero);
 
             var periodos = new List<PeriodoInteres>();
             var inicio = fila.FechaInicio.Date;
@@ -470,7 +473,10 @@ public class ImportacionService : IImportacionService
 
         fila.Periodos = periodos;
         fila.InteresesTotales =
-            periodos * (capital * TasaInteresSemanal);
+            periodos * Math.Round(
+                capital * TasaInteresSemanal,
+                2,
+                MidpointRounding.AwayFromZero);
         fila.MontoAjuste = saldo == capital
             ? 0
             : fila.InteresesTotales + (capital - saldo);

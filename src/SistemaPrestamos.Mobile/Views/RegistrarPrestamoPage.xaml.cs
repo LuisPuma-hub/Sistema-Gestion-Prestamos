@@ -34,6 +34,26 @@ public partial class RegistrarPrestamoPage : ContentPage
         _fechaInicio = e.NewDate?.Date ?? _fechaInicio;
     }
 
+    private void OnEsquemaClicked(object? sender, EventArgs e)
+    {
+        EsquemaPicker.SelectedIndex =
+            sender == EsquemaSaldoButton ? 1 : 0;
+
+        var esSaldo = EsquemaPicker.SelectedIndex == 1;
+
+        EsquemaFijoButton.BackgroundColor = Color.FromArgb(
+            esSaldo ? "#F3F4F6" : "#15307A");
+        EsquemaFijoButton.TextColor = esSaldo
+            ? Color.FromArgb("#374151")
+            : Colors.White;
+
+        EsquemaSaldoButton.BackgroundColor = Color.FromArgb(
+            esSaldo ? "#15307A" : "#F3F4F6");
+        EsquemaSaldoButton.TextColor = esSaldo
+            ? Colors.White
+            : Color.FromArgb("#374151");
+    }
+
     private void OnDiaMenosClicked(object? sender, EventArgs e)
     {
         FijarFecha(_fechaInicio.AddDays(-7));
@@ -208,7 +228,8 @@ public partial class RegistrarPrestamoPage : ContentPage
                 cliente.Id,
                 garanteId,
                 capital,
-                _fechaInicio);
+                _fechaInicio,
+                EsquemaPicker.SelectedIndex == 1 ? "Saldo" : "Fijo");
 
             if (!exito)
             {

@@ -23,6 +23,11 @@ public class PrestamoConfiguration : IEntityTypeConfiguration<Prestamo>
             .HasPrecision(10, 6)
             .IsRequired();
 
+        builder.Property(x => x.EsquemaInteres)
+            .HasMaxLength(10)
+            .HasDefaultValue("Fijo")
+            .IsRequired();
+
         builder.Property(x => x.CapitalPendiente)
             .HasPrecision(18, 2)
             .IsRequired();

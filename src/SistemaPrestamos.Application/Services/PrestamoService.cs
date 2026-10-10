@@ -69,6 +69,25 @@ public class PrestamoService : IPrestamoService
             throw new InvalidOperationException(
                 "El capital inicial debe ser mayor que cero.");
 
+        var esquema = string.IsNullOrWhiteSpace(dto.EsquemaInteres)
+            ? "Fijo"
+            : dto.EsquemaInteres.Trim();
+
+        if (!string.Equals(
+                esquema, "Fijo",
+                StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(
+                esquema, "Saldo",
+                StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                "El esquema de interés debe ser Fijo o Saldo.");
+
+        esquema = string.Equals(
+            esquema, "Saldo",
+            StringComparison.OrdinalIgnoreCase)
+                ? "Saldo"
+                : "Fijo";
+
         var cliente =
             await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
 
@@ -97,6 +116,7 @@ public class PrestamoService : IPrestamoService
             GaranteId = dto.GaranteId,
             CapitalInicial = dto.CapitalInicial,
             TasaInteresSemanal = TasaInteresSemanal,
+            EsquemaInteres = esquema,
             CapitalPendiente = dto.CapitalInicial,
             FechaInicio = fechaInicio,
             FechaAprobacion = null,
@@ -282,10 +302,7 @@ public class PrestamoService : IPrestamoService
 
         var fechaVencimiento = fechaInicio.AddDays(7);
 
-        // El interés siempre se calcula sobre el capital inicial.
-        var interesGenerado =
-            prestamo.CapitalInicial *
-            prestamo.TasaInteresSemanal;
+        var interesGenerado = CalcularInteres(prestamo);
 
         var periodo = new PeriodoInteres
         {
@@ -304,6 +321,26 @@ public class PrestamoService : IPrestamoService
         await _periodoInteresRepository.CrearAsync(periodo);
     }
 
+    private static decimal CalcularInteres(Prestamo prestamo)
+    {
+        // Fijo: siempre sobre el capital inicial. Saldo: sobre
+        // el pendiente al generarse la semana (snapshot, no se
+        // reescribe con pagos posteriores). RN-PRE-003: HALF_UP.
+        var esSaldo = string.Equals(
+            prestamo.EsquemaInteres,
+            "Saldo",
+            StringComparison.OrdinalIgnoreCase);
+
+        var baseCalculo = esSaldo
+            ? prestamo.CapitalPendiente
+            : prestamo.CapitalInicial;
+
+        return Math.Round(
+            baseCalculo * prestamo.TasaInteresSemanal,
+            2,
+            MidpointRounding.AwayFromZero);
+    }
+
     private static PrestamoDto MapearDto(Prestamo prestamo)
     {
         return new PrestamoDto
@@ -316,6 +353,7 @@ public class PrestamoService : IPrestamoService
             GaranteId = prestamo.GaranteId,
             CapitalInicial = prestamo.CapitalInicial,
             TasaInteresSemanal = prestamo.TasaInteresSemanal,
+            EsquemaInteres = prestamo.EsquemaInteres,
             CapitalPendiente = prestamo.CapitalPendiente,
             FechaInicio = prestamo.FechaInicio,
             FechaAprobacion = prestamo.FechaAprobacion,

@@ -95,9 +95,7 @@ public class PeriodoInteresService : IPeriodoInteresService
         if (periodos.Any(x => x.FechaInicio == fechaInicio))
             return;
 
-        var interesGenerado =
-            prestamo.CapitalInicial *
-            prestamo.TasaInteresSemanal;
+        var interesGenerado = CalcularInteres(prestamo);
 
         var periodo = new PeriodoInteres
         {
@@ -114,6 +112,23 @@ public class PeriodoInteresService : IPeriodoInteresService
         };
 
         await _periodoInteresRepository.CrearAsync(periodo);
+    }
+
+    private static decimal CalcularInteres(Prestamo prestamo)
+    {
+        var esSaldo = string.Equals(
+            prestamo.EsquemaInteres,
+            "Saldo",
+            StringComparison.OrdinalIgnoreCase);
+
+        var baseCalculo = esSaldo
+            ? prestamo.CapitalPendiente
+            : prestamo.CapitalInicial;
+
+        return Math.Round(
+            baseCalculo * prestamo.TasaInteresSemanal,
+            2,
+            MidpointRounding.AwayFromZero);
     }
 
     private static PeriodoInteresDto MapearDto(

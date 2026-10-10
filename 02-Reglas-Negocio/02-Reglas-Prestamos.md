@@ -29,6 +29,8 @@ Monto inicial: S/ 100
 Interés: 5%  
 Interés semanal: S/ 5
 
+> Rige para esquema `Fijo` (default). Con esquema `Saldo` (RN-PRE-018) la base es el capital pendiente al generarse cada semana.
+
 ## RN-PRE-005
 
 El interés no disminuirá cuando disminuya el capital.
@@ -38,6 +40,8 @@ Ejemplo:
 Monto inicial: S/ 100  
 Capital pendiente: S/ 50  
 Interés semanal: S/ 5
+
+> Solo esquema `Fijo`. En `Saldo` ese interés sería S/ 2.50.
 
 ## RN-PRE-006
 
@@ -116,3 +120,7 @@ La importación masiva generará los periodos semanales desde `fechaInicio` hast
 ## RN-PRE-017
 
 El Administrador podrá ajustar el saldo de un préstamo Activo o Moroso con motivo obligatorio (10-200): reducir capital y/o perdonar intereses vencidos. Se registra como pago `Ajuste`/`Condonación` (no mueve dinero real ni suma a cobranza) y reevalúa mora. Anulable como cualquier pago.
+
+## RN-PRE-018
+
+Esquema de interés por préstamo (`Fijo` o `Saldo`, default `Fijo`, 5% en ambos). Con `Saldo`, cada semana genera `ROUND(pendiente × tasa, 2, HALF_UP)` al momento de generarse (snapshot, no se reescribe). Pagos, mora, reportes e importación operan igual sobre los valores generados.

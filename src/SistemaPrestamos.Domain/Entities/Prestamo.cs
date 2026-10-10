@@ -16,6 +16,8 @@ public class Prestamo
 
     public decimal TasaInteresSemanal { get; set; } = 0.05m;
 
+    public string EsquemaInteres { get; set; } = "Fijo";
+
     public decimal CapitalPendiente { get; set; }
 
     public DateTime FechaInicio { get; set; }

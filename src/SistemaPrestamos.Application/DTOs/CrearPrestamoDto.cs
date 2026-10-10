@@ -9,4 +9,6 @@ public class CrearPrestamoDto
     public decimal CapitalInicial { get; set; }
 
     public DateTime FechaInicio { get; set; }
+
+    public string EsquemaInteres { get; set; } = "Fijo";
 }

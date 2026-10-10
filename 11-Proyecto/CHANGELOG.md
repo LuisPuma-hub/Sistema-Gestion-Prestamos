@@ -684,8 +684,9 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 - Resumen: base efectiva, colocado, intereses ganados, capital recuperado, disponible y ROI (`api/reportes/capital|fondo`).
 - Sección Capital en Reportes con registro de aportes/retiros.
 - RN-PRE-017 Ajuste: reducir capital y/o perdonar intereses con motivo, reevalúa mora (`POST api/prestamos/{id}/ajuste`).
+- RN-PRE-018 esquema de interés por préstamo (`Fijo` default / `Saldo`), 5% ambos, redondeo HALF_UP.
 
 ## Tests
 
-- 3 pruebas nuevas de capital + 5 de ajuste (RN-PRE-017).
-- `dotnet test`: 84/84 pruebas correctas.
+- 3 pruebas de capital + 5 de ajuste + 4 de esquema Saldo.
+- `dotnet test`: 88/88 pruebas correctas.

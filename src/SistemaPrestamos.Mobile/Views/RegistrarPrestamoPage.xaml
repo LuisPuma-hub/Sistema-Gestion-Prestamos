@@ -115,6 +115,23 @@
                         <Border Padding="12" BackgroundColor="#DBEAFE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
                             <Label x:Name="ResumenInteresLabel" Text="Interés semanal (5 %): S/ 0.00" FontSize="14" TextColor="#15307A" FontAttributes="Bold" />
                         </Border>
+                        <Label Text="ESQUEMA DE INTERÉS" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <Button Grid.Column="0" x:Name="EsquemaFijoButton" Text="Fijo (inicial)" Clicked="OnEsquemaClicked" BackgroundColor="#15307A" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="1" x:Name="EsquemaSaldoButton" Text="Sobre saldo" Clicked="OnEsquemaClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                        </Grid>
+                        <Picker
+                            x:Name="EsquemaPicker"
+                            Title="Esquema"
+                            IsVisible="False"
+                            SelectedIndex="0">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Fijo</x:String>
+                                    <x:String>Saldo</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
                     </VerticalStackLayout>
                 </Border>
 
