@@ -65,6 +65,7 @@
                         <Button x:Name="ChipPendiente" Text="Pendiente" Clicked="OnFiltroChipClicked" />
                         <Button x:Name="ChipActivo" Text="Activo" Clicked="OnFiltroChipClicked" />
                         <Button x:Name="ChipCancelado" Text="Cancelado" Clicked="OnFiltroChipClicked" />
+                        <Button x:Name="ChipVencenHoy" Text="Vencen hoy" Clicked="OnFiltroChipClicked" />
                     </HorizontalStackLayout>
                 </ScrollView>
             </VerticalStackLayout>
@@ -119,12 +120,12 @@
                                     <Label Text="◉" FontSize="12" TextColor="#D97706" VerticalOptions="Center" />
                                     <Label Text="{Binding InteresSemanal, StringFormat='Interés semanal 5%: S/ {0:N2}/sem.'}" FontSize="13" TextColor="#6B7280" VerticalOptions="Center" />
                                     <Button
-                                        Text="📋"
+                                        Text="📋 Copiar"
                                         FontSize="12"
-                                        Padding="8,2"
-                                        BackgroundColor="#E5E7EB"
-                                        TextColor="#111827"
-                                        CornerRadius="8"
+                                        FontAttributes="Bold"
+                                        Padding="6,2"
+                                        BackgroundColor="Transparent"
+                                        TextColor="#15307A"
                                         VerticalOptions="Center"
                                         Clicked="OnCopiarTelefonoClicked"
                                         CommandParameter="{Binding ClienteId}" />

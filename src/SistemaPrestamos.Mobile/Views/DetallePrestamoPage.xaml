@@ -72,12 +72,12 @@
                                 <Label x:Name="TelefonoLabel" FontSize="13" TextColor="#6B7280" VerticalOptions="Center" />
                                 <Button
                                     x:Name="CopiarTelefonoButton"
-                                    Text="📋"
-                                    FontSize="13"
-                                    Padding="8,2"
-                                    BackgroundColor="#E5E7EB"
-                                    TextColor="#111827"
-                                    CornerRadius="8"
+                                    Text="📋 Copiar"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    Padding="6,2"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#15307A"
                                     VerticalOptions="Center"
                                     IsVisible="False"
                                     Clicked="OnCopiarTelefonoClicked" />

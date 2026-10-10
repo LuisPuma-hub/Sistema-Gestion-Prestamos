@@ -11,6 +11,8 @@ public partial class PrestamosPage : ContentPage
     private Dictionary<Guid, string> _telefonos = new();
     private string _filtroEstado = "Todos";
     private bool _omitirTap;
+    private bool _soloVencenHoy;
+    private HashSet<Guid> _vencenHoy = new();
 
     public PrestamosPage(
         PrestamoService prestamoService,
@@ -53,6 +55,8 @@ public partial class PrestamosPage : ContentPage
                 _telefonos = new Dictionary<Guid, string>();
             }
 
+            await CargarVencenHoyAsync();
+
             AplicarFiltros();
         }
         catch (HttpRequestException)
@@ -69,6 +73,32 @@ public partial class PrestamosPage : ContentPage
         }
     }
 
+    private async Task CargarVencenHoyAsync()
+    {
+        var hoy = DateTime.Today;
+        var set = new HashSet<Guid>();
+
+        foreach (var prestamo in _todos)
+        {
+            try
+            {
+                var periodos = await _prestamoService
+                    .ObtenerPeriodosAsync(prestamo.Id);
+
+                if (periodos.Any(p =>
+                        p.InteresPendiente > 0 &&
+                        p.FechaVencimiento.Date == hoy))
+                    set.Add(prestamo.Id);
+            }
+            catch
+            {
+                // Sin periodos no filtra por vencimiento.
+            }
+        }
+
+        _vencenHoy = set;
+    }
+
     private void AplicarFiltros()
     {
         var texto = BuscarBar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
@@ -80,6 +110,11 @@ public partial class PrestamosPage : ContentPage
         {
             filtrados = filtrados.Where(p =>
                 string.Equals(p.Estado, filtroEstado, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (_soloVencenHoy)
+        {
+            filtrados = filtrados.Where(p => _vencenHoy.Contains(p.Id));
         }
 
         if (!string.IsNullOrWhiteSpace(texto))
@@ -146,6 +181,10 @@ public partial class PrestamosPage : ContentPage
         {
             _filtroEstado = "Cancelado";
         }
+        else if (sender == ChipVencenHoy)
+        {
+            _soloVencenHoy = !_soloVencenHoy;
+        }
 
         ActualizarChips();
         AplicarFiltros();
@@ -157,6 +196,7 @@ public partial class PrestamosPage : ContentPage
         PintarChip(ChipPendiente, _filtroEstado == "Pendiente");
         PintarChip(ChipActivo, _filtroEstado == "Activo");
         PintarChip(ChipCancelado, _filtroEstado == "Cancelado");
+        PintarChip(ChipVencenHoy, _soloVencenHoy);
     }
 
     private static void PintarChip(Button chip, bool seleccionado)
