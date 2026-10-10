@@ -83,7 +83,9 @@ public partial class DetallePrestamoPage : ContentPage
 
             CapitalLabel.Text = $"S/ {_prestamo.CapitalInicial:N2}";
             PendienteLabel.Text = $"S/ {_prestamo.CapitalPendiente:N2}";
-            InteresLabel.Text = $"S/ {_prestamo.InteresSemanal:N2}";
+            InteresLabel.Text = _prestamo.EsSaldo
+                ? $"S/ {_prestamo.CapitalPendiente * _prestamo.TasaInteresSemanal:N2}"
+                : $"S/ {_prestamo.InteresSemanal:N2}";
             TasaLabel.Text = $"{_prestamo.TasaInteresSemanal:P0} semanal " +
                 (_prestamo.EsSaldo ? "s/saldo" : "s/inicial");
             FechaInicioLabel.Text = $"{_prestamo.FechaInicio:dd/MM/yyyy}";
