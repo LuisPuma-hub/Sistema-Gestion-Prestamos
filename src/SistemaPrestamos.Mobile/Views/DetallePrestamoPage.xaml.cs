@@ -284,15 +284,44 @@ public partial class DetallePrestamoPage : ContentPage
             "Sí, perdonar",
             "No");
 
-        var motivo = await DisplayPromptAsync(
+        var motivoElegido = await DisplayActionSheetAsync(
             "Motivo del ajuste",
-            "Obligatorio (10 a 200 caracteres):",
-            "Guardar",
             "Cancelar",
-            maxLength: 200);
+            null,
+            "Descuento pactado por pronto pago",
+            "Corrección de saldo",
+            "Condonación autorizada",
+            "Error de digitación",
+            "✏️ Escribir otro...");
 
-        if (string.IsNullOrWhiteSpace(motivo))
+        if (string.IsNullOrWhiteSpace(motivoElegido) ||
+            motivoElegido == "Cancelar")
+        {
             return;
+        }
+
+        string motivo;
+
+        if (motivoElegido == "✏️ Escribir otro...")
+        {
+            var escrito = await DisplayPromptAsync(
+                "Motivo del ajuste",
+                "Obligatorio (10 a 200 caracteres):",
+                "Guardar",
+                "Cancelar",
+                maxLength: 200);
+
+            if (string.IsNullOrWhiteSpace(escrito))
+            {
+                return;
+            }
+
+            motivo = escrito;
+        }
+        else
+        {
+            motivo = motivoElegido;
+        }
 
         var confirma = await DisplayAlertAsync(
             "Confirmar ajuste",
