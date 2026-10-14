@@ -66,7 +66,7 @@
 
                     <Grid
                         ColumnDefinitions="*,*"
-                        RowDefinitions="Auto,Auto,Auto"
+                        RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                         ColumnSpacing="10"
                         RowSpacing="10">
 
@@ -187,6 +187,82 @@
                                     <Label Text="Cobrado hoy" FontSize="12" TextColor="#6B7280" />
                                     <Label x:Name="PagosHoyValorLabel" Text="-" FontSize="17" FontAttributes="Bold" TextColor="#16A34A" />
                                 </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Grid.Row="3" Grid.Column="0"
+                            Padding="12,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="36" WidthRequest="36"
+                                    BackgroundColor="#F3F4F6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center">
+                                    <Image Source="ic_dollar_d.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                    <Label Text="Interés ganado" FontSize="12" TextColor="#6B7280" LineBreakMode="WordWrap" MaxLines="2" />
+                                    <Label x:Name="InteresGanadoLabel" Text="-" FontSize="17" FontAttributes="Bold" TextColor="#16A34A" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Grid.Row="3" Grid.Column="1"
+                            Padding="12,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 14">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="36" WidthRequest="36"
+                                    BackgroundColor="#F3F4F6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center">
+                                    <Image Source="ic_alert_d.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                    <Label Text="Interés por cobrar" FontSize="11" TextColor="#6B7280" LineBreakMode="WordWrap" MaxLines="2" />
+                                    <Label x:Name="InteresPendienteLabel" Text="-" FontSize="17" FontAttributes="Bold" TextColor="#D97706" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                            Padding="12,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 14">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                <Border
+                                    HeightRequest="36" WidthRequest="36"
+                                    BackgroundColor="#F3F4F6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Center">
+                                    <Image Source="ic_card_d.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label
+                                    Grid.Column="1"
+                                    Text="Reinvertido"
+                                    FontSize="13"
+                                    TextColor="#6B7280"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="2"
+                                    x:Name="ReinvertidoLabel"
+                                    Text="-"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    TextColor="#15307A"
+                                    VerticalOptions="Center" />
                             </Grid>
                         </Border>
 

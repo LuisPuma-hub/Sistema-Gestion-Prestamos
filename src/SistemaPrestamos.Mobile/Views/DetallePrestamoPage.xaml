@@ -102,7 +102,7 @@
 
                 <Label Text="RESUMEN FINANCIERO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                 <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
                         <Border Grid.Row="0" Grid.Column="0" Padding="12,10" BackgroundColor="#F8F7FC" StrokeThickness="0" StrokeShape="RoundRectangle 12">
                             <VerticalStackLayout Spacing="0">
                                 <Label Text="Capital inicial" FontSize="12" TextColor="#6B7280" />
@@ -137,6 +137,12 @@
                             <VerticalStackLayout Spacing="0">
                                 <Label Text="Próx. venc." FontSize="12" TextColor="#6B7280" />
                                 <Label x:Name="ProxVencLabel" Text="-" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Padding="12,10" BackgroundColor="#FEF3C7" StrokeThickness="0" StrokeShape="RoundRectangle 12" x:Name="DiariaCard" IsVisible="False">
+                            <VerticalStackLayout Spacing="0">
+                                <Label Text="Plazo fijo" FontSize="12" FontAttributes="Bold" TextColor="#92400E" />
+                                <Label x:Name="DiariaDetalleLabel" FontSize="13" TextColor="#92400E" />
                             </VerticalStackLayout>
                         </Border>
                     </Grid>

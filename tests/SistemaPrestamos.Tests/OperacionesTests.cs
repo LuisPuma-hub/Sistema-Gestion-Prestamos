@@ -507,4 +507,60 @@ public class OperacionesTests : IDisposable
         var capital = await reportes.CapitalAsync();
         Assert.Equal(0m, capital.Retiros);
     }
+
+    [Fact]
+    public async Task Resumen_General_Calcula()
+    {
+        var reportes = CrearReportesConFondo();
+        var cliente = await CrearClienteAsync("90000009");
+
+        await reportes.RegistrarMovimientoAsync(new CrearFondoMovimientoDto
+        {
+            Tipo = "Aporte",
+            Monto = 10000m,
+            Fecha = DateTime.UtcNow,
+            Motivo = "Fondo inicial"
+        });
+
+        var prestamo = await CrearPrestamoActivoAsync(cliente, 1000m);
+
+        await _pagos.RegistrarAsync(new CrearPagoDto
+        {
+            PrestamoId = prestamo,
+            Monto = 200m,
+            FechaPago = DateTime.UtcNow
+        });
+
+        var resumen = await reportes.ResumenGeneralAsync();
+
+        Assert.Equal(850m, resumen.CapitalTotal);
+        Assert.Equal(0m, resumen.InteresesPendientes);
+        Assert.Equal(50m, resumen.InteresesGanados);
+        Assert.Equal(150m, resumen.CapitalRecuperado);
+        Assert.Equal(0m, resumen.Reinvertido);
+        Assert.Equal(1, resumen.NumPrestamos);
+    }
+
+    [Fact]
+    public async Task Resumen_Reinvertido_CuandoColocadoSuperaBase()
+    {
+        var reportes = CrearReportesConFondo();
+        var cliente = await CrearClienteAsync("90000010");
+
+        await reportes.RegistrarMovimientoAsync(new CrearFondoMovimientoDto
+        {
+            Tipo = "Aporte",
+            Monto = 500m,
+            Fecha = DateTime.UtcNow,
+            Motivo = "Fondo inicial"
+        });
+
+        await CrearPrestamoActivoAsync(cliente, 1000m);
+
+        var resumen = await reportes.ResumenGeneralAsync();
+
+        Assert.Equal(1000m, resumen.CapitalTotal);
+        Assert.Equal(500m, resumen.BaseEfectiva);
+        Assert.Equal(500m, resumen.Reinvertido);
+    }
 }

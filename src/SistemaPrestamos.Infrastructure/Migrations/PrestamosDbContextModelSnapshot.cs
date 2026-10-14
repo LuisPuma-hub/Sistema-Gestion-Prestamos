@@ -450,6 +450,11 @@ namespace SistemaPrestamos.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("EsCuotaFija")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Estado")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -506,6 +511,12 @@ namespace SistemaPrestamos.Infrastructure.Migrations
                     b.Property<Guid>("ClienteId")
                         .HasColumnType("uuid");
 
+                    b.Property<decimal>("CuotaFija")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasDefaultValue(0m);
+
                     b.Property<string>("EsquemaInteres")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -521,11 +532,37 @@ namespace SistemaPrestamos.Infrastructure.Migrations
                     b.Property<DateTime?>("FechaAprobacion")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("FechaFin")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("FrecuenciaCuota")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasDefaultValue("Diaria");
+
                     b.Property<Guid?>("GaranteId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("ModalidadCobro")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasDefaultValue("Semanal");
+
+                    b.Property<decimal>("MontoTotal")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<int?>("PlazoCuotas")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("TasaInteresSemanal")
                         .HasPrecision(10, 6)

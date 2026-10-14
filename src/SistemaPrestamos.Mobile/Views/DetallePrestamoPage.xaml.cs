@@ -83,12 +83,32 @@ public partial class DetallePrestamoPage : ContentPage
 
             CapitalLabel.Text = $"S/ {_prestamo.CapitalInicial:N2}";
             PendienteLabel.Text = $"S/ {_prestamo.CapitalPendiente:N2}";
-            InteresLabel.Text = _prestamo.EsSaldo
-                ? $"S/ {_prestamo.CapitalPendiente * _prestamo.TasaInteresSemanal:N2}"
-                : $"S/ {_prestamo.InteresSemanal:N2}";
+            InteresLabel.Text = _prestamo.EsPlazoFijo
+                ? $"S/ {_prestamo.CuotaFija:N2}" +
+                  (_prestamo.EsFrecuenciaSemanal ? "/sem." : "/día")
+                : _prestamo.EsSaldo
+                    ? $"S/ {_prestamo.CapitalPendiente * _prestamo.TasaInteresSemanal:N2}"
+                    : $"S/ {_prestamo.InteresSemanal:N2}";
             TasaLabel.Text = $"{_prestamo.TasaInteresSemanal:P0} semanal " +
                 (_prestamo.EsSaldo ? "s/saldo" : "s/inicial");
             FechaInicioLabel.Text = $"{_prestamo.FechaInicio:dd/MM/yyyy}";
+
+            if (_prestamo.EsPlazoFijo && _prestamo.PlazoCuotas.HasValue)
+            {
+                DiariaCard.IsVisible = true;
+                DiariaDetalleLabel.Text =
+                    $"{_prestamo.PlazoCuotas.Value} cuotas " +
+                    (_prestamo.EsFrecuenciaSemanal
+                        ? "semanales"
+                        : "diarias") +
+                    $" de S/ {_prestamo.CuotaFija:N2} · Total " +
+                    $"S/ {_prestamo.MontoTotal:N2} · Fin " +
+                    $"{_prestamo.FechaFin:dd/MM/yyyy} · Sin domingos.";
+            }
+            else
+            {
+                DiariaCard.IsVisible = false;
+            }
 
             AprobarButton.IsVisible =
                 string.Equals(_prestamo.Estado, "Pendiente", StringComparison.OrdinalIgnoreCase)

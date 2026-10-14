@@ -16,6 +16,24 @@ public class PrestamoDto
 
     public string EsquemaInteres { get; set; } = "Saldo";
 
+    public string ModalidadCobro { get; set; } = "Semanal";
+
+    public string FrecuenciaCuota { get; set; } = "Diaria";
+
+    public int? PlazoCuotas { get; set; }
+
+    public DateTime? FechaFin { get; set; }
+
+    public decimal MontoTotal { get; set; }
+
+    public decimal CuotaFija { get; set; }
+
+    public bool EsPlazoFijo => string.Equals(
+        ModalidadCobro, "PlazoFijo", StringComparison.OrdinalIgnoreCase);
+
+    public bool EsFrecuenciaSemanal => string.Equals(
+        FrecuenciaCuota, "Semanal", StringComparison.OrdinalIgnoreCase);
+
     public decimal CapitalPendiente { get; set; }
 
     public DateTime FechaInicio { get; set; }

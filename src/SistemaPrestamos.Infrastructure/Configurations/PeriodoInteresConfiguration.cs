@@ -38,6 +38,10 @@ public class PeriodoInteresConfiguration
             .HasMaxLength(30)
             .IsRequired();
 
+        builder.Property(x => x.EsCuotaFija)
+            .HasDefaultValue(false)
+            .IsRequired();
+
         builder.Property(x => x.FechaPagoCompleto);
 
         builder.Property(x => x.FechaRegistro)

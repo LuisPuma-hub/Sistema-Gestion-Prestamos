@@ -84,6 +84,21 @@ public class ReporteService
             _jsonOptions);
     }
 
+    public async Task<ResumenGeneralDto?> ResumenAsync()
+    {
+        await AplicarTokenAsync();
+
+        var response = await _httpClient.GetAsync(
+            "api/Reportes/resumen");
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        return JsonSerializer.Deserialize<ResumenGeneralDto>(
+            await response.Content.ReadAsStringAsync(),
+            _jsonOptions);
+    }
+
     public async Task<List<FondoMovimientoDto>> MovimientosAsync()
     {
         await AplicarTokenAsync();

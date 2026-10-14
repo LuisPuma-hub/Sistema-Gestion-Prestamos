@@ -18,6 +18,8 @@ public class PeriodoInteresDto
 
     public string Estado { get; set; } = string.Empty;
 
+    public bool EsCuotaFija { get; set; }
+
     public DateTime? FechaPagoCompleto { get; set; }
 
     public DateTime FechaRegistro { get; set; }

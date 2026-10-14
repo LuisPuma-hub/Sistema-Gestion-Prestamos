@@ -20,6 +20,10 @@ public class PeriodoInteres
 
     public string Estado { get; set; } = "Pendiente";
 
+    // True: cuota de plazo fijo (diaria Lun-Sáb o semanal).
+    // False: tramo semanal sin fin (o semanal post-plazo).
+    public bool EsCuotaFija { get; set; }
+
     public DateTime? FechaPagoCompleto { get; set; }
 
     public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;

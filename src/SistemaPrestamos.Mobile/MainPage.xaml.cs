@@ -9,18 +9,21 @@ public partial class MainPage : ContentPage
     private readonly PrestamoService _prestamoService;
     private readonly PagoService _pagoService;
     private readonly MorosidadService _morosidadService;
+    private readonly ReporteService _reporteService;
 
     public MainPage(
         ClienteService clienteService,
         PrestamoService prestamoService,
         PagoService pagoService,
-        MorosidadService morosidadService)
+        MorosidadService morosidadService,
+        ReporteService reporteService)
     {
         InitializeComponent();
         _clienteService = clienteService;
         _prestamoService = prestamoService;
         _pagoService = pagoService;
         _morosidadService = morosidadService;
+        _reporteService = reporteService;
     }
 
     protected override async void OnAppearing()
@@ -82,6 +85,25 @@ public partial class MainPage : ContentPage
 
             PagosHoyValorLabel.Text =
                 $"S/ {cobradosHoy.Sum(p => p.Monto):N2}";
+
+            try
+            {
+                var resumen = await _reporteService.ResumenAsync();
+
+                if (resumen is not null)
+                {
+                    InteresGanadoLabel.Text =
+                        $"S/ {resumen.InteresesGanados:N2}";
+                    InteresPendienteLabel.Text =
+                        $"S/ {resumen.InteresesPendientes:N2}";
+                    ReinvertidoLabel.Text =
+                        $"S/ {resumen.Reinvertido:N2}";
+                }
+            }
+            catch
+            {
+                // Sin resumen del servidor: se conservan los "-".
+            }
 
             var morasTask = activos.Select(p =>
                 _morosidadService.EvaluarAsync(p.Id));

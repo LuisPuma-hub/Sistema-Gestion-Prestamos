@@ -76,6 +76,31 @@ public class CapitalDto
     public decimal Roi { get; set; }
 }
 
+public class ResumenGeneralDto
+{
+    public decimal CapitalTotal { get; set; }
+
+    public decimal InteresesPendientes { get; set; }
+
+    public decimal InteresesGanados { get; set; }
+
+    public decimal CapitalRecuperado { get; set; }
+
+    public decimal Aportes { get; set; }
+
+    public decimal Retiros { get; set; }
+
+    public decimal BaseEfectiva { get; set; }
+
+    public decimal Disponible { get; set; }
+
+    public decimal Reinvertido { get; set; }
+
+    public decimal Roi { get; set; }
+
+    public int NumPrestamos { get; set; }
+}
+
 public class FondoMovimientoDto
 {
     public Guid Id { get; set; }

@@ -292,6 +292,12 @@ public class ProgramadorService : IProgramadorService
         var cobradores = await ObtenerCobradoresAsync();
         var enviados = 0;
 
+        // Hora Lima dentro del texto: el timestamp que muestra
+        // cada capa (Honor/Xiaomi/Samsung) no es fiable.
+        var lima = AhoraLima(DateTime.UtcNow);
+        var cuerpoConHora =
+            $"{cuerpo.TrimEnd().TrimEnd('.')} ({lima:dd/MM HH:mm}).";
+
         foreach (var usuario in cobradores)
         {
             if (await YaEnviadoAsync(regla, hoy, null, null, usuario.Id))
@@ -302,7 +308,7 @@ public class ProgramadorService : IProgramadorService
             try
             {
                 var n = await _notificacionService.EnviarAUsuarioAsync(
-                    usuario.Id, titulo, cuerpo);
+                    usuario.Id, titulo, cuerpoConHora);
 
                 await RegistrarAsync(
                     regla, null, null, usuario.Id, usuario.Email,

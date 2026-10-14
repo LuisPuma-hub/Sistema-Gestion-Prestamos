@@ -110,7 +110,11 @@ public class PrestamoService
         Guid? garanteId,
         decimal capitalInicial,
         DateTime fechaInicio,
-        string esquemaInteres = "Saldo")
+        string esquemaInteres = "Saldo",
+        string modalidadCobro = "Semanal",
+        int? plazoValor = null,
+        string plazoUnidad = "Dias",
+        string frecuenciaCuota = "Diaria")
     {
         await AplicarTokenAsync();
 
@@ -120,7 +124,11 @@ public class PrestamoService
             garanteId,
             capitalInicial,
             fechaInicio,
-            esquemaInteres
+            esquemaInteres,
+            modalidadCobro,
+            plazoValor,
+            plazoUnidad,
+            frecuenciaCuota
         };
 
         var response = await _httpClient.PostAsJsonAsync(

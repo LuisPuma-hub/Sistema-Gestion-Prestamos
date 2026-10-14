@@ -13,19 +13,22 @@ public class PrestamoService : IPrestamoService
     private readonly IPeriodoInteresRepository _periodoInteresRepository;
     private readonly IPagoRepository _pagoRepository;
     private readonly IWhatsappService? _whatsappService;
+    private readonly IPeriodoInteresService? _periodoInteresService;
 
     public PrestamoService(
         IPrestamoRepository prestamoRepository,
         IClienteRepository clienteRepository,
         IPeriodoInteresRepository periodoInteresRepository,
         IPagoRepository pagoRepository,
-        IWhatsappService? whatsappService = null)
+        IWhatsappService? whatsappService = null,
+        IPeriodoInteresService? periodoInteresService = null)
     {
         _prestamoRepository = prestamoRepository;
         _clienteRepository = clienteRepository;
         _periodoInteresRepository = periodoInteresRepository;
         _pagoRepository = pagoRepository;
         _whatsappService = whatsappService;
+        _periodoInteresService = periodoInteresService;
     }
 
     public async Task<IEnumerable<PrestamoDto>> ObtenerTodosAsync()
@@ -88,6 +91,106 @@ public class PrestamoService : IPrestamoService
                 ? "Fijo"
                 : "Saldo";
 
+        var modalidad = string.IsNullOrWhiteSpace(dto.ModalidadCobro)
+            ? "Semanal"
+            : dto.ModalidadCobro.Trim();
+
+        if (!string.Equals(
+                modalidad, "Semanal",
+                StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(
+                modalidad, "PlazoFijo",
+                StringComparison.OrdinalIgnoreCase) &&
+            // Compat: la primera versión usaba "Diaria".
+            !string.Equals(
+                modalidad, "Diaria",
+                StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                "La modalidad debe ser Semanal o PlazoFijo.");
+
+        modalidad = string.Equals(
+            modalidad, "Semanal",
+            StringComparison.OrdinalIgnoreCase)
+                ? "Semanal"
+                : "PlazoFijo";
+
+        var frecuencia = string.IsNullOrWhiteSpace(dto.FrecuenciaCuota)
+            ? "Diaria"
+            : dto.FrecuenciaCuota.Trim();
+
+        if (!string.Equals(
+                frecuencia, "Diaria",
+                StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(
+                frecuencia, "Semanal",
+                StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                "La frecuencia debe ser Diaria o Semanal.");
+
+        frecuencia = string.Equals(
+            frecuencia, "Semanal",
+            StringComparison.OrdinalIgnoreCase)
+                ? "Semanal"
+                : "Diaria";
+
+        int? plazoCuotas = null;
+
+        if (modalidad == "PlazoFijo")
+        {
+            if (dto.PlazoValor is null || dto.PlazoValor <= 0)
+                throw new InvalidOperationException(
+                    "El plazo fijo requiere el número de " +
+                    "días o semanas del plazo.");
+
+            if (frecuencia == "Semanal")
+            {
+                if (!string.Equals(
+                        dto.PlazoUnidad, "Semanas",
+                        StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException(
+                        "Con frecuencia semanal el plazo se " +
+                        "indica en semanas.");
+
+                if (dto.PlazoValor > 52)
+                    throw new InvalidOperationException(
+                        "El plazo máximo es 52 semanas.");
+
+                plazoCuotas = dto.PlazoValor.Value;
+            }
+            else
+            {
+                var unidad = string.IsNullOrWhiteSpace(dto.PlazoUnidad)
+                    ? "Dias"
+                    : dto.PlazoUnidad.Trim();
+
+                if (string.Equals(
+                        unidad, "Semanas",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    if (dto.PlazoValor > 52)
+                        throw new InvalidOperationException(
+                            "El plazo máximo es 52 semanas.");
+
+                    plazoCuotas = dto.PlazoValor.Value * 7;
+                }
+                else if (string.Equals(
+                        unidad, "Dias",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    if (dto.PlazoValor > 365)
+                        throw new InvalidOperationException(
+                            "El plazo máximo es 365 días.");
+
+                    plazoCuotas = dto.PlazoValor.Value;
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        "La unidad del plazo debe ser Dias o Semanas.");
+                }
+            }
+        }
+
         var cliente =
             await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
 
@@ -117,6 +220,12 @@ public class PrestamoService : IPrestamoService
             CapitalInicial = dto.CapitalInicial,
             TasaInteresSemanal = TasaInteresSemanal,
             EsquemaInteres = esquema,
+            ModalidadCobro = modalidad,
+            FrecuenciaCuota = frecuencia,
+            PlazoCuotas = plazoCuotas,
+            FechaFin = null,
+            MontoTotal = 0,
+            CuotaFija = 0,
             CapitalPendiente = dto.CapitalInicial,
             FechaInicio = fechaInicio,
             FechaAprobacion = null,
@@ -166,10 +275,13 @@ public class PrestamoService : IPrestamoService
 
         await _prestamoRepository.ActualizarAsync(prestamo);
 
-        // Crear el primer período semanal.
-        await CrearSiguientePeriodoAsync(
-            prestamo,
-            prestamo.FechaInicio);
+        if (PeriodoInteresService.EsPlazoFijo(prestamo))
+            await CrearCuotasPlazoAsync(prestamo);
+        else
+            // Crear el primer período semanal.
+            await CrearSiguientePeriodoAsync(
+                prestamo,
+                prestamo.FechaInicio);
 
         await _periodoInteresRepository.GuardarCambiosAsync();
 
@@ -253,6 +365,27 @@ public class PrestamoService : IPrestamoService
                 "Solo se pueden generar períodos para préstamos " +
                 "activos o morosos.");
 
+        // Diaria: cuotas fijas pre-generadas; solo el retorno
+        // semanal post-plazo genera tramos nuevos.
+        if (PeriodoInteresService.EsPlazoFijo(prestamo))
+        {
+            var periodosDiarios =
+                await _periodoInteresRepository
+                    .ObtenerPorPrestamoAsync(prestamoId);
+
+            if (!periodosDiarios.Any() && prestamo.PlazoCuotas.HasValue)
+                await CrearCuotasPlazoAsync(prestamo);
+
+            await _periodoInteresRepository.GuardarCambiosAsync();
+
+            if (_periodoInteresService is not null)
+                await _periodoInteresService
+                    .GenerarSemanalesPostPlazoAsync(
+                        prestamoId, fechaReferencia);
+
+            return;
+        }
+
         var periodos =
             await _periodoInteresRepository
                 .ObtenerPorPrestamoAsync(prestamoId);
@@ -321,6 +454,64 @@ public class PrestamoService : IPrestamoService
         await _periodoInteresRepository.CrearAsync(periodo);
     }
 
+    /// <summary>
+    /// Genera las N cuotas del plazo fijo al aprobar (diarias
+    /// Lun-Sáb sin domingos, o semanales) y fija FechaFin,
+    /// MontoTotal y CuotaFija.
+    /// </summary>
+    private async Task CrearCuotasPlazoAsync(Prestamo prestamo)
+    {
+        if (!prestamo.PlazoCuotas.HasValue ||
+            prestamo.PlazoCuotas.Value <= 0)
+            throw new InvalidOperationException(
+                "El plazo fijo requiere el plazo en cuotas.");
+
+        var n = prestamo.PlazoCuotas.Value;
+        var diaria = PeriodoInteresService.EsFrecuenciaDiaria(prestamo);
+
+        // Semanas de interés: N días de cobro o N semanas.
+        var semanas = diaria ? n / 7m : n;
+
+        var interesTotal = Math.Round(
+            prestamo.CapitalInicial *
+                prestamo.TasaInteresSemanal *
+                semanas,
+            2,
+            MidpointRounding.AwayFromZero);
+
+        var montoTotal = prestamo.CapitalInicial + interesTotal;
+
+        var cuota = Math.Ceiling(montoTotal / n * 10m) / 10m;
+
+        var cuotas = PeriodoInteresService.ArmarCuotasPlazo(
+            prestamo.FechaInicio, n, interesTotal, diaria);
+
+        foreach (var (inicio, vencimiento, interes) in cuotas)
+        {
+            await _periodoInteresRepository.CrearAsync(
+                new PeriodoInteres
+                {
+                    Id = Guid.NewGuid(),
+                    PrestamoId = prestamo.Id,
+                    FechaInicio = inicio,
+                    FechaVencimiento = vencimiento,
+                    InteresGenerado = interes,
+                    InteresPagado = 0,
+                    InteresPendiente = interes,
+                    Estado = "Pendiente",
+                    FechaPagoCompleto = null,
+                    EsCuotaFija = true,
+                    FechaRegistro = DateTime.UtcNow
+                });
+        }
+
+        prestamo.FechaFin = cuotas.Last().Vencimiento;
+        prestamo.MontoTotal = montoTotal;
+        prestamo.CuotaFija = cuota;
+
+        await _prestamoRepository.ActualizarAsync(prestamo);
+    }
+
     private static decimal CalcularInteres(Prestamo prestamo)
     {
         // Fijo: siempre sobre el capital inicial. Saldo: sobre
@@ -354,6 +545,12 @@ public class PrestamoService : IPrestamoService
             CapitalInicial = prestamo.CapitalInicial,
             TasaInteresSemanal = prestamo.TasaInteresSemanal,
             EsquemaInteres = prestamo.EsquemaInteres,
+            ModalidadCobro = prestamo.ModalidadCobro,
+            FrecuenciaCuota = prestamo.FrecuenciaCuota,
+            PlazoCuotas = prestamo.PlazoCuotas,
+            FechaFin = prestamo.FechaFin,
+            MontoTotal = prestamo.MontoTotal,
+            CuotaFija = prestamo.CuotaFija,
             CapitalPendiente = prestamo.CapitalPendiente,
             FechaInicio = prestamo.FechaInicio,
             FechaAprobacion = prestamo.FechaAprobacion,

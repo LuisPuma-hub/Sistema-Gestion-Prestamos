@@ -28,6 +28,30 @@ public class PrestamoConfiguration : IEntityTypeConfiguration<Prestamo>
             .HasDefaultValue("Saldo")
             .IsRequired();
 
+        builder.Property(x => x.ModalidadCobro)
+            .HasMaxLength(10)
+            .HasDefaultValue("Semanal")
+            .IsRequired();
+
+        builder.Property(x => x.FrecuenciaCuota)
+            .HasMaxLength(10)
+            .HasDefaultValue("Diaria")
+            .IsRequired();
+
+        builder.Property(x => x.PlazoCuotas);
+
+        builder.Property(x => x.FechaFin);
+
+        builder.Property(x => x.MontoTotal)
+            .HasPrecision(18, 2)
+            .HasDefaultValue(0m)
+            .IsRequired();
+
+        builder.Property(x => x.CuotaFija)
+            .HasPrecision(18, 2)
+            .HasDefaultValue(0m)
+            .IsRequired();
+
         builder.Property(x => x.CapitalPendiente)
             .HasPrecision(18, 2)
             .IsRequired();

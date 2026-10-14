@@ -75,6 +75,40 @@ public class CapitalDto
         : Math.Round(GanadoIntereses / BaseEfectiva * 100, 2);
 }
 
+public class ResumenGeneralDto
+{
+    // Capital pendiente en préstamos vigentes (Activo + Moroso).
+    public decimal CapitalTotal { get; set; }
+
+    // Intereses aún por cobrar en vigentes.
+    public decimal InteresesPendientes { get; set; }
+
+    // Intereses ya cobrados (pagos Registrado).
+    public decimal InteresesGanados { get; set; }
+
+    public decimal CapitalRecuperado { get; set; }
+
+    public decimal Aportes { get; set; }
+
+    public decimal Retiros { get; set; }
+
+    public decimal BaseEfectiva => Aportes - Retiros;
+
+    public decimal Disponible => BaseEfectiva - CapitalTotal;
+
+    // Capital trabajando por encima de la base aportada:
+    // proviene de ganancias vueltas a prestar.
+    public decimal Reinvertido => CapitalTotal > BaseEfectiva
+        ? CapitalTotal - BaseEfectiva
+        : 0;
+
+    public decimal Roi => BaseEfectiva == 0
+        ? 0
+        : Math.Round(InteresesGanados / BaseEfectiva * 100, 2);
+
+    public int NumPrestamos { get; set; }
+}
+
 public class FondoMovimientoDto
 {
     public Guid Id { get; set; }

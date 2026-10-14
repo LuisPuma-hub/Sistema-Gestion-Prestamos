@@ -99,6 +99,10 @@ public class NotificacionPushService
             .SetSmallIcon(Android.Resource.Drawable.SymDefAppIcon)
             .SetContentIntent(pending)
             .SetAutoCancel(true)
+            // Hora de llegada al dispositivo (hora Lima del equipo)
+            // + fecha correcta en el panel.
+            .SetWhen(Java.Lang.JavaSystem.CurrentTimeMillis())
+            .SetShowWhen(true)
             .Build();
 
         var manager = (Android.App.NotificationManager?)contexto.GetSystemService(

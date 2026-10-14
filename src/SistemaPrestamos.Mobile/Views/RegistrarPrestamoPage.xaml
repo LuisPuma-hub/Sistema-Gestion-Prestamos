@@ -115,11 +115,48 @@
                         <Border Padding="12" BackgroundColor="#DBEAFE" StrokeThickness="0" StrokeShape="RoundRectangle 12">
                             <Label x:Name="ResumenInteresLabel" Text="Interés semanal (5 %): S/ 0.00" FontSize="14" TextColor="#15307A" FontAttributes="Bold" />
                         </Border>
-                        <Label Text="ESQUEMA DE INTERÉS" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border x:Name="EsquemaCard" Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="TIPO DE PRÉSTAMO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                            <Button Grid.Column="0" x:Name="EsquemaFijoButton" Text="Fijo (inicial)" Clicked="OnEsquemaClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
-                            <Button Grid.Column="1" x:Name="EsquemaSaldoButton" Text="Sobre saldo" Clicked="OnEsquemaClicked" BackgroundColor="#15307A" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="0" x:Name="TipoSemanalButton" Text="Semanal sin fin" Clicked="OnTipoClicked" BackgroundColor="#15307A" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="1" x:Name="TipoPlazoFijoButton" Text="Con fecha fin" Clicked="OnTipoClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
                         </Grid>
+                        <VerticalStackLayout x:Name="EsquemaLayout" Spacing="8">
+                            <Label Text="ESQUEMA DE INTERÉS" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                <Button Grid.Column="0" x:Name="EsquemaSaldoButton" Text="Sobre saldo pendiente" Clicked="OnEsquemaClicked" BackgroundColor="#15307A" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                                <Button Grid.Column="1" x:Name="EsquemaFijoButton" Text="Sobre capital inicial" Clicked="OnEsquemaClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                            </Grid>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout x:Name="PlazoLayout" Spacing="8" IsVisible="False">
+                            <Label Text="FRECUENCIA DE PAGO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                <Button Grid.Column="0" x:Name="FrecDiariaButton" Text="Diaria (Lun-Sáb)" Clicked="OnFrecuenciaClicked" BackgroundColor="#15307A" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                                <Button Grid.Column="1" x:Name="FrecSemanalButton" Text="Semanal" Clicked="OnFrecuenciaClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                            </Grid>
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="16,4">
+                                    <Entry
+                                        x:Name="PlazoEntry"
+                                        Placeholder="N.º"
+                                        Keyboard="Numeric"
+                                        FontSize="18"
+                                        TextChanged="OnPlazoChanged"
+                                        ClearButtonVisibility="WhileEditing" />
+                                </Border>
+                                <Grid Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8" x:Name="PlazoUnidadGrid">
+                                    <Button Grid.Column="0" x:Name="PlazoDiasButton" Text="Días" Clicked="OnPlazoUnidadClicked" BackgroundColor="#15307A" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="48" />
+                                    <Button Grid.Column="1" x:Name="PlazoSemanasButton" Text="Sem." Clicked="OnPlazoUnidadClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="48" />
+                                </Grid>
+                            </Grid>
+                            <Border Padding="12" BackgroundColor="#FEF3C7" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                <Label x:Name="ResumenDiarioLabel" Text="Indica el plazo." FontSize="13" TextColor="#92400E" />
+                            </Border>
+                        </VerticalStackLayout>
                         <Picker
                             x:Name="EsquemaPicker"
                             Title="Esquema"
@@ -137,11 +174,11 @@
 
                 <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="FECHAS DE VENCIMIENTO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                        <Label Text="FECHA DE INICIO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                            <Button Grid.Column="0" Text="−7 días" Clicked="OnDiaMenosClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
-                            <Button Grid.Column="1" Text="Últ. vto" Clicked="OnUltimoVencimientoClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
-                            <Button Grid.Column="2" Text="+7 días" Clicked="OnDiaMasClicked" BackgroundColor="#DBEAFE" TextColor="#15307A" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="0" Text="−1 día" Clicked="OnDiaMenosClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="1" Text="Hoy" Clicked="OnUltimoVencimientoClicked" BackgroundColor="#F3F4F6" TextColor="#374151" CornerRadius="10" HeightRequest="44" />
+                            <Button Grid.Column="2" Text="+1 día" Clicked="OnDiaMasClicked" BackgroundColor="#DBEAFE" TextColor="#15307A" FontAttributes="Bold" CornerRadius="10" HeightRequest="44" />
                         </Grid>
                         <Border StrokeShape="RoundRectangle 12" Stroke="#E5E7EB" Padding="14,4">
                             <HorizontalStackLayout Spacing="10">
@@ -181,7 +218,7 @@
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="Regla de interés: " FontAttributes="Bold" />
-                                    <Span Text="El interés es fijo del 5% semanal sobre el capital inicial. No es compuesto." />
+                                    <Span Text="5% semanal (Fijo/saldo). En Diaria se prorratea por plazo, sin domingos; vencido el plazo vuelve al 5% semanal sobre el saldo." />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>

@@ -8,6 +8,11 @@ public interface IPeriodoInteresService
         Guid prestamoId,
         DateTime fechaReferencia);
 
+    // Retorno semanal post-plazo para modalidad Diaria.
+    Task GenerarSemanalesPostPlazoAsync(
+        Guid prestamoId,
+        DateTime fechaReferencia);
+
     Task<IEnumerable<PeriodoInteresDto>> ObtenerPorPrestamoAsync(
         Guid prestamoId);
 }

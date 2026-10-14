@@ -159,6 +159,49 @@ public class ReporteService : IReporteService
         };
     }
 
+    public async Task<ResumenGeneralDto> ResumenGeneralAsync()
+    {
+        var cartera = await CarteraAsync();
+
+        decimal aportes = 0;
+        decimal retiros = 0;
+        decimal ganados = 0;
+        decimal recuperado = 0;
+
+        if (_fondoRepository is not null)
+        {
+            var movimientos = await _fondoRepository.ObtenerTodosAsync();
+
+            aportes = movimientos
+                .Where(x => EsAporte(x.Tipo))
+                .Sum(x => x.Monto);
+
+            retiros = movimientos
+                .Where(x => !EsAporte(x.Tipo))
+                .Sum(x => x.Monto);
+        }
+
+        var pagos = await _pagoRepository.ObtenerTodosAsync();
+
+        var cobros = pagos
+            .Where(x => EsCobro(x.Estado))
+            .ToList();
+
+        ganados = cobros.Sum(x => x.MontoInteres);
+        recuperado = cobros.Sum(x => x.MontoCapital);
+
+        return new ResumenGeneralDto
+        {
+            CapitalTotal = cartera.CapitalTotal,
+            InteresesPendientes = cartera.InteresesTotal,
+            InteresesGanados = ganados,
+            CapitalRecuperado = recuperado,
+            Aportes = aportes,
+            Retiros = retiros,
+            NumPrestamos = cartera.NumPrestamos
+        };
+    }
+
     public async Task<List<FondoMovimientoDto>> MovimientosAsync()
     {
         if (_fondoRepository is null)

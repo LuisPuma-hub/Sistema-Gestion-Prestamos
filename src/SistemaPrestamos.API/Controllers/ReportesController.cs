@@ -82,6 +82,15 @@ public class ReportesController : ControllerBase
         }
     }
 
+    // GET: api/reportes/resumen (tarjetas del home)
+    [HttpGet("resumen")]
+    public async Task<ActionResult<ResumenGeneralDto>> Resumen()
+    {
+        var dto = await _reporteService.ResumenGeneralAsync();
+
+        return Ok(dto);
+    }
+
     // GET: api/reportes/capital
     [HttpGet("capital")]
     public async Task<ActionResult<CapitalDto>> Capital()

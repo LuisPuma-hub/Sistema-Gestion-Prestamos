@@ -58,6 +58,13 @@ public class MorosidadService : IMorosidadService
             ? DateTime.UtcNow
             : DateTime.SpecifyKind(fechaReferencia, DateTimeKind.Utc);
 
+        // RN-PRE-019: en plazo fijo los domingos no se
+        // cobran ni generan mora: se evalúa con el sábado para
+        // congelar el estado ese día.
+        if (PeriodoInteresService.EsPlazoFijo(prestamo) &&
+            PeriodoInteresService.EsDomingoLima(fechaReferencia))
+            fechaReferencia = fechaReferencia.AddDays(-1);
+
         // Generar los períodos vencidos hasta la referencia para
         // que la mora refleje las semanas transcurridas aunque
         // no se hayan registrado pagos.

@@ -12,6 +12,8 @@ public interface IReporteService
 
     Task<CapitalDto> CapitalAsync();
 
+    Task<ResumenGeneralDto> ResumenGeneralAsync();
+
     Task<List<FondoMovimientoDto>> MovimientosAsync();
 
     Task<FondoMovimientoDto> RegistrarMovimientoAsync(
