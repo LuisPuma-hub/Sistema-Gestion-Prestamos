@@ -350,6 +350,50 @@ namespace SistemaPrestamos.Infrastructure.Migrations
                     b.ToTable("morosidades", (string)null);
                 });
 
+            modelBuilder.Entity("SistemaPrestamos.Domain.Entities.NotaCompromiso", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreadoPor")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("Pendiente");
+
+                    b.Property<DateTime>("FechaCompromiso")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("FechaCumplimiento")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("PrestamoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Texto")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("PrestamoId");
+
+                    b.ToTable("notas_compromiso", (string)null);
+                });
+
             modelBuilder.Entity("SistemaPrestamos.Domain.Entities.Pago", b =>
                 {
                     b.Property<Guid>("Id")
@@ -739,6 +783,24 @@ namespace SistemaPrestamos.Infrastructure.Migrations
                         .HasForeignKey("PrestamoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Prestamo");
+                });
+
+            modelBuilder.Entity("SistemaPrestamos.Domain.Entities.NotaCompromiso", b =>
+                {
+                    b.HasOne("SistemaPrestamos.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SistemaPrestamos.Domain.Entities.Prestamo", "Prestamo")
+                        .WithMany()
+                        .HasForeignKey("PrestamoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Cliente");
 
                     b.Navigation("Prestamo");
                 });

@@ -176,6 +176,17 @@
                     </Label.GestureRecognizers>
                 </Label>
 
+                <Label
+                    Text="Política de privacidad"
+                    FontSize="12"
+                    TextColor="#6B7280"
+                    TextDecorations="Underline"
+                    HorizontalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPrivacidadClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+
                 <Border
                     StrokeShape="RoundRectangle 12"
                     StrokeThickness="0"

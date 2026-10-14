@@ -14,6 +14,7 @@ public class PagoService : IPagoService
     private readonly IWhatsappService? _whatsappService;
     private readonly IMorosidadRepository? _morosidadRepository;
     private readonly IMorosidadService? _morosidadService;
+    private readonly ICompromisoService? _compromisoService;
 
     public PagoService(
         IPagoRepository pagoRepository,
@@ -22,7 +23,8 @@ public class PagoService : IPagoService
         IPeriodoInteresService periodoInteresService,
         IWhatsappService? whatsappService = null,
         IMorosidadRepository? morosidadRepository = null,
-        IMorosidadService? morosidadService = null)
+        IMorosidadService? morosidadService = null,
+        ICompromisoService? compromisoService = null)
     {
         _pagoRepository = pagoRepository;
         _prestamoRepository = prestamoRepository;
@@ -31,6 +33,7 @@ public class PagoService : IPagoService
         _whatsappService = whatsappService;
         _morosidadRepository = morosidadRepository;
         _morosidadService = morosidadService;
+        _compromisoService = compromisoService;
     }
 
     public async Task<IEnumerable<PagoDto>> ObtenerTodosAsync()
@@ -263,7 +266,7 @@ public class PagoService : IPagoService
             x => x.InteresPendiente);
 
         // RN-PRE-012 (vía pago): si estaba en mora y ya no
-        // cumple la condición (< 3 vencidos), vuelve solo a
+        // cumple la condición (0 vencidos), vuelve solo a
         // ACTIVO y el cliente pasa a observación. Sin pago
         // que limpie, sigue en mora (solo sale por reactivar
         // manual con motivo).
@@ -276,7 +279,7 @@ public class PagoService : IPagoService
                 x => x.FechaVencimiento < fechaPago &&
                      x.InteresPendiente > 0);
 
-            if (vencidosRestantes < 3)
+            if (vencidosRestantes < 1)
             {
                 prestamo.Estado = "Activo";
 
@@ -358,6 +361,20 @@ public class PagoService : IPagoService
         await _prestamoRepository.ActualizarAsync(prestamo);
 
         await _pagoRepository.GuardarCambiosAsync();
+
+        // Compromisos: el pago del día cumple lo pendiente
+        // del cliente en esa fecha (no bloquea el registro).
+        if (_compromisoService is not null)
+        {
+            try
+            {
+                await _compromisoService.CumplirPorPagoAsync(
+                    prestamo.ClienteId, prestamo.Id, fechaPago);
+            }
+            catch
+            {
+            }
+        }
 
         // ============================================================
         // 16. RECUPERAR PAGO GUARDADO
@@ -502,6 +519,20 @@ public class PagoService : IPagoService
         await _prestamoRepository.ActualizarAsync(prestamo);
         await _pagoRepository.GuardarCambiosAsync();
 
+        // Si el pago cumplió un compromiso, al anular vuelve
+        // a Pendiente (o Vencida si ya pasó su fecha).
+        if (_compromisoService is not null)
+        {
+            try
+            {
+                await _compromisoService.RevertirPorAnulacionAsync(
+                    prestamo.ClienteId, prestamo.Id, pago.FechaPago);
+            }
+            catch
+            {
+            }
+        }
+
         // Reevaluar mora con el nuevo saldo (puede volver).
         if (_morosidadService is not null)
             await _morosidadService.EvaluarAsync(
@@ -588,6 +619,11 @@ public class PagoService : IPagoService
 
         if (dto.PerdonarIntereses)
         {
+            // Generar los períodos transcurridos para que el
+            // perdón cubra todas las semanas vencidas a la fecha.
+            await _periodoInteresService.GenerarPeriodosPendientesAsync(
+                prestamo.Id, ahora);
+
             var periodos = await _periodoInteresRepository
                 .ObtenerPorPrestamoAsync(prestamo.Id);
 
@@ -597,19 +633,54 @@ public class PagoService : IPagoService
                 .OrderBy(x => x.FechaVencimiento)
                 .ToList();
 
-            foreach (var periodo in vencidos)
+            decimal? tope = dto.MontoPerdonar.HasValue
+                ? Math.Round(dto.MontoPerdonar.Value, 2)
+                : null;
+
+            if (tope.HasValue)
             {
-                perdonado += periodo.InteresPendiente;
-                periodo.InteresPagado = periodo.InteresGenerado;
-                periodo.InteresPendiente = 0;
-                periodo.Estado = "Pagado";
-                periodo.FechaPagoCompleto = ahora;
+                if (tope.Value <= 0)
+                    throw new InvalidOperationException(
+                        "El monto a perdonar debe ser mayor que cero.");
+
+                var totalVencido = vencidos.Sum(x => x.InteresPendiente);
+
+                if (tope.Value > totalVencido)
+                    throw new InvalidOperationException(
+                        "El monto a perdonar supera lo vencido " +
+                        $"(S/ {totalVencido:N2}).");
             }
 
-            if (vencidos.Count > 0)
+            var restante = tope ?? decimal.MaxValue;
+
+            foreach (var periodo in vencidos)
+            {
+                if (restante <= 0)
+                    break;
+
+                var quita = Math.Min(restante, periodo.InteresPendiente);
+
+                perdonado += quita;
+                restante -= quita;
+                periodo.InteresPagado += quita;
+                periodo.InteresPendiente -= quita;
+
+                if (periodo.InteresPendiente <= 0)
+                {
+                    periodo.InteresPendiente = 0;
+                    periodo.Estado = "Pagado";
+                    periodo.FechaPagoCompleto = ahora;
+                }
+                else
+                {
+                    periodo.Estado = "Parcial";
+                }
+            }
+
+            if (vencidos.Count > 0 && perdonado > 0)
                 partes.Add(
-                    $"CONDONACIÓN {vencidos.Count} sem.: " +
-                    $"S/ {perdonado:N2}");
+                    (tope.HasValue ? "CONDONACIÓN PARCIAL " : "CONDONACIÓN ") +
+                    $"{vencidos.Count} sem.: S/ {perdonado:N2}");
         }
 
         if (capitalAdj == 0 && perdonado == 0)
@@ -674,7 +745,7 @@ public class PagoService : IPagoService
             .Count(x => x.FechaVencimiento < referencia &&
                         x.InteresPendiente > 0);
 
-        if (vencidos >= 3)
+        if (vencidos >= 1)
             return;
 
         prestamo.Estado = "Activo";

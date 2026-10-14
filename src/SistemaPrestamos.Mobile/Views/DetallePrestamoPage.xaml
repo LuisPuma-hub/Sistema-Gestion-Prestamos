@@ -148,8 +148,59 @@
                     </Grid>
                 </Border>
 
-                <Label Text="HISTORIAL DE PAGOS" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
-                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                <VerticalStackLayout x:Name="CompromisosPrestamoLayout" Spacing="8" IsVisible="False">
+                    <Label Text="COMPROMISOS DE ESTE PRÉSTAMO" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />
+                    <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                        <VerticalStackLayout Spacing="8">
+                            <CollectionView x:Name="CompromisosPrestamoCollection" SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Padding="0,8">
+                                            <VerticalStackLayout Grid.Column="0" Spacing="0">
+                                                <Label Text="{Binding Texto}" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
+                                                <Label Text="{Binding FechaCompromiso, StringFormat='{0:dd/MM/yyyy}'}" FontSize="13" TextColor="#6B7280" />
+                                                <Label Text="{Binding Estado}" FontSize="12" FontAttributes="Bold" TextColor="#92400E" />
+                                            </VerticalStackLayout>
+                                            <Button
+                                                Grid.Column="1"
+                                                Text="Anular"
+                                                FontSize="12"
+                                                BackgroundColor="#FEE2E2"
+                                                TextColor="#DC2626"
+                                                CornerRadius="10"
+                                                HeightRequest="40"
+                                                VerticalOptions="Center"
+                                                Clicked="OnAnularCompromisoPrestamoClicked"
+                                                CommandParameter="{Binding Id}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Entry
+                                    x:Name="CompromisoPrestamoTextoEntry"
+                                    Placeholder="Ej. paga el lunes"
+                                    MaxLength="200"
+                                    HorizontalOptions="Fill" />
+                                <DatePicker
+                                    Grid.Column="1"
+                                    x:Name="CompromisoPrestamoFechaPicker"
+                                    Format="dd/MM"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                            <Button
+                                x:Name="GuardarCompromisoPrestamoButton"
+                                Text="+ Nuevo compromiso"
+                                BackgroundColor="#15307A"
+                                TextColor="White"
+                                CornerRadius="12"
+                                HeightRequest="50"
+                                Clicked="OnGuardarCompromisoPrestamoClicked" />
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <Label Text="HISTORIAL DE PAGOS" FontSize="12" FontAttributes="Bold" TextColor="#6B7280" CharacterSpacing="1" />                <Border Padding="16" BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 16">
                     <VerticalStackLayout Spacing="4">
                         <Label x:Name="PagosResumenLabel" Text="Sin pagos registrados." FontSize="14" TextColor="#6B7280" IsVisible="False" />
                         <CollectionView x:Name="PagosCollection" SelectionMode="None">

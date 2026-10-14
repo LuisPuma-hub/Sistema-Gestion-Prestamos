@@ -11,6 +11,7 @@ public static class EventosNotificacion
     public const string CobradoDia = "CobradoDia";
     public const string PrestamoPorAprobar = "PrestamoPorAprobar";
     public const string ResumenVencimientos = "ResumenVencimientos";
+    public const string CompromisoHoy = "CompromisoHoy";
 
     public static readonly IReadOnlyList<string> EventosWhatsapp =
     [
@@ -27,7 +28,8 @@ public static class EventosNotificacion
         MoraPersistente,
         CobradoDia,
         PrestamoPorAprobar,
-        ResumenVencimientos
+        ResumenVencimientos,
+        CompromisoHoy
     ];
 
     public static readonly IReadOnlyList<string> Todos =
@@ -40,7 +42,8 @@ public static class EventosNotificacion
         MoraCobrador,
         CobradoDia,
         PrestamoPorAprobar,
-        ResumenVencimientos
+        ResumenVencimientos,
+        CompromisoHoy
     ];
 }
 

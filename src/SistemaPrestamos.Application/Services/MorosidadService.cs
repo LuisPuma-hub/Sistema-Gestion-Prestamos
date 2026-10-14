@@ -90,9 +90,9 @@ public class MorosidadService : IMorosidadService
         var morosidad = await _morosidadRepository
             .ObtenerPorPrestamoAsync(prestamoId);
 
-        // Regla: más de 2 períodos vencidos
-        // equivale a 3 o más períodos.
-        if (cantidadVencidos >= 3)
+        // Regla: 1 o más períodos vencidos (el primer pago
+        // impago ya es mora).
+        if (cantidadVencidos >= 1)
         {
             if (morosidad is null)
             {
@@ -147,13 +147,13 @@ public class MorosidadService : IMorosidadService
                 .CrearAsync(morosidad);
         }
 
-        // RN-MOR-005 + RN-MOR-009: el préstamo con 3 o más
+        // RN-MOR-005 + RN-MOR-009: el préstamo con 1 o más
         // periodos vencidos pasa a MOROSO y arrastra al cliente.
         // Sin esto el cliente seguía ACTIVO y podía recibir
         // otro préstamo.
         if (!EsTerminal(prestamo.Estado))
         {
-            if (cantidadVencidos >= 3)
+            if (cantidadVencidos >= 1)
             {
                 if (string.Equals(
                         prestamo.Estado,

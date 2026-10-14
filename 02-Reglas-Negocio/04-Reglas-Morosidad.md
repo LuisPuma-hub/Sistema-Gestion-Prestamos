@@ -24,11 +24,11 @@ En v1 `tasa_mora = 0.00` y `monto_mora = 0` (sin recargo; la mora solo se regist
 
 ## RN-MOR-005
 
-Regla determinista (sin discrecionalidad): el préstamo pasará a MOROSO si y solo si `COUNT(periodos_vencidos_impagos) >= 3`.
+Regla determinista (sin discrecionalidad): el préstamo pasará a MOROSO si y solo si `COUNT(periodos_vencidos_impagos) >= 1` (el primer pago impago ya es mora).
 
 - Evaluación por job diario `DetectarMorosidad` a las 00:05 America/Lima.
 - Al cumplirse: cambia a MOROSO + inserta `Historial_Morosidad` + dispara notificación/WhatsApp de morosidad.
-- 1-2 periodos vencidos = ATRASADO, no MOROSO. Se elimina el término ambiguo "pago a destiempo" y "no necesariamente".
+- 0 periodos vencidos = al día. Se elimina el término ambiguo "pago a destiempo" y "no necesariamente".
 
 > Implementado: `MorosidadJob` evalúa los préstamos vigentes cada día a las 00:05 Lima, además de la evaluación al consultar. Al cumplirse, el préstamo pasa a MOROSO y el cliente a MOROSO (RN-MOR-009). Los avisos los envía después el `ProgramadorService`, no la evaluación. Al saldar (CANCELADO), la mora se cierra y el cliente se sincroniza.
 
@@ -36,7 +36,7 @@ Regla determinista (sin discrecionalidad): el préstamo pasará a MOROSO si y so
 
 El administrador podrá reactivar manualmente el préstamo MOROSO a ACTIVO solo si se paga al menos 1 periodo vencido o se registra motivo (10-200 chars) + actor + fecha. No resetea el contador de vencidos (ver RN-PRE-012).
 
-> Implementado: `ReactivarAsync` devuelve el préstamo a ACTIVO y sincroniza al cliente (a observación si no quedan morosos). Además, el pago que deja < 3 vencidos reactiva solo (vía pago, RN-PRE-012) y cierra la mora. Las observaciones son opcionales en v1: pendiente endurecer motivo obligatorio 10-200 o pago previo.
+> Implementado: `ReactivarAsync` devuelve el préstamo a ACTIVO y sincroniza al cliente (a observación si no quedan morosos). Además, el pago que deja < 2 vencidos reactiva solo (vía pago, RN-PRE-012) y cierra la mora. Las observaciones son opcionales en v1: pendiente endurecer motivo obligatorio 10-200 o pago previo.
 
 ## RN-MOR-007
 

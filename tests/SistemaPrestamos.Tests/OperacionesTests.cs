@@ -345,6 +345,49 @@ public class OperacionesTests : IDisposable
     }
 
     [Fact]
+    public async Task Ajustar_Parcial_PerdonaHastaMonto()
+    {
+        var cliente = await CrearClienteAsync("90000021");
+        var id = await CrearPrestamoActivoAsync(
+            cliente, 1000m, DateTime.UtcNow.AddDays(-21));
+
+        // 3 semanas vencidas x S/ 50 = S/ 150.
+        var ajuste = await _pagos.AjustarAsync(
+            id,
+            new AjustarPrestamoDto
+            {
+                PerdonarIntereses = true,
+                MontoPerdonar = 60m,
+                Motivo = "Descuento por mora prolongada."
+            },
+            null);
+
+        Assert.Equal("Ajuste", ajuste.Estado);
+        Assert.Equal(60m, ajuste.Monto);
+        Assert.Equal(60m, ajuste.MontoInteres);
+        Assert.Equal(0m, ajuste.MontoCapital);
+    }
+
+    [Fact]
+    public async Task Ajustar_Parcial_SuperaVencido_SeRechaza()
+    {
+        var cliente = await CrearClienteAsync("90000022");
+        var id = await CrearPrestamoActivoAsync(
+            cliente, 1000m, DateTime.UtcNow.AddDays(-14));
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => _pagos.AjustarAsync(
+                id,
+                new AjustarPrestamoDto
+                {
+                    PerdonarIntereses = true,
+                    MontoPerdonar = 99999m,
+                    Motivo = "Descuento por mora prolongada."
+                },
+                null));
+    }
+
+    [Fact]
     public async Task Ajustar_SubirCapital_SeRechaza()
     {
         var cliente = await CrearClienteAsync("90000010");
@@ -506,6 +549,176 @@ public class OperacionesTests : IDisposable
 
         var capital = await reportes.CapitalAsync();
         Assert.Equal(0m, capital.Retiros);
+    }
+
+    [Fact]
+    public async Task Compromiso_Crear_Y_Anular_Ok()
+    {
+        var cliente = await CrearClienteAsync("93000001");
+        var repo = new NotaCompromisoRepository(_contexto);
+        var servicio = new CompromisoService(
+            repo, new ClienteRepository(_contexto));
+
+        var creado = await servicio.CrearAsync(
+            cliente,
+            new CrearCompromisoDto
+            {
+                Texto = "Paga el lunes",
+                FechaCompromiso = DateTime.UtcNow.Date
+            },
+            null);
+
+        Assert.Equal("Pendiente", creado.Estado);
+
+        var lista = await servicio.ListarPorClienteAsync(cliente);
+        Assert.Single(lista);
+
+        Assert.True(await servicio.AnularAsync(creado.Id));
+    }
+
+    [Fact]
+    public async Task Compromiso_TextoVacio_SeRechaza()
+    {
+        var cliente = await CrearClienteAsync("93000002");
+        var servicio = new CompromisoService(
+            new NotaCompromisoRepository(_contexto),
+            new ClienteRepository(_contexto));
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => servicio.CrearAsync(
+                cliente,
+                new CrearCompromisoDto
+                {
+                    Texto = " ",
+                    FechaCompromiso = DateTime.UtcNow.Date
+                },
+                null));
+    }
+
+    [Fact]
+    public async Task Compromiso_SeCumple_ConPago()
+    {
+        var cliente = await CrearClienteAsync("93000003");
+        var repo = new NotaCompromisoRepository(_contexto);
+        var compromisos = new CompromisoService(
+            repo, new ClienteRepository(_contexto));
+
+        await compromisos.CrearAsync(
+            cliente,
+            new CrearCompromisoDto
+            {
+                Texto = "Paga hoy",
+                FechaCompromiso = DateTime.UtcNow.Date
+            },
+            null);
+
+        var prestamo = await CrearPrestamoActivoAsync(cliente, 500m);
+
+        var pagos = new PagoService(
+            new PagoRepository(_contexto),
+            new PrestamoRepository(_contexto),
+            new PeriodoInteresRepository(_contexto),
+            new PeriodoInteresService(
+                new PrestamoRepository(_contexto),
+                new PeriodoInteresRepository(_contexto)),
+            null, null, null,
+            compromisos);
+
+        await pagos.RegistrarAsync(new CrearPagoDto
+        {
+            PrestamoId = prestamo,
+            Monto = 25m,
+            FechaPago = DateTime.UtcNow
+        });
+
+        var lista = await compromisos.ListarPorClienteAsync(cliente);
+
+        Assert.Equal("Cumplida", lista.Single().Estado);
+    }
+
+    [Fact]
+    public async Task Compromiso_PorPrestamo_SoloCierraEse()
+    {
+        var cliente = await CrearClienteAsync("93000005");
+        var repo = new NotaCompromisoRepository(_contexto);
+        var prestamoRepo = new PrestamoRepository(_contexto);
+        var servicio = new CompromisoService(
+            repo, new ClienteRepository(_contexto), prestamoRepo);
+
+        var prestamoA = await CrearPrestamoActivoAsync(cliente, 500m);
+        var prestamoB = await CrearPrestamoActivoAsync(cliente, 400m);
+
+        await servicio.CrearAsync(
+            cliente,
+            new CrearCompromisoDto
+            {
+                Texto = "Paga el A",
+                FechaCompromiso = DateTime.UtcNow.Date,
+                PrestamoId = prestamoA
+            },
+            null);
+
+        var pagos = new PagoService(
+            new PagoRepository(_contexto),
+            prestamoRepo,
+            new PeriodoInteresRepository(_contexto),
+            new PeriodoInteresService(
+                prestamoRepo,
+                new PeriodoInteresRepository(_contexto)),
+            null, null, null,
+            servicio);
+
+        // Paga el B: el compromiso del A sigue pendiente.
+        await pagos.RegistrarAsync(new CrearPagoDto
+        {
+            PrestamoId = prestamoB,
+            Monto = 20m,
+            FechaPago = DateTime.UtcNow
+        });
+
+        Assert.Equal(
+            "Pendiente",
+            (await servicio.ListarPorClienteAsync(cliente))
+                .Single().Estado);
+
+        // Paga el A: se cumple.
+        await pagos.RegistrarAsync(new CrearPagoDto
+        {
+            PrestamoId = prestamoA,
+            Monto = 25m,
+            FechaPago = DateTime.UtcNow
+        });
+
+        Assert.Equal(
+            "Cumplida",
+            (await servicio.ListarPorClienteAsync(cliente))
+                .Single().Estado);
+    }
+
+    [Fact]
+    public async Task Compromiso_Pasado_SeMarcaVencido()
+    {
+        var cliente = await CrearClienteAsync("93000004");
+        var servicio = new CompromisoService(
+            new NotaCompromisoRepository(_contexto),
+            new ClienteRepository(_contexto));
+
+        await servicio.CrearAsync(
+            cliente,
+            new CrearCompromisoDto
+            {
+                Texto = "Pagaba ayer",
+                FechaCompromiso = DateTime.UtcNow.Date.AddDays(-1)
+            },
+            null);
+
+        var hoy = ProgramadorService.AhoraLima(DateTime.UtcNow).Date;
+
+        await servicio.MarcarVencidosAsync(hoy);
+
+        var lista = await servicio.ListarPorClienteAsync(cliente);
+
+        Assert.Equal("Vencida", lista.Single().Estado);
     }
 
     [Fact]

@@ -9,6 +9,7 @@ public partial class DetalleClientePage : ContentPage
     private readonly ClienteService _clienteService;
     private readonly GaranteService _garanteService;
     private readonly PrestamoService _prestamoService;
+    private readonly CompromisoService _compromisoService;
     private ClienteDto? _cliente;
     private GaranteDto? _garanteActual;
     private byte[]? _fotoBytes;
@@ -20,12 +21,14 @@ public partial class DetalleClientePage : ContentPage
     public DetalleClientePage(
         ClienteService clienteService,
         GaranteService garanteService,
-        PrestamoService prestamoService)
+        PrestamoService prestamoService,
+        CompromisoService compromisoService)
     {
         InitializeComponent();
         _clienteService = clienteService;
         _garanteService = garanteService;
         _prestamoService = prestamoService;
+        _compromisoService = compromisoService;
     }
 
     protected override async void OnAppearing()
@@ -129,6 +132,15 @@ public partial class DetalleClientePage : ContentPage
                 ? "Sin préstamos registrados."
                 : $"Préstamos: {listaPrestamos.Count}";
 
+            CompromisosLayout.IsVisible = await EsAdminAsync();
+
+            if (CompromisosLayout.IsVisible)
+            {
+                CompromisoFechaPicker.Date = DateTime.Today;
+                CargarCompromisoPrestamos(listaPrestamos);
+                await CargarCompromisosAsync();
+            }
+
             SetEdicion(false);
         }
         catch (HttpRequestException)
@@ -143,6 +155,130 @@ public partial class DetalleClientePage : ContentPage
         {
             MostrarCargando(false);
         }
+    }
+
+    private async Task CargarCompromisosAsync()
+    {
+        if (_cliente is null)
+            return;
+
+        CompromisosCollection.ItemsSource =
+            await _compromisoService.ListarPorClienteAsync(
+                _cliente.Id);
+    }
+
+    private void CargarCompromisoPrestamos(
+        List<PrestamoDto> prestamos)
+    {
+        var actual = CompromisoPrestamoPicker.SelectedItem
+            as PrestamoDto;
+
+        CompromisoPrestamoPicker.ItemsSource = prestamos
+            .OrderByDescending(p => p.FechaInicio)
+            .ToList();
+
+        CompromisoPrestamoPicker.SelectedItem = prestamos
+            .FirstOrDefault(p => actual is not null && p.Id == actual.Id);
+    }
+
+    private static readonly string[] MotivosCompromiso =
+    [
+        "Paga hoy",
+        "Paga mañana",
+        "Paga el lunes",
+        "Abonará una parte",
+        "Viene a regularizar"
+    ];
+
+    private async Task<string?> ElegirTextoCompromisoAsync(
+        string escrito)
+    {
+        if (!string.IsNullOrWhiteSpace(escrito))
+            return escrito.Trim();
+
+        var elegido = await DisplayActionSheetAsync(
+            "Compromiso",
+            "Cancelar",
+            null,
+            [.. MotivosCompromiso, "✏️ Escribir otro..."]);
+
+        if (string.IsNullOrWhiteSpace(elegido) ||
+            elegido == "Cancelar")
+            return null;
+
+        if (elegido != "✏️ Escribir otro...")
+            return elegido;
+
+        var otro = await DisplayPromptAsync(
+            "Compromiso",
+            "Escribe el compromiso (máx. 200):",
+            "Guardar",
+            "Cancelar",
+            maxLength: 200);
+
+        return string.IsNullOrWhiteSpace(otro) ? null : otro.Trim();
+    }
+
+    private async void OnGuardarCompromisoClicked(
+        object? sender, EventArgs e)
+    {
+        if (_cliente is null)
+            return;
+
+        var texto = await ElegirTextoCompromisoAsync(
+            CompromisoTextoEntry.Text?.Trim() ?? string.Empty);
+
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            if (!string.IsNullOrWhiteSpace(
+                    CompromisoTextoEntry.Text))
+                await DisplayAlertAsync(
+                    "Aviso", "Escribe el compromiso.", "OK");
+            return;
+        }
+
+        var (exito, error) = await _compromisoService.CrearAsync(
+            _cliente.Id,
+            texto,
+            CompromisoFechaPicker.Date ?? DateTime.Today,
+            (CompromisoPrestamoPicker.SelectedItem as PrestamoDto)?.Id);
+
+        if (!exito)
+        {
+            await DisplayAlertAsync(
+                "Aviso", error ?? "No se pudo guardar.", "OK");
+            return;
+        }
+
+        CompromisoTextoEntry.Text = string.Empty;
+
+        await CargarCompromisosAsync();
+    }
+
+    private async void OnAnularCompromisoClicked(
+        object? sender, EventArgs e)
+    {
+        if (sender is not Button boton ||
+            boton.CommandParameter is not Guid id)
+            return;
+
+        var confirma = await DisplayAlertAsync(
+            "Anular", "¿Anular este compromiso?", "Sí", "No");
+
+        if (!confirma)
+            return;
+
+        var (exito, error) = await _compromisoService
+            .AnularAsync(id);
+
+        if (!exito)
+        {
+            await DisplayAlertAsync(
+                "Aviso", error ?? "No se pudo anular.", "OK");
+            return;
+        }
+
+        await CargarCompromisosAsync();
     }
 
     private void SetEdicion(bool editando)

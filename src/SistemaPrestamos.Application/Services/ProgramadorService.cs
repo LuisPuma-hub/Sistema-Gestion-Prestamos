@@ -16,6 +16,8 @@ public class ProgramadorService : IProgramadorService
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IWhatsappService _whatsappService;
     private readonly INotificacionService _notificacionService;
+    private readonly ICompromisoService? _compromisoService;
+    private readonly IPeriodoInteresService? _periodoInteresService;
 
     public ProgramadorService(
         IReglaNotificacionRepository reglaRepository,
@@ -27,7 +29,9 @@ public class ProgramadorService : IProgramadorService
         IUsuarioRepository usuarioRepository,
         IWhatsappService whatsappService,
         INotificacionService notificacionService,
-        ILogger<ProgramadorService>? logger = null)
+        ILogger<ProgramadorService>? logger = null,
+        ICompromisoService? compromisoService = null,
+        IPeriodoInteresService? periodoInteresService = null)
     {
         _logger = logger;
         _reglaRepository = reglaRepository;
@@ -39,6 +43,8 @@ public class ProgramadorService : IProgramadorService
         _usuarioRepository = usuarioRepository;
         _whatsappService = whatsappService;
         _notificacionService = notificacionService;
+        _compromisoService = compromisoService;
+        _periodoInteresService = periodoInteresService;
     }
 
     public static DateTime AhoraLima(DateTime ahoraUtc)
@@ -131,6 +137,8 @@ public class ProgramadorService : IProgramadorService
                 await EnviarPrestamosPorAprobarAsync(regla, hoy),
             EventosNotificacion.ResumenVencimientos =>
                 await EnviarResumenVencimientosAsync(regla, hoy),
+            EventosNotificacion.CompromisoHoy =>
+                await EnviarCompromisosHoyAsync(regla, hoy),
             _ => 0
         };
     }
@@ -140,6 +148,8 @@ public class ProgramadorService : IProgramadorService
         DateTime fechaVencimiento,
         DateTime hoy)
     {
+        await AsegurarPeriodosHastaAsync(fechaVencimiento);
+
         var periodos = await _periodoRepository
             .ObtenerConVencimientoAsync(fechaVencimiento);
 
@@ -181,6 +191,42 @@ public class ProgramadorService : IProgramadorService
         }
 
         return enviados;
+    }
+
+    private static bool EsVigenteParaAviso(
+        Prestamo prestamo)
+    {
+        return string.Equals(
+                prestamo.Estado, "Activo",
+                StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(
+                prestamo.Estado, "Moroso",
+                StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Genera los tramos hasta la fecha para no avisar en
+    /// vacío: sin esto solo se veían períodos ya creados
+    /// (al aprobar o al pagar).
+    /// </summary>
+    private async Task AsegurarPeriodosHastaAsync(DateTime fecha)
+    {
+        if (_periodoInteresService is null)
+            return;
+
+        var vigentes = await _prestamoRepository.ObtenerTodosAsync();
+
+        foreach (var p in vigentes.Where(EsVigenteParaAviso))
+        {
+            try
+            {
+                await _periodoInteresService
+                    .GenerarPeriodosPendientesAsync(p.Id, fecha);
+            }
+            catch
+            {
+            }
+        }
     }
 
     private async Task<int> EnviarMorasAsync(
@@ -272,24 +318,21 @@ public class ProgramadorService : IProgramadorService
             $"{lista.Count} en mora: {nombres}{extra}.");
     }
 
-    private async Task<List<Usuario>> ObtenerCobradoresAsync()
-    {
-        var usuarios = await _usuarioRepository.ObtenerTodosAsync();
-
-        return usuarios
-            .Where(u =>
-                u.Activo &&
-                (u.Rol == "Administrador" || u.Rol == "Cobrador"))
-            .ToList();
-    }
-
     private async Task<int> EnviarPushCobradoresAsync(
         ReglaNotificacion regla,
         DateTime hoy,
         string titulo,
-        string cuerpo)
+        string cuerpo,
+        bool soloAdmins = false)
     {
-        var cobradores = await ObtenerCobradoresAsync();
+        var usuarios = await _usuarioRepository.ObtenerTodosAsync();
+
+        var cobradores = usuarios
+            .Where(u =>
+                u.Activo &&
+                (u.Rol == "Administrador" ||
+                    (!soloAdmins && u.Rol == "Cobrador")))
+            .ToList();
         var enviados = 0;
 
         // Hora Lima dentro del texto: el timestamp que muestra
@@ -331,10 +374,105 @@ public class ProgramadorService : IProgramadorService
         return enviados;
     }
 
+    private async Task<int> EnviarCompromisosHoyAsync(
+        ReglaNotificacion regla,
+        DateTime hoy)
+    {
+        if (_compromisoService is null)
+            return 0;
+
+        await _compromisoService.MarcarVencidosAsync(hoy);
+
+        var usuarios = await _usuarioRepository.ObtenerTodosAsync();
+
+        var admins = usuarios
+            .Where(u =>
+                u.Activo && u.Rol == "Administrador")
+            .ToList();
+
+        if (admins.Count == 0)
+            return 0;
+
+        var lima = AhoraLima(DateTime.UtcNow);
+        var enviados = 0;
+
+        // Los pendientes de hoy se obtienen vía vencidos=no:
+        // se re-listan por cliente desde el servicio.
+        var pendientes = await CompromisosDeHoyAsync(hoy);
+
+        foreach (var c in pendientes)
+        {
+            foreach (var admin in admins)
+            {
+                if (await YaEnviadoAsync(
+                        regla, hoy, c.ClienteId, null, admin.Id))
+                    continue;
+
+                try
+                {
+                    var n = await _notificacionService
+                        .EnviarAUsuarioAsync(
+                            admin.Id,
+                            "Compromiso de pago",
+                            $"Hoy se comprometió a pagar " +
+                            $"{c.ClienteNombre}: {c.Texto} " +
+                            $"({lima:dd/MM HH:mm}).");
+
+                    await RegistrarAsync(
+                        regla, c.ClienteId, null, admin.Id,
+                        admin.Email,
+                        n > 0 ? "Enviado" : "Fallido",
+                        n > 0 ? null : "Sin dispositivos.", hoy);
+
+                    if (n > 0)
+                        enviados++;
+                }
+                catch (Exception ex)
+                {
+                    await RegistrarAsync(
+                        regla, c.ClienteId, null, admin.Id,
+                        admin.Email, "Fallido", ex.Message, hoy);
+                }
+            }
+        }
+
+        return enviados;
+    }
+
+    private async Task<List<CompromisoInfo>> CompromisosDeHoyAsync(
+        DateTime hoy)
+    {
+        // Se resuelve vía EnviarPushCobradoresAsync? No: listado
+        // directo del repositorio a través del servicio.
+        if (_compromisoService is null)
+            return new List<CompromisoInfo>();
+
+        return (await _compromisoService
+                .PendientesDeHoyAsync(hoy))
+            .Select(x => new CompromisoInfo
+            {
+                ClienteId = x.ClienteId,
+                ClienteNombre = x.ClienteNombre,
+                Texto = x.Texto
+            })
+            .ToList();
+    }
+
+    private sealed class CompromisoInfo
+    {
+        public Guid ClienteId { get; set; }
+
+        public string ClienteNombre { get; set; } = string.Empty;
+
+        public string Texto { get; set; } = string.Empty;
+    }
+
     private async Task<int> EnviarResumenAsync(
         ReglaNotificacion regla,
         DateTime hoy)
     {
+        await AsegurarPeriodosHastaAsync(hoy);
+
         var vencenHoy = (await _periodoRepository
             .ObtenerConVencimientoAsync(hoy))
             .Select(p => p.PrestamoId)
@@ -427,6 +565,8 @@ public class ProgramadorService : IProgramadorService
         ReglaNotificacion regla,
         DateTime hoy)
     {
+        await AsegurarPeriodosHastaAsync(hoy);
+
         var vencenHoy = (await _periodoRepository
             .ObtenerConVencimientoAsync(hoy))
             .Select(p => p.PrestamoId)

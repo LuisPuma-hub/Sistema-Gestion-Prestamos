@@ -20,7 +20,8 @@ public partial class EditarReglaPage : ContentPage
         ("MoraPersistente", "Moras activas"),
         ("CobradoDia", "Cobrado del día"),
         ("PrestamoPorAprobar", "Préstamo por aprobar"),
-        ("ResumenVencimientos", "Vencen hoy")
+        ("ResumenVencimientos", "Vencen hoy"),
+        ("CompromisoHoy", "Compromiso de pago")
     ];
 
     private static readonly string[] Plantillas =

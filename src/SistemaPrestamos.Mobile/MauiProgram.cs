@@ -16,6 +16,11 @@ public static class MauiProgram
     // cuando se cree el servicio. Solo se usa en Release.
     private const string ApiBaseUrlNube = "https://sistema-gestion-prestamos-rjg2.onrender.com/";
 
+    // Política de privacidad (ficha de Play Store + dentro
+    // de la app). Debe desplegarse el backend para que exista.
+    public const string PrivacidadUrl =
+        "https://sistema-gestion-prestamos-rjg2.onrender.com/privacidad.html";
+
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -72,7 +77,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<MorosidadService>();
         builder.Services.AddSingleton<WhatsappMobileService>();
         builder.Services.AddSingleton<NotificacionesService>();
-        builder.Services.AddSingleton<ImportacionService>();
+        builder.Services.AddSingleton<CompromisoService>();        builder.Services.AddSingleton<ImportacionService>();
         builder.Services.AddSingleton<ReporteService>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<MainPage>();

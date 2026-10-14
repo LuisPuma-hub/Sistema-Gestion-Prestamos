@@ -153,4 +153,16 @@ public partial class LoginPage : ContentPage
             MostrarError($"Ocurrió un error: {ex.Message}");
         }
     }
+
+    private async void OnPrivacidadClicked(object? sender, TappedEventArgs e)
+    {
+        try
+        {
+            await Launcher.OpenAsync(MauiProgram.PrivacidadUrl);
+        }
+        catch
+        {
+            MostrarError("No se pudo abrir la política de privacidad.");
+        }
+    }
 }

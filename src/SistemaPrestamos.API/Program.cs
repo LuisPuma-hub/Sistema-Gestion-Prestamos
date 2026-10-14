@@ -69,6 +69,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 builder.Services.AddScoped<IReglaNotificacionService, ReglaNotificacionService>();
 builder.Services.AddScoped<IProgramadorService, ProgramadorService>();
+builder.Services.AddScoped<ICompromisoService, CompromisoService>();
+builder.Services.AddScoped<INotaCompromisoRepository, NotaCompromisoRepository>();
 builder.Services.AddHostedService<ProgramadorJob>();
 builder.Services.AddHostedService<MorosidadJob>();
 

@@ -9,6 +9,7 @@ public partial class DetallePrestamoPage : ContentPage
     private readonly PrestamoService _prestamoService;
     private readonly PagoService _pagoService;
     private readonly ClienteService _clienteService;
+    private readonly CompromisoService _compromisoService;
     private PrestamoDto? _prestamo;
     private string _telefono = string.Empty;
 
@@ -17,12 +18,14 @@ public partial class DetallePrestamoPage : ContentPage
     public DetallePrestamoPage(
         PrestamoService prestamoService,
         PagoService pagoService,
-        ClienteService clienteService)
+        ClienteService clienteService,
+        CompromisoService compromisoService)
     {
         InitializeComponent();
         _prestamoService = prestamoService;
         _pagoService = pagoService;
         _clienteService = clienteService;
+        _compromisoService = compromisoService;
     }
 
     protected override async void OnAppearing()
@@ -170,6 +173,14 @@ public partial class DetallePrestamoPage : ContentPage
             {
                 ProxVencLabel.Text = "-";
             }
+
+            CompromisosPrestamoLayout.IsVisible = await EsAdminAsync();
+
+            if (CompromisosPrestamoLayout.IsVisible)
+            {
+                CompromisoPrestamoFechaPicker.Date = DateTime.Today;
+                await CargarCompromisosPrestamoAsync();
+            }
         }
         catch (HttpRequestException)
         {
@@ -183,6 +194,120 @@ public partial class DetallePrestamoPage : ContentPage
         {
             MostrarCargando(false);
         }
+    }
+
+    private async Task CargarCompromisosPrestamoAsync()
+    {
+        if (_prestamo is null)
+            return;
+
+        var todos = await _compromisoService.ListarPorClienteAsync(
+            _prestamo.ClienteId);
+
+        CompromisosPrestamoCollection.ItemsSource = todos
+            .Where(c => c.PrestamoId == _prestamo.Id)
+            .OrderByDescending(c => c.FechaCompromiso)
+            .ToList();
+    }
+
+    private static readonly string[] MotivosCompromiso =
+    [
+        "Paga hoy",
+        "Paga mañana",
+        "Paga el lunes",
+        "Abonará una parte",
+        "Viene a regularizar"
+    ];
+
+    private async Task<string?> ElegirTextoCompromisoAsync(
+        string escrito)
+    {
+        if (!string.IsNullOrWhiteSpace(escrito))
+            return escrito.Trim();
+
+        var elegido = await DisplayActionSheetAsync(
+            "Compromiso",
+            "Cancelar",
+            null,
+            [.. MotivosCompromiso, "✏️ Escribir otro..."]);
+
+        if (string.IsNullOrWhiteSpace(elegido) ||
+            elegido == "Cancelar")
+            return null;
+
+        if (elegido != "✏️ Escribir otro...")
+            return elegido;
+
+        var otro = await DisplayPromptAsync(
+            "Compromiso",
+            "Escribe el compromiso (máx. 200):",
+            "Guardar",
+            "Cancelar",
+            maxLength: 200);
+
+        return string.IsNullOrWhiteSpace(otro) ? null : otro.Trim();
+    }
+
+    private async void OnGuardarCompromisoPrestamoClicked(
+        object? sender, EventArgs e)
+    {
+        if (_prestamo is null)
+            return;
+
+        var texto = await ElegirTextoCompromisoAsync(
+            CompromisoPrestamoTextoEntry.Text?.Trim() ?? string.Empty);
+
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            if (!string.IsNullOrWhiteSpace(
+                    CompromisoPrestamoTextoEntry.Text))
+                await DisplayAlertAsync(
+                    "Aviso", "Escribe el compromiso.", "OK");
+            return;
+        }
+
+        var (exito, error) = await _compromisoService.CrearAsync(
+            _prestamo.ClienteId,
+            texto,
+            CompromisoPrestamoFechaPicker.Date ?? DateTime.Today,
+            _prestamo.Id);
+
+        if (!exito)
+        {
+            await DisplayAlertAsync(
+                "Aviso", error ?? "No se pudo guardar.", "OK");
+            return;
+        }
+
+        CompromisoPrestamoTextoEntry.Text = string.Empty;
+
+        await CargarCompromisosPrestamoAsync();
+    }
+
+    private async void OnAnularCompromisoPrestamoClicked(
+        object? sender, EventArgs e)
+    {
+        if (sender is not Button boton ||
+            boton.CommandParameter is not Guid id)
+            return;
+
+        var confirma = await DisplayAlertAsync(
+            "Anular", "¿Anular este compromiso?", "Sí", "No");
+
+        if (!confirma)
+            return;
+
+        var (exito, error) = await _compromisoService
+            .AnularAsync(id);
+
+        if (!exito)
+        {
+            await DisplayAlertAsync(
+                "Aviso", error ?? "No se pudo anular.", "OK");
+            return;
+        }
+
+        await CargarCompromisosPrestamoAsync();
     }
 
     private async void OnVolverClicked(object? sender, EventArgs e)
@@ -264,6 +389,40 @@ public partial class DetallePrestamoPage : ContentPage
             "OK");
     }
 
+    private async Task<(decimal Total, int Conteo)?> VencidoParaDescuentoAsync()
+    {
+        if (_prestamo is null)
+            return null;
+
+        try
+        {
+            var ahora = DateTime.UtcNow;
+            var lista = new List<PeriodoInteresDto>();
+
+            try
+            {
+                lista = (await _prestamoService
+                        .ObtenerPeriodosAsync(_prestamo.Id))
+                    .Where(p => p.FechaVencimiento < ahora &&
+                                p.InteresPendiente > 0)
+                    .ToList();
+            }
+            catch
+            {
+                return null;
+            }
+
+            if (lista.Count == 0)
+                return null;
+
+            return (lista.Sum(p => p.InteresPendiente), lista.Count);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private async void OnAjustarClicked(object? sender, EventArgs e)
     {
         if (_prestamo is null)
@@ -301,17 +460,82 @@ public partial class DetallePrestamoPage : ContentPage
             nuevoCapital = cap;
         }
 
-        var perdonar = await DisplayAlertAsync(
+        var perdonarOpcion = await DisplayActionSheetAsync(
             "Perdonar intereses",
-            "¿Perdonar las semanas vencidas impagas?",
-            "Sí, perdonar",
-            "No");
+            "Cancelar",
+            null,
+            "Perdonar todo lo vencido",
+            "Monto parcial (descuento)",
+            "No perdonar");
+
+        if (string.IsNullOrWhiteSpace(perdonarOpcion) ||
+            perdonarOpcion == "Cancelar")
+        {
+            return;
+        }
+
+        decimal? montoPerdonar = null;
+        var perdonar = false;
+
+        if (perdonarOpcion == "Perdonar todo lo vencido")
+        {
+            perdonar = true;
+        }
+        else if (perdonarOpcion == "Monto parcial (descuento)")
+        {
+            var vencidos = await VencidoParaDescuentoAsync();
+
+            if (vencidos is null || vencidos.Value.Total <= 0)
+            {
+                await DisplayAlertAsync(
+                    "Sin vencidos",
+                    "No hay intereses vencidos para perdonar.",
+                    "OK");
+                return;
+            }
+
+            // Sugerencia: 10% por período vencido, tope 50%.
+            var factor = Math.Min(0.10m * vencidos.Value.Conteo, 0.50m);
+            var sugerido = Math.Round(
+                vencidos.Value.Total * factor, 2);
+
+            var montoTexto = await DisplayPromptAsync(
+                "Descuento por mora",
+                $"Vencido S/ {vencidos.Value.Total:N2}. " +
+                $"Sugerido S/ {sugerido:N2} " +
+                $"({factor:P0}). Monto a perdonar:",
+                "Continuar",
+                "Cancelar",
+                maxLength: 20,
+                keyboard: Keyboard.Numeric,
+                initialValue: $"{sugerido:N2}");
+
+            if (montoTexto is null)
+                return;
+
+            if (!decimal.TryParse(
+                    montoTexto.Trim(),
+                    System.Globalization.NumberStyles.Number,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    out var monto) || monto <= 0)
+            {
+                await DisplayAlertAsync(
+                    "Monto inválido",
+                    "Ingrese un monto mayor que cero.",
+                    "OK");
+                return;
+            }
+
+            montoPerdonar = monto;
+            perdonar = true;
+        }
 
         var motivoElegido = await DisplayActionSheetAsync(
             "Motivo del ajuste",
             "Cancelar",
             null,
             "Descuento pactado por pronto pago",
+            "Descuento por mora prolongada",
             "Corrección de saldo",
             "Condonación autorizada",
             "Error de digitación",
@@ -364,7 +588,8 @@ public partial class DetallePrestamoPage : ContentPage
                 _prestamo.Id,
                 nuevoCapital,
                 perdonar,
-                motivo.Trim());
+                motivo.Trim(),
+                montoPerdonar);
 
             if (!exito)
             {

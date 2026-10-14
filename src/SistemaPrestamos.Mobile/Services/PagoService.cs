@@ -145,13 +145,14 @@ public class PagoService
         Guid prestamoId,
         decimal? nuevoCapital,
         bool perdonarIntereses,
-        string motivo)
+        string motivo,
+        decimal? montoPerdonar = null)
     {
         await AplicarTokenAsync();
 
         var response = await _httpClient.PostAsJsonAsync(
             $"api/Prestamos/{prestamoId}/ajuste",
-            new { nuevoCapital, perdonarIntereses, motivo });
+            new { nuevoCapital, perdonarIntereses, montoPerdonar, motivo });
 
         if (response.IsSuccessStatusCode)
         {

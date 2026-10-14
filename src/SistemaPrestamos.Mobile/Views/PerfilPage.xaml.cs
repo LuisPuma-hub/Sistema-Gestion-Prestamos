@@ -303,6 +303,21 @@ public partial class PerfilPage : ContentPage
         await Shell.Current.GoToAsync("..");
     }
 
+    private async void OnPrivacidadClicked(object? sender, TappedEventArgs e)
+    {
+        try
+        {
+            await Launcher.OpenAsync(MauiProgram.PrivacidadUrl);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync(
+                "Aviso",
+                $"No se pudo abrir la política: {ex.Message}",
+                "OK");
+        }
+    }
+
     private void MostrarCargando(bool cargando)
     {
         CargandoIndicator.IsVisible = cargando;

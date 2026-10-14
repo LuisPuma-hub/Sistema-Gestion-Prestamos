@@ -690,3 +690,19 @@ La información del `CHANGELOG.md` debe reflejar únicamente cambios que realmen
 
 - 3 pruebas de capital + 5 de ajuste + 4 de esquema Saldo.
 - `dotnet test`: 88/88 pruebas correctas.
+
+---
+
+# 21. Plazo fijo, resumen home, compromisos y mora a 2 semanas - 2026-10-14 (develop)
+
+## Added
+
+- RN-PRE-019 modalidad `PlazoFijo` (Diaria Lun-Sáb sin domingos o Semanal) con fecha fin, total prorrateado 5% y cuota al décimo hacia arriba; vencido el plazo retorna al 5% semanal sobre saldo; mora congelada en domingo.
+- Resumen general en home (`GET api/reportes/resumen`): capital total, intereses ganados/pendientes y reinvertido.
+- Compromisos de pago por cliente + préstamo opcional (solo admin): aviso push `CompromisoHoy` 07:00 a admins, cierre solo con pago, revierte al anular.
+- Descuento por mora: perdón parcial por monto en `POST api/prestamos/{id}/ajuste` (los más antiguos primero) con sugerencia (10% por período vencido, tope 50%).
+
+## Changed
+
+- RN-MOR-005: mora con 1+ períodos vencidos (el primer impago ya es mora); salida de mora con 0 vencidos.
+- El ajuste ahora genera los períodos transcurridos antes de perdonar.

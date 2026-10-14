@@ -34,6 +34,7 @@ public class PrestamosDbContext : DbContext
     public DbSet<PeriodoInteres> PeriodosInteres => Set<PeriodoInteres>();
     public DbSet<ReglaNotificacion> ReglasNotificacion => Set<ReglaNotificacion>();
     public DbSet<EnvioNotificacion> EnviosNotificacion => Set<EnvioNotificacion>();
+    public DbSet<NotaCompromiso> NotasCompromiso => Set<NotaCompromiso>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

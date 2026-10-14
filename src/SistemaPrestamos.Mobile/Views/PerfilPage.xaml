@@ -118,6 +118,17 @@
                                 <Label x:Name="VersionLabel" Text="Sistema de Préstamos v1.0" FontSize="15" FontAttributes="Bold" TextColor="#111827" />
                             </VerticalStackLayout>
                         </Grid>
+                        <BoxView HeightRequest="1" Color="#F3F4F6" Margin="12,0" />
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="12,12">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnPrivacidadClicked" />
+                            </Grid.GestureRecognizers>
+                            <Image Grid.Column="0" Source="ic_info.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="0">
+                                <Label Text="Política de privacidad" FontSize="15" FontAttributes="Bold" TextColor="#15307A" />
+                                <Label Text="Cómo tratamos tus datos" FontSize="12" TextColor="#9CA3AF" />
+                            </VerticalStackLayout>
+                        </Grid>
                     </VerticalStackLayout>
                 </Border>
 

@@ -144,6 +144,56 @@ public class MorosidadEstadosTests : IDisposable
     }
 
     [Fact]
+    public async Task Evaluar_DosVencidos_PoneMoroso()
+    {
+        var cliente = await CrearClienteAsync("80000007");
+        var id = await CrearPrestamoActivoAsync(
+            cliente, 100m, DateTime.UtcNow.AddDays(-15));
+
+        var mora = await _morosidades.EvaluarAsync(id, DateTime.UtcNow);
+
+        Assert.True(mora.Activa);
+        Assert.True(mora.PagosInteresVencidos >= 2);
+
+        var prestamo = await _prestamos.ObtenerPorIdAsync(id);
+        Assert.NotNull(prestamo);
+        Assert.Equal("Moroso", prestamo.Estado);
+    }
+
+    [Fact]
+    public async Task Evaluar_PrimerImpago_EsMoroso()
+    {
+        var cliente = await CrearClienteAsync("80000008");
+        var id = await CrearPrestamoActivoAsync(
+            cliente, 100m, DateTime.UtcNow.AddDays(-8));
+
+        var mora = await _morosidades.EvaluarAsync(id, DateTime.UtcNow);
+
+        Assert.True(mora.Activa);
+        Assert.True(mora.PagosInteresVencidos >= 1);
+
+        var prestamo = await _prestamos.ObtenerPorIdAsync(id);
+        Assert.NotNull(prestamo);
+        Assert.Equal("Moroso", prestamo.Estado);
+    }
+
+    [Fact]
+    public async Task Evaluar_SinVencidos_NoEsMoroso()
+    {
+        var cliente = await CrearClienteAsync("80000009");
+        var id = await CrearPrestamoActivoAsync(
+            cliente, 100m, DateTime.UtcNow);
+
+        var mora = await _morosidades.EvaluarAsync(id, DateTime.UtcNow);
+
+        Assert.False(mora.Activa);
+
+        var prestamo = await _prestamos.ObtenerPorIdAsync(id);
+        Assert.NotNull(prestamo);
+        Assert.Equal("Activo", prestamo.Estado);
+    }
+
+    [Fact]
     public async Task Evaluar_TresVencidos_PoneMoroso()
     {
         var cliente = await CrearClienteAsync("80000003");
